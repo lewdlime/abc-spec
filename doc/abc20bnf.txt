@@ -1,0 +1,264 @@
+; ABC notation 2.0 - BNF specification.
+; This is a specification of the draft ABC 2.0 standard in BNF.
+; This BNF specification is not finished yet - it needs to be elaborated in some places.
+; It uses ABNF as defined in http://www.ietf.org/rfc/rfc2234.txt.
+; This file written by Henrik Norbeck.
+; --------------------------------------------------------------------------------
+abc-file ::= *(abc-tune / comment / xcommand / file-field / text-line / tex) 
+file-field ::= field-area / field-book / field-composer / field-discography / field-file / field-group / field-history / field-length / field-meter / field-notes / field-origin / field-parts / field-tempo / field-rhythm / field-source / field-userdef-print / field-userdef-play / field-words / field-transcription / field-key / unused-field ; Default values for the whole file - all fields except number, title and voice
+text-line ::= [non-comment-char tex-text] eol ; Free text between tunes. This is a catch-all rule - check for fields first!
+
+; --------------------------------------------------------------------------------
+abc-tune ::= abc-header abc-music eol 
+abc-header ::= [field-number] title-fields *other-field field-key ; note that field-number is optional.
+field-number ::= %x58.3A *WSP 1*DIGIT header-eol ; X:
+title-fields ::= *(comment / xcommand / tex) 1*(field-title *(comment / xcommand / tex)) 
+field-title ::= %x54.3A *WSP tex-text header-eol ; T:
+other-field ::= field-area / field-book / field-composer / field-discography / field-file / field-group / field-history / field-length / field-meter / field-notes / field-origin / field-parts / field-tempo / field-rhythm / field-source / field-userdef-print / field-userdef-play / field-voice / field-words / field-transcription / field-macro / unused-field / comment / xcommand / tex 
+field-area ::= %x41.3A *WSP tex-text header-eol ; A:
+field-book ::= %x42.3A *WSP tex-text header-eol ; B:
+field-composer ::= %x43.3A *WSP tex-text header-eol ; C:
+field-discography ::= %x44.3A *WSP tex-text header-eol ; D:
+field-file ::= %x46.3A *WSP tex-text header-eol ; F:
+field-group ::= %x47.3A *WSP tex-text header-eol ; G:
+field-history ::= %x48.3A *WSP 1*(tex-text header-eol) ; H: field contents may extend over many lines, which is deprecated (maybe not allowed any longer?)
+field-length ::= %x4C.3A *WSP note-length-strict header-eol ; L: default note length
+field-meter ::= %x4D.3A *WSP time-signature header-eol ; M:
+field-notes ::= %x4E.3A *WSP tex-text header-eol ; N:
+field-origin ::= %x4F.3A *WSP tex-text header-eol ; O:
+field-parts ::= %x50.3A *WSP parts-play-order header-eol ; P: in header defines in which order parts should be played
+field-tempo ::= %x51.3A *WSP tempo header-eol ; Q:
+field-rhythm ::= %x52.3A *WSP tex-text header-eol ; R:
+field-source ::= %x53.3A *WSP tex-text header-eol ; S:
+field-userdef-print ::= %x55.3A *WSP userdef header-eol ; U:
+field-userdef-play ::= %x75.3A *WSP userdef header-eol ; u:
+field-voice ::= %x56.3A *WSP voice header-eol ; V: options should be better defined
+field-words ::= %x57.3A *WSP tex-text header-eol ; W: unformatted words, printed after the tune
+field-transcription ::= %x5A.3A *WSP tex-text header-eol ; Z:
+field-macro ::= %x6D.3A *WSP 1*(WSP / VCHAR) header-eol ; m: BarFly-style macros - do be defined better
+field-key ::= %x4B.3A *WSP key header-eol ; K:
+unused-field ::= (%x45 / %x49 / %4A / %59 / %61-6c / %6e-%74 / %76 / %78-7A) %3A *(WSP / VCHAR) eol ; E: I: J: Y: a:-l: n:-t: v: x: y: z: ignore - but for backward and forward compatibility
+
+; --------------------------------------------------------------------------------
+time-signature ::= %x43 / %x43.7C / "none" / meter-num / 1*DIGIT ; C, C|, none or numeric
+meter-num ::= (1*DIGIT *("+" 1*DIGIT) "/" 1*DIGIT) [1*SP meter-num] 
+; e.g. 2/4 , 6/8 , 2+2+3/16 , 11/8 , 2/4 3/4 , 2+2+3/8 2+2+3+2+2+2/8
+tempo ::= (note-length-strict "=" 1*DIGIT) / (%x43 [note-length] "=" 1*DIGIT) / 1*DIGIT ; 1*DIGIT is deprecated, kept for compatibility
+note-length-strict ::= 1*DIGIT "/" 1*DIGIT 
+key ::= (key-def [1*WSP clef]) / clef / "HP" / "Hp" 
+key-def ::= basenote ["#" / "b"] [mode] *(1*WSP global-accidental) 
+mode ::= minor / major / lydian / ionian / mixolydian / dorian / aeolian / phrygian / locrian 
+minor ::= "m" ["in" ["o" ["r"]]] ; m, min, mino, minor - all modes are case insensitive
+major ::= "maj" ["o" ["r"]] 
+lydian ::= "lyd" ["i" ["a" ["n"]]] ; major with sharp 4th
+ionian ::= "ion" ["i" ["a" ["n"]]] ; =major
+mixolydian ::= "mix" ["o" ["l" ["y" ["d" ["i" ["a" ["n"]]]]]]] ; major with flat 7th
+dorian ::= "dor" ["i" ["a" ["n"]]] ; minor with sharp 6th
+aeolian ::= "aeo" ["l" ["i" ["a" ["n"]]]] ; =minor
+phrygian ::= "phr" ["y" ["g" ["i" ["a" ["n"]]]]] ; minor with flat 2nd
+locrian ::= "loc" ["r" ["i" ["a" ["n"]]]] ; minor with flat 2nd and 5th
+global-accidental ::= accidental basenote ; e.g. ^f =c _b
+parts-play-order ::= 1*( ALPHA / ( "(" parts-play-order ")" ) *DIGIT) / "." ; dots are ignored - for legibility only
+
+; --------------------------------------------------------------------------------
+voice ::= 1*(ALPHA / DIGIT) *(1*WSP (clef / voice-name / voice-subname / voice-transpose / "merge" / "up" / "down")) ; maybe "stems=up" / "stems=down" / "stems=normal" instead?
+voice-name ::= ("name=" / "nm=") %x22 *non-quote %x22 ; \n in name = linefeed
+voice-subname ::= ("subname=" / "snm=") %x22 *non-quote %x22 ; \n in name = linefeed
+voice-transpose ::= "transpose=" ["-"] 1*DIGIT 
+
+; --------------------------------------------------------------------------------
+clef ::= ( ("clef=" (clef-note / clef-name)) / clef-name) clef-line ["+8" / "-8"] [1*WSP clef-middle] 
+clef-note ::= "G" / "C" / "F" / "P" 
+clef-name ::= "treble" / "alto" / "tenor" / "baritone" / "bass" / "mezzo" / "soprano" / "perc" / "none" ; Maybe also Doh1-4, Fa1-4
+clef-line ::= "1" / "2" / "3" / "4" / "5" 
+cleff-middle ::= "middle=" basenote [octave] 
+
+; --------------------------------------------------------------------------------
+userdef ::= userdef-symbol *WSP "=" *WSP (long-gracing / chord-or-text) 
+header-eol ::= *WSP (comment / eol) ; there may be comments at the end of header lines
+
+; --------------------------------------------------------------------------------
+abc-music ::= *(abc-line / comment / xcommand / tune-field / tex) 
+abc-line ::= barline / ([barline] 1*element *(barline 1*element) [barline]) abc-eol 
+barline ::= ( *":" *"[" 1*"|" *"]" ( *":" / nth-repeat-num ) ) / invisible-barline / dashed-barline ; e.g. :| | |:: |2 :||:
+invisible-barline ::= "[|]" | "[]" 
+dashed-barline ::= ":" 
+element ::= stem / WSP / chord-or-text / gracing / grace-notes / broken-rhythm / tuplet / slur-begin / slur-end / rollback / multi-measure-rest / measure-repeat / nth-repeat / end-nth-repeat / inline-field / unused-char 
+
+; --------------------------------------------------------------------------------
+stem ::= note / ( "[" 2*note "]" ) ; stem
+note ::= pitch [note-length] [tie] ; note
+pitch ::= [accidental] basenote [octave] 
+rest ::= (normal-rest / invisible-rest / inaudible-rest) [note-length] 
+normal-rest ::= %x7A ; z = normal rest
+invisible-rest ::= %x78 ; x = invisible rest
+inaudible-rest ::= %x79 ; y = inaudible and invisible rest, for spacing
+accidental ::= "^" / "^^" / "_" / "__" / "=" 
+basenote ::= %x43 / %x44 / %x45 / %x46 / %x47 / %x41 / %x42 / %x63 / %x64 / %x65 / %x66 / %x67 / %x61 / %x62 ; CDEFGABcdefgab
+octave ::= 1*"'" / 1*"," 
+note-length ::= (*DIGIT ["/" *DIGIT]) / 1*"/" 
+tie ::= "-" ; tie
+
+; --------------------------------------------------------------------------------
+broken-rhythm ::= stem *b-elem (1*"<" / 1*">") *b-elem stem 
+b-elem ::= WSP / chord-or-text / gracing / grace-notes / slur-begin / slur-end 
+tuplet ::= "("1*DIGIT [":" [1*DIGIT] ":" [1*DIGIT]] 2*(*t-elem stem) 
+t-elem ::= WSP / chord-or-text / gracing / grace-notes / broken-rhythm / slur-begin / slur-end 
+
+; --------------------------------------------------------------------------------
+gracing ::= "." / userdef-symbol / long-gracing ; gracings
+userdef-symbol ::= "~" / %x48-59 / %x68-77 ; user definable symbols ~ H-Y, h-w
+grace-notes ::= "{" acciaccatura 1*( grace-note-stem ) "}" ; grace notes can have length
+grace-note-stem ::= grace-note / ( "[" 2*grace-note "]" ) 
+grace-note ::= pitch [note-length] ; as note, but without tie
+acciaccatura ::= "/" 
+
+; --------------------------------------------------------------------------------
+chord-or-text ::= %x22 (chord / text-expression) *(chord-newline (chord / text-expression)) %x22 ; ".."
+chord ::= basenote [chord-accidental] [chord-type] ["/" basenote [chord-accidental]] *non-quote 
+chord-accidental ::= "#" / "b" / "=" 
+chord-type ::= 1*( ALPHA / DIGIT / "+" / "-" ) ; e.g. m, 7, m7, +, mb5, sus, sus4, maj7, mmaj7, 7sus4, dim
+text-expression ::= [ "^" / "<" / ">" / "_" / "@" ] 1*non-quote ; above, left, right, below, anywhere
+non-quote ::= SP / %x21 / %x23-7E ; all characters except quote
+chord-newline ::= "\n" / ";" 
+
+; --------------------------------------------------------------------------------
+slur-begin ::= "(" 
+slur-end ::= ")" 
+rollback ::= "&" 
+measure-repeat ::= "/" ["/"] ; repeat whole measure
+multi-measure-rest ::= %5A *DIGIT ; e.g. Z4
+nth-repeat ::= "[" ( nth-repeat-num / nth-repeat-text ) 
+nth-repeat-num ::= 1*DIGIT *(("," / "-") 1*DIGIT) 
+nth-repeat-text ::= %x22 *non-quote %x22 
+end-nth-repeat ::= "]" 
+unused-char ::= "#" / "$" / "*" / "+" / ";" / "?" / "@" / "`" ; ignore for backward and forward compatibility, but maybe warn about them
+
+; --------------------------------------------------------------------------------
+inline-field ::= ifield-area / ifield-book / ifield-composer / ifield-discography / ifield-group / ifield-history / ifield-length / ifield-meter / ifield-notes / ifield-origin / ifield-part / ifield-tempo / ifield-rhythm / ifield-source / ifield-title / ifield-voice / ifield-words / ifield-lyrics / ifield-transcription / ifield-key 
+ifield-area ::= %5B.%41.%3A tex-text-ifield %5D ; [A:..]
+ifield-book ::= %5B.%42.%3A *WSP tex-text-ifield %5D ; [B:..]
+ifield-composer ::= %5B.%43.%3A *WSP tex-text-ifield %5D ; [C:..]
+ifield-discography ::= %5B.%44.%3A *WSP tex-text-ifield %5D ; [D:..]
+ifield-group ::= %5B.%47.%3A *WSP tex-text-ifield %5D ; [G:..]
+ifield-history ::= %5B.%48.%3A *WSP tex-text-ifield %5D ; [H:..]
+ifield-length ::= %5B.4C.3A *WSP note-length-strict %5D ; e.g. [L:1/8]
+ifield-meter ::= %5B.4D.3A *WSP meter %5D ; e.g. [M:C|] [M: 2+3/8]
+ifield-notes ::= %5B.%4E.%3A *WSP tex-text-ifield %5D ; [N:..]
+ifield-origin ::= %5B.%4F.%3A *WSP tex-text-ifield %5D ; [O:..]
+ifield-part ::= %5B.%50.%3A *WSP (ALPHA / tex-text-ifield) %5D ; e.g. [P:A]
+ifield-tempo ::= %5B.%51.%3A *WSP tempo %5D ; e.g. [Q:1/4=120]
+ifield-rhythm ::= %5B.%52.%3A *WSP tex-text-ifield %5D ; e.g. [R:reel]
+ifield-source ::= %5B.%53.%3A *WSP tex-text-ifield %5D ; [S:..]
+ifield-title ::= %5B.%54.%3A *WSP tex-text-ifield %5D ; e.g. [T:second version]
+ifield-voice ::= %5B.%56.%3A *WSP voice %5D ; [V:..] options should be better defined
+ifield-words ::= %5B.%57.%3A *WSP tex-text-ifield %5D ; [W:..]
+ifield-lyrics ::= %5B.%77.%3A *WSP tex-text-ifield %5D ; [w:..]
+ifield-transcription ::= %5B.%5A.%3A *WSP tex-text-ifield %5D ; [Z:..]
+ifield-key ::= %5B.4B.3A *WSP key %5D ; e.g. [K:Ador] [K: Bphr ^d]
+unused-ifield ::= %5B (%x45 / %x49 / %4A / %59 / %61-6c / %6e-%74 / %76 / %78-7A) %3A *(WSP / VCHAR) %5D ; E: I: J: Y: a:-l: n:-t: v: x: y: z: ignore - but for backward and forward compatibility
+non-bracket-char ::= *(WSP / %21-%5C / %5E-7E) ; all except ]
+
+; --------------------------------------------------------------------------------
+abc-eol ::= comment / ([line-continuation / hard-line-break] *WSP eol) 
+line-continuation ::= "\" 
+hard-line-break ::= "!" ; kept for compatibility with abc2win
+
+; --------------------------------------------------------------------------------
+tune-field ::= field-area / field-book / field-composer / field-discography / field-group / field-history / field-length / field-meter / field-notes / field-origin / field-part / field-tempo / field-rhythm / field-source / field-title / field-voice / field-words / field-lyrics / field-transcription / field-key / unused-field 
+field-part ::= %x50.3A *WSP (ALPHA / tex-text) header-eol ; P:
+field-lyrics ::= %x56.3A *WSP lyrics header-eol ; w: formatted lyrics printed under staff
+
+; --------------------------------------------------------------------------------
+long-gracing ::= gracing-grace / gracing-vol / gracing-style / gracing-finger / gracing-phrase / gracing-exec / gracing-other 
+gracing-grace ::= "!trill!" / "!mordent!" / "!lowermordent!" / "!pralltriller!" / "!uppermordent!" / "!turn!" / "!roll!" / "!turnx!" / "!invertedturn!" / "!invertedturnx!" / "!trill(!" / "!trill)!" 
+gracing-vol ::= "!accent!" / "!emphasis!" / "!crescendo(!" / "!crescendo)!" / "!diminuendo(!" / "!diminuendo)!" / "!p!" / "!pp!" / "!ppp!" / "!pppp!" / "!mp!" / "!mf!" / "!fp!" / "!f!" / "!ff!" / "!fff!" / "!ffff!" / "!sfz!" / "!cresc!" / "!decresc!" / "!dimin!" 
+gracing-style ::= "!+!" / "!open!" / "!snap!" / "!upbow!" / "!downbow!" / "!slide!" / "!arpeggio!" 
+gracing-len ::= "!fermata!" / "!invertedfermata!" / "!tenuto!" 
+gracing-finger ::= "!0!" / "!1!" / "!2!" / "!3!" / "!4!" / "!5!" 
+gracing-phrase ::= "!shortphrase!" / "!mediumphrase!" / "!longphrase!" 
+gracing-exec ::= "!segno!" / "!coda!" / "!D.S.!" / "!D.C.!" / "!fine!" / ("!repeatbar" *DIGIT "!") 
+gracing-other ::= "!wedge!" / "!thumb!" / "!breath!" / ("!" 1*(SP / %x22-x7E) "!") ; any text between !! is allowed
+
+; --------------------------------------------------------------------------------
+comment ::= "%" ([non-comment-char *(VCHAR / WSP)]) eol 
+non-comment-char ::= %x20-24 / %x26-%x7E / HTAB ; all characters except %
+xcommand ::= "%%" xcom eol 
+xcom ::= xcom-staff / xcom-measurenb / xcom-text / xcom-layout / xcom-margins / xcom-midi / xcom-other ; more need to be defined
+xcom-staff ::= xcom-staffbreak / xcom-multicol / xcom-staves / xcom-indent 
+xcom-staffbreak ::= "staffbreak" 1*WSP xcom-number xcom-unit 
+xcom-multicol ::= "multicol" 1*WSP ("start" / "new" / "end") 
+xcom-staves ::= "staves" 1*WSP stave-voice *( bar-staves stave-voice) 
+stave-voice ::= single-voice / bracketed-voice / braced-voice / paren-voice 
+bracketed-voice ::= "[" *WSP (single-voice / braced-voice / paren-voice) 1*(bar-staves (single-voice / braced-voice / paren-voice)) *WSP "]" ; staves joined by bracket
+braced-voice ::= "{" *WSP (single-voice / paren-voice) 1*(bar-staves (single-voice / paren-voice)) *WSP "}" ; staves joined by brace
+paren-voice ::= "(" single-voice 1*( 1*WSP single-voice) ")" ; on same staff
+single-voice ::= 1*(ALPHA / DIGIT) 
+bar-staves ::= (*WSP "|" *WSP) / 1*WSP ; | to not bar
+xcom-indent ::= "indent" 1*WSP xcom-number xcom-unit 
+xcom-measurenb ::= "measurenb" / "measurebox" / "measurefirst" / ("setbarnb" 1*WSP 1*DIGIT) 
+xcom-text ::= xcom-textline / xcom-textcenter / xcom-textblock 
+xcom-textline ::= "text" 1*WSP tex-text 
+xcom-textcenter ::= "center" 1*WSP tex-text 
+xcom-textblock ::= "begintext" [textblock-param] eol *(["%%"] tex-text) "%%endtext" 
+textblock-param ::= "obeylines" / ("fill" / "ragged") / ("align" / "justify") / "skip" 
+xcom-layout ::= xcom-sep / xcom-vskip / xcom-newpage 
+xcom-sep ::= "sep" [3(1*WSP xcom-number xcom-unit)] ; space-above, space-below, width
+xcom-vskip ::= "vskip" 1*WSP xcom-number xcom-unit 
+xcom-newpage ::= "newpage" [1*WSP 1*DIGIT] ; optionally restart page numbering at n
+xcom-margins ::= ("botmargin" / "topmargin" / "leftmargin" / "rightmargin") 1*WSP xcom-number xcom-unit 
+xcom-midi ::= "midi" 1*WSP (midi-channel / midi-program / midi-transpose) 
+midi-channel ::= "channel" 1*WSP midi-channel-number 
+midi-program ::= "program" 1*WSP [midi-channel-number 1*WSP] midi-program-number 
+midi-channel-number ::= %x31-39 / (%x31 %x30-36) ; channels 1-16
+midi-program-number ::= %x31-39 / (%x31-39 %x30-39) / (%x31 %x30-31 %x30-39) / (%x31.32 %x30-38) ; programs 1-128
+midi-transpose ::= "transpose" 1*WSP ["-"] 1*DIGIT 
+xcom-other ::= *(VCHAR / WSP) 
+xcom-number ::= 1*DIGIT ["." 1*DIGIT] 
+xcom-unit ::= ["cm" / "pt" / "in"] 
+
+; --------------------------------------------------------------------------------
+lyrics ::= *(lyrics-char / lyrics-syllable-break / lyrics-next-bar / lyrics-hold / lyrics-skip-note / lyrics-nbsp / lyrics-dash / tex-escape) 
+lyrics-ifield ::= *(lyrics-char-ifield / lyrics-syllable-break / lyrics-next-bar / lyrics-hold / lyrics-skip-note / lyrics-nbsp / lyrics-dash / tex-escape) 
+lyrics-syllable-break ::= "-" ; break between syllables in a word
+lyrics-next-bar ::= "|" ; advance to next bar
+lyrics-hold ::= "_" ; hold syllable for one more note
+lyrics-skip-note ::= "*" ; =blank syllable
+lyrics-nbsp ::= "~" ; non-breaking space = words on same note
+lyrics-dash ::= "\-" ; printed as a -
+lyrics-char ::= WSP / DIGIT / ALPHA / %x21-29 / %x2B-2C / %x2E-2F / %x3A-40 / %x5B / %x5D / %x5E / %x60 / %x7B-7D ; all characters without special meaning
+lyrics-char-ifield ::= WSP / DIGIT / ALPHA / %x21-29 / %x2B-2C / %x2E-2F / %x3A-40 / %x5B / %x5E / %x60 / %x7B-7D ; all characters without special meaning and except ]
+
+; --------------------------------------------------------------------------------
+tex-text ::= *(WSP / %21-%5B / %5D-7E / tex-escape) ; text that may contain TeX escapes
+tex-text-ifield ::= *(WSP / %21-%5B / %5E-7E / tex-escape) ; as above, but except ]
+tex-escape ::= "\" 1*(VCHAR) ; to be defined better
+
+; --------------------------------------------------------------------------------
+tex ::= "\" *(VCHAR / WSP) eol ; deprecated - kept only for backward compatibility with abc2mtex
+eol ::= CRLF / LF / CR ; only one version should occur in the whole file - win / *nix / mac line breaks
+
+; --------------------------------------------------------------------------------
+; Core rules in ABNF:
+; ALPHA ::= %x41-5A / %x61-7A ; A-Z / a-z
+; CR ::= %x0D ; carriage return
+; CRLF ::= %x0D.0A ; CR+LF
+; DIGIT ::= %x30-39 ; 0-9
+; DQUOTE ::= %x22 ; "
+; HTAB ::= %x09 ; tab
+; LF ::= %x0A ; linefeed
+; SP ::= %x20 ; space
+; VCHAR ::= %x21-7e ; printing chars
+; WSP ::= SP / HTAB ; whitespace
+; %xDD means a hexadecimal code for a character
+; %xCC-DD means any character in that range
+; %xCC.DD means two characters
+; / means or
+; * means 0 or more occurences of 
+; 1* means 1 or more occurences of 
+; 2* means 2 or more occurences of 
+; [ ] means optional
+; ( ) used for grouping
+; " " is a literal string (note that it is case insensitive)
+; ; starts a comment to end of line
+; read more about ABNF at http://www.ietf.org/rfc/rfc2234.txt.

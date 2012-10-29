@@ -1,0 +1,202 @@
+; ABC 1.6 in BNF format
+; According to ABNF as described in http://www.ietf.org/rfc/rfc2234.txt
+; There is also a short description of BNF as used here at the end of this file.
+; By Henrik Norbeck 1 May 1997.
+; Corrected 6 September 1997 after comments from Laurie Griffiths
+; Also available in html format: abcbnf.htm
+
+abc-file ::= *(abc-tune / comment / linefeed / tex-command / file-fields)
+        ; Actually this means that abc files may not contain uncommented
+        ; text between tunes, which many files today do. Maybe this should
+        ; be allowed.
+
+file-fields ::= field-file / field-book / field-group / field-history
+        / field-information / field-meter / field-origin / field-rhythm
+field-file ::= "F:" text end-of-line
+
+abc-tune ::= abc-header abc-music
+
+abc-header ::= field-number *comment 1*field-title *other-fields field-key
+        ; In practice, many tunes are e-mailed without field-number,
+        ; so those wishing to implement an abc parser should treat this
+        ; field as optional.
+
+field-number ::= "X:" 1*DIGIT end-of-line
+field-title ::= "T:" text end-of-line
+other-fields ::= field-area / field-book / field-composer / field-discography
+        / field-elemskip / field-group / field-history / field-information
+        / field-default-length / field-meter / field-notes / field-origin
+        / field-parts / field-tempo / field-rhythm / field-source
+        / field-transcrnotes / comment
+        ; field-file and field-words may not be in header (?)
+field-area ::= "A:" text end-of-line
+        ; maybe some of these field definitions should include an optional space:
+        ; field-area ::= "A:" [" "] text end-of-line
+field-book ::= "B:" text end-of-line
+field-composer ::= "C:" text end-of-line
+field-discography ::= "D:" text end-of-line
+field-elemskip ::= "E:" text end-of-line
+field-group ::= "G:" text end-of-line
+field-history ::= "H:" 1*(text end-of-line)
+field-information ::= "I:" text end-of-line
+field-default-length ::= "L:" note-length-strict end-of-line
+field-meter ::= "M:" meter end-of-line
+field-notes ::= "N:" text end-of-line
+field-origin ::= "O:" text end-of-line
+field-parts ::= "P:" parts end-of-line
+field-tempo ::= "Q:" tempo end-of-line
+field-rhythm ::= "R:" text end-of-line
+field-source ::= "S:" text end-of-line
+field-transcrnotes ::= "Z:" text end-of-line
+field-key ::= "K:" key end-of-line
+
+key ::= key-spec / "HP" / "Hp"
+key-spec ::= keynote [mode-spec] *(" " global-accidental)
+keynote ::= basenote [key-accidental]
+key-accidental ::= "#" / "b"
+mode-spec ::= [" "] mode [extratext]
+mode ::= mode-minor / mode-major / mode-lydian / mode-ionian
+        / mode-mixolydian / mode-dorian / mode-aeolian / mode-phrygian
+        / mode-locrian
+extratext ::= *ALPHA
+global-accidental ::= accidental basenote
+mode-minor ::= ("m"/"M") [("i"/"I") ("n"/"N")]
+mode-major ::= ("m"/"M") ("a"/"A") ("j"/"J")
+mode-lydian ::= ("l"/"L") ("y"/"Y") ("d"/"D")
+mode-ionian ::= ("i"/"I") ("o"/"O") ("n"/"N")
+mode-mixolydian ::= ("m"/"M") ("i"/"I") ("x"/"X")
+mode-dorian ::= ("d"/"D") ("o"/"O") ("r"/"R")
+mode-aeolian ::= ("a"/"A") ("e"/"E") ("o"/"O")
+mode-phrygian ::= ("p"/"P") ("h"/"H") ("r"/"R")
+mode-locrian ::= ("l"/"L") ("o"/"O") ("c"/"C")
+
+meter ::= "C" / "C|" / meter-fraction
+meter-fraction ::= 1*DIGIT "/" 1*DIGIT
+        ; If we allow complex time signatures:
+        ; meter-fraction ::= 1*DIGIT *("+" 1*DIGIT) "/" 1*DIGIT
+
+tempo ::= 1*DIGIT / ("C" [note-length] "=" 1*DIGIT)
+        / (note-length-strict "=" 1*DIGIT)
+
+note-length-strict ::= 1*DIGIT "/" 1*DIGIT
+
+parts ::= 1*part-spec
+part-spec ::= (part / ( "(" 1*part-spec ")" ) ) *DIGIT
+part ::= "A" / "B" / "C" / "D" / "E" / "F" / "G" / "H"
+        / "I" / "J" / "K" / "L" / "M" / "N" / "O" / "P"
+        / "Q" / "R" / "S" / "T" / "U" / "V" / "X" / "Y" / "Z"
+
+end-of-line ::= *(" " / HTAB) ["%" text] linefeed
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+abc-music ::= 1*abc-line linefeed
+abc-line ::= (1*element line-ender) / tex-command / mid-tune-field
+element ::= note-element / tuplet-element / barline / nth-repeat
+        / begin-slur / end-slur / space / user-defined
+line-ender ::= comment / linefeed / line-break / no-line-break
+
+tuplet-element ::= tuplet-spec 1*note-element
+tuplet-spec ::= "(" DIGIT [":" [DIGIT] [":" [DIGIT]]]
+
+note-element ::= note-stem [broken-rhythm]
+note-stem ::= [guitar-chord] [grace-notes] *gracings (note / multi-note)
+multi-note ::= "[" 1*note "]"
+note ::= note-or-rest [note-length] [tie]
+note-or-rest ::= pitch / rest
+pitch ::= [accidental] basenote [octave]
+octave ::= (1*"'") / (1*",")
+note-length ::= [1*DIGIT] ["/" [1*DIGIT]]
+accidental ::= "^" / "^^" / "_" / "__" / "="
+basenote ::= "C" / "D" / "E" / "F" / "G" / "A" / "B"
+        / "c" / "d" / "e" / "f" / "g" / "a" / "b"
+rest ::= "z"
+broken-rhythm ::= 1*"<" / 1*">"
+tie ::= "-"
+gracings ::= "~" / "." / "v" / "u"
+        ; maybe also "J" / "R" / "L" / "H"
+grace-notes ::= "{" 1*pitch "}"
+
+guitar-chord ::= <"> (formal-chord / text) <">
+formal-chord ::= basenote [chord-type] ["/" basenote]
+chord-type ::= "m" / "7" / "m7" / "0" / "o" / "+" / "mb5" / "sus" / "sus4"
+        / "maj7" / "mmaj7" / "7sus4" / "dim" / "dim7" / "7b5" / "m7b5"
+        / "6" / "b6" / "m6" / "mb6" / "46" / "maj9" / "9" / "add9"
+        / "7b9" / "m9"
+        ; There are more chord types that could be understood
+
+barline ::= "|" / "||" / "[|" / "|]" / ":|" / "|:" / "::"
+nth-repeat ::= "[1" / "[2" / "|1" / ":|2"
+
+begin-slur ::= "("
+end-slur ::= ")"
+
+mid-tune-field ::= tune-field
+tune-field ::= field-elemskip / field-key / field-default-length
+        / field-meter / field-part / field-tempo / field-title
+        / field-words
+        ; field-rhythm may not be in tune (?) field-voice not defined yet
+field-part ::= "P:" part end-of-line
+field-words ::= "W:" text end-of-line
+
+user-defined ::= "H" / "I" / "J" / "K" / "I" / "J" / "K" / "L" / "M" / "N"
+	/ "O" / "P" / "Q" / "R" / "S" / "T" / "U" / "V" / "W" / "X" / "Y"
+	/ "Z"
+
+tex-command ::= "\" text linefeed
+space ::= " " / HTAB
+comment ::= "%" text (linefeed / line-break / no-line-break)
+line-break ::= "!" linefeed
+no-line-break ::= "\" linefeed
+linefeed ::= CRLF / LF
+
+text ::= *text-char
+text-char ::= ALPHA / DIGIT / " " / HTAB / <"> / "!" / "#" / "$" / "&"
+        / "'" / "(" / ")" / "*" / "+" / "," / "-" / "." / "/" / ":" / ";"
+        / "<" / "=" / ">" / "?" / "@" / "[" / "\" / "]" / "^" / "_" / "`"
+        / "{" / "|" / "}" / "~"
+        ; "%" is not included here (on purpose)!
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+BNF format
+
+BNF (Backus-Naur Format) is a way to describe the syntax of file formats.
+It consists of definitions of the form
+
+identifier ::= definition
+
+The identifier is a word which describes this part of the syntax.
+The ::= should be interpreted as "consists of".
+The definition is a list of what this part of the syntax may contain. This
+may be other identifiers, or literal strings (enclosed in ""). For example,
+a simple sentence may be defined as
+
+simple-sentence ::= (thenoun / pronoun) " " verb [ " " adverb] "."
+thenoun ::= "The" noun
+noun ::= "cat" / "dog"
+pronoun ::= "He" / "She" / "It"
+verb ::= "runs" / "bites"
+adverb ::= "quickly" / "fast"
+
+* before an element means that it can be repeated 0 or more times.
+1* before an element means that it can be repeated 1 or more times.
+[] around an element means that it is optional.
+/ between elements mean that you may choose any of the elements.
+() can be used to group elements.
+
+So legal "simple sentences" according to the definition above are,
+for example, "The cat runs.", "It bites quickly.", "He runs fast.",
+"The dog bites.".
+
+Some special words are pre-defined:
+DIGIT   Any digit 0-9
+ALPHA   Any letter a-z, A-Z
+HTAB    A horizontal tab character
+CRLF    Carriage return character + linefeed character
+LF      Linefeed character
+
+There is also a special case of literal string: If you want a quote mark,
+you have to write <">
+
+A more complete description of BNF can be found at http://www.ietf.org/rfc/rfc2234.txt
