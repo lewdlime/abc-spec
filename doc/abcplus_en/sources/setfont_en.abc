@@ -1,0 +1,12 @@
+%%setfont-1 Times-Roman 20
+%%setfont-2 Times-Italic 26
+%%setfont-3 Helvetica-Bold 18
+%%setfont-4 AvantGarde-Demi 24
+X: 1
+K: C
+%%text Hello. This is the default font, $1this is font 1,
+%%text $2this is font 2, $3this is font 3, $4this is font 4,
+%%text $4and now $0let's go back to default font.
+CDEFGABc|cdefgabc'|CCDDEEFF|GGAABBcc|
+W: It also works in $3W: fields!
+W: It's useful to emphasise $0some parts.

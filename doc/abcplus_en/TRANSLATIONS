@@ -1,0 +1,22 @@
+TRANSLATIONS
+------------
+
+To make a translation of this guide into other languages, you will need
+to:
+
+  - translate the file abcplus_en.tex, renaming it to indicate the new
+  language (e.g. abcplus_fr.tex). In the title, add "... translation by
+  ...". Beware of references to localised figures, see next point;
+  
+  - translate all figures that have '_en' in their file name, and change
+  the suffix. For example, annotations_en.abc --> annotations_fr.abc
+  
+  - translate all appropriate entries in the Makefile.
+
+  - this guide is released under the GNU FDL, so you must make the source
+  available. Please send it to me for public release.
+
+Your translation will be put online on http://abcplus.sourceforge.net, and
+you will be given full credit.
+
+Thank you!

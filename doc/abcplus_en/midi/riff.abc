@@ -1,0 +1,22 @@
+X: 1
+M: 4/4
+T: Riff
+%%MIDI program 1 25 % Steel String Guitar
+Q: 1/4=160
+K: C
+%%MIDI drum dzddd2dz  35 39 39 35 39  127 80 80 127 80
+% Bass Drum 1 + Electric Snare
+%%MIDI gchord cccccccc
+%%MIDI drumon
+"C"CC EE GG AA|_BB AA GG EE|
+CC EE GG AA|_BB AA GG EE|
+"F"FF AA cc dd|"F7"_ee dd cc AA|
+"C"CC EE GG AA|_BB AA GG EE|
+%%MIDI gchordoff % no chords
+"G"GG BB dd Bd|"F7"FF AA cc Ac|
+%%MIDI gchordon  % turn chords back on
+"C"CC EE GG AA|_BB AA GG EE|
+%%MIDI gchord c4
+%%MIDI program 1 60 % Brass Section
+%%MIDI drumoff
+!fermata!"C"[C8E8G8c8]|

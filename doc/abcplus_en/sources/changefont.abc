@@ -1,0 +1,12 @@
+%%font Helvetica
+%%font Helvetica-BoldOblique
+X: 1
+L: 1/4
+K: C
+CDEF|!ff!GAB!fermata!c|!mf!cBAG|!p!FED!fermata!C|
+%%vocalfont Helvetica 12
+w: la la la la\
+%%vocalfont Helvetica-BoldOblique 13
+w: la la la la, la la la la\
+%%vocalfont Helvetica 12
+w: la la la la.

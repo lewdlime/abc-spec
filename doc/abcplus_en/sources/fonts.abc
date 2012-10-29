@@ -1,0 +1,121 @@
+% This file must be typeset with a modified abcm2ps.
+% In abc2ps.h, change MAXFONTS to 40.
+% font definitions
+%
+%%font Bookman-Demi
+%%font Bookman-DemiItalic
+%%font Bookman-Light
+%%font Bookman-LightItalic
+%%font Courier
+%%font Courier-Oblique
+%%font Courier-Bold
+%%font Courier-BoldOblique
+%%font AvantGarde-Book
+%%font AvantGarde-BookOblique
+%%font AvantGarde-Demi
+%%font AvantGarde-DemiOblique
+%%font Helvetica
+%%font Helvetica-Oblique
+%%font Helvetica-Bold
+%%font Helvetica-BoldOblique
+%%font Helvetica-Narrow
+%%font Helvetica-Narrow-Oblique
+%%font Helvetica-Narrow-Bold
+%%font Helvetica-Narrow-BoldOblique
+%%font Palatino-Roman
+%%font Palatino-Italic
+%%font Palatino-Bold
+%%font Palatino-BoldItalic
+%%font NewCenturySchlbk-Roman
+%%font NewCenturySchlbk-Italic
+%%font NewCenturySchlbk-Bold
+%%font NewCenturySchlbk-BoldItalic
+%%font Times-Roman
+%%font Times-Italic
+%%font Times-Bold
+%%font Times-BoldItalic
+%%font Symbol
+%%font ZapfChancery-MediumItalic
+%%font ZapfDingbats % apparently not supported
+%
+X:1
+K:C
+%%multicol start
+%%leftmargin 1cm
+%%rightmargin 10cm
+% start of first column
+%%textfont Bookman-Demi 18
+%%text Bookman-Demi
+%%textfont Bookman-DemiItalic 18
+%%text Bookman-DemiItalic
+%%textfont Bookman-Light 18
+%%text Bookman-Light
+%%textfont Bookman-LightItalic 18
+%%text Bookman-LightItalic
+%%textfont Courier 18
+%%text Courier
+%%textfont Courier-Oblique 18
+%%text Courier-Oblique
+%%textfont Courier-Bold 18
+%%text Courier-Bold
+%%textfont Courier-BoldOblique 18
+%%text Courier-BoldOblique
+%%textfont AvantGarde-Book 18
+%%text AvantGarde-Book
+%%textfont AvantGarde-BookOblique 18
+%%text AvantGarde-BookOblique
+%%textfont AvantGarde-Demi 18
+%%text AvantGarde-Demi
+%%textfont AvantGarde-DemiOblique 18
+%%text AvantGarde-DemiOblique
+%%textfont Helvetica 18
+%%text Helvetica
+%%textfont Helvetica-Oblique 18
+%%text Helvetica-Oblique
+%%textfont Helvetica-Bold 18
+%%text Helvetica-Bold
+%%textfont Helvetica-BoldOblique 18
+%%text Helvetica-BoldOblique
+%%textfont Helvetica-Narrow 18
+%%text Helvetica-Narrow
+% end of first column
+%%multicol new
+%%leftmargin 11cm
+%%rightmargin 1cm
+% start of second column
+%%textfont Helvetica-Narrow-Oblique 18
+%%text Helvetica-Narrow-Oblique
+%%textfont Helvetica-Narrow-Bold 18
+%%text Helvetica-Narrow-Bold
+%%textfont Helvetica-Narrow-BoldOblique 18
+%%text Helvetica-Narrow-BoldOblique
+%%textfont Palatino-Roman 18
+%%text Palatino-Roman
+%%textfont Palatino-Italic 18
+%%text Palatino-Italic
+%%textfont Palatino-Bold 18
+%%text Palatino-Bold
+%%textfont Palatino-BoldItalic 18
+%%text Palatino-BoldItalic
+%%textfont NewCenturySchlbk-Roman 18
+%%text NewCenturySchlbk-Roman
+%%textfont NewCenturySchlbk-Italic 18
+%%text NewCenturySchlbk-Italic
+%%textfont NewCenturySchlbk-Bold 18
+%%text NewCenturySchlbk-Bold
+%%textfont NewCenturySchlbk-BoldItalic 18
+%%text NewCenturySchlbk-BoldItalic
+%%textfont Times-Roman 18
+%%text Times-Roman
+%%textfont Times-Italic 18
+%%text Times-Italic
+%%textfont Times-Bold 18
+%%text Times-Bold
+%%textfont Times-BoldItalic 18
+%%text Times-BoldItalic
+%%textfont Symbol 18
+%%text Symbol
+%%textfont ZapfChancery-MediumItalic 18
+%%text ZapfChancery-MediumItalic
+% end of second column
+%%multicol end

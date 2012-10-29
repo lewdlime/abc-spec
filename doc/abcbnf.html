@@ -1,0 +1,313 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1"><title>ABC 1.6 in BNF format</title></head>
+<body bgcolor="#ffffff">
+<h1>ABC 1.6 in BNF format</h1>
+According to ABNF as described in <a href="http://www.ietf.org/rfc/rfc2234.txt" target="_blank">http://www.ietf.org/rfc/rfc2234.txt</a>.<br>
+There is also a short description of BNF as used in this file <a href="#bnf">here</a>.<br>
+By <a href="http://www.norbeck.nu/index.html">Henrik Norbeck</a> 1 May 1997.<br>
+<small>Corrected 6 September 1997  after comments from Laurie Griffiths</small><br>
+Also available as a <a href="http://www.norbeck.nu/abc/abcbnf.txt">text file</a>.<br>
+<a href="http://www.norbeck.nu/abc/bnf/abc20bnf.htm">Proposed extensions to Abc</a><p>
+
+<big><b><a name="abc-file">abc-file</a> ::=</b></big> *(<a href="#abc-tune">abc-tune</a>
+        / <a href="#comment">comment</a>
+        / <a href="#linefeed">linefeed</a>
+        / <a href="#tex-command">tex-command</a>
+        / <a href="#file-fields">file-fields</a>)<br>
+        <small>; Actually this means that abc files may not contain uncommented<br>
+        ; text between tunes, which many files today do. Maybe this should<br>
+        ; be allowed.</small></p><p>
+
+<big><b><a name="file-fields">file-fields</a> ::=</b></big> <a href="#field-file">field-file</a>
+        / <a href="#field-book">field-book</a>
+        / <a href="#field-group">field-group</a>
+        / <a href="#field-history">field-history</a>
+        / <a href="#field-information">field-information</a>
+        / <a href="#field-meter">field-meter</a>
+        / <a href="#field-origin">field-origin</a>
+        / <a href="#field-rhythm">field-rhythm</a><br>
+<big><b><a name="field-file">field-file</a> ::=</b></big> "F:" <a href="#text">text</a>
+        <a href="#end-of-line">end-of-line</a></p><p>
+
+</p><hr>
+
+<big><b><a name="abc-tune">abc-tune</a> ::=</b></big> <a href="#abc-header">abc-header</a>
+        <a href="#abc-music">abc-music</a><p>
+
+<big><b><a name="abc-header">abc-header</a> ::=</b></big> <a href="#field-number">field-number</a>
+        *<a href="#comment">comment</a>
+        1*<a href="#field-title">field-title</a>
+        *<a href="#other-fields">other-fields</a>
+        <a href="#field-key">field-key</a><br>
+        <small>; In practice, many tunes are e-mailed without field-number,
+        ; so those wishing to implement an abc parser should treat this
+        ; field as optional.</small></p><p>
+
+<big><b><a name="field-number">field-number</a> ::=</b></big> "X:" 1*DIGIT
+        <a href="#end-of-line">end-of-line</a><br>
+<big><b><a name="field-title">field-title</a> ::=</b></big> "T:" <a href="#text">text</a>
+        <a href="#end-of-line">end-of-line</a><br>
+<big><b><a name="other-fields">other-fields</a> ::=</b></big> <a href="#field-area">field-area</a>
+        / <a href="#field-book">field-book</a>
+        / <a href="#field-composer">field-composer</a>
+        / <a href="#field-discography">field-discography</a>
+        / <a href="#field-elemskip">field-elemskip</a>
+        / <a href="#field-group">field-group</a>
+        / <a href="#field-history">field-history</a>
+        / <a href="#field-information">field-information</a>
+        / <a href="#field-default-length">field-default-length</a>
+        / <a href="#field-meter">field-meter</a>
+        / <a href="#field-notes">field-notes</a>
+        / <a href="#field-origin">field-origin</a>
+        / <a href="#field-parts">field-parts</a>
+        / <a href="#field-tempo">field-tempo</a>
+        / <a href="#field-rhythm">field-rhythm</a>
+        / <a href="#field-source">field-source</a>
+        / <a href="#field-transcrnotes">field-transcrnotes</a>
+        / <a href="#comment">comment</a><br>
+        <small>; field-file and field-words may not be in header (?)</small><br>
+<big><b><a name="field-area">field-area</a> ::=</b></big> "A:" <a href="#text">text</a>
+        <a href="#end-of-line">end-of-line</a><br>
+        <small>; maybe some of these field definitions should include an optional space, e.g.:<br>
+        ; field-area ::= "A:" [" "] text end-of-line</small><br>
+<big><b><a name="field-book">field-book</a> ::=</b></big> "B:" <a href="#text">text</a>
+        <a href="#end-of-line">end-of-line</a><br>
+<big><b><a name="field-composer">field-composer</a> ::=</b></big> "C:" <a href="#text">text</a>
+        <a href="#end-of-line">end-of-line</a><br>
+<big><b><a name="field-discography">field-discography</a> ::=</b></big> "D:" <a href="#text">text</a>
+        <a href="#end-of-line">end-of-line</a><br>
+<big><b><a name="field-elemskip">field-elemskip</a> ::=</b></big> "E:" <a href="#text">text</a>
+        <a href="#end-of-line">end-of-line</a><br>
+<big><b><a name="field-group">field-group</a> ::=</b></big> "G:" <a href="#text">text</a>
+        <a href="#end-of-line">end-of-line</a><br>
+<big><b><a name="field-history">field-history</a> ::=</b></big> "H:" 1*(<a href="#text">text</a>
+        <a href="#end-of-line">end-of-line</a>)<br>
+<big><b><a name="field-information">field-information</a> ::=</b></big> "I:" <a href="#text">text</a>
+        <a href="#end-of-line">end-of-line</a><br>
+<big><b><a name="field-default-length">field-default-length</a> ::=</b></big> "L:"
+        <a href="#note-length-strict">note-length-strict</a>
+        <a href="#end-of-line">end-of-line</a><br>
+<big><b><a name="field-meter">field-meter</a> ::=</b></big> "M:" <a href="#meter">meter</a>
+        <a href="#end-of-line">end-of-line</a><br>
+<big><b><a name="field-notes">field-notes</a> ::=</b></big> "N:" <a href="#text">text</a>
+        <a href="#end-of-line">end-of-line</a><br>
+<big><b><a name="field-origin">field-origin</a> ::=</b></big> "O:" <a href="#text">text</a>
+        <a href="#end-of-line">end-of-line</a><br>
+<big><b><a name="field-parts">field-parts</a> ::=</b></big> "P:" <a href="#parts">parts</a>
+        <a href="#end-of-line">end-of-line</a><br>
+<big><b><a name="field-tempo">field-tempo</a> ::=</b></big> "Q:" <a href="#tempo">tempo</a>
+        <a href="#end-of-line">end-of-line</a><br>
+<big><b><a name="field-rhythm">field-rhythm</a> ::=</b></big> "R:" <a href="#text">text</a>
+        <a href="#end-of-line">end-of-line</a><br>
+<big><b><a name="field-source">field-source</a> ::=</b></big> "S:" <a href="#text">text</a>
+        <a href="#end-of-line">end-of-line</a><br>
+<big><b><a name="field-transcrnotes">field-transcrnotes</a> ::=</b></big> "Z:" <a href="#text">text</a>
+        <a href="#end-of-line">end-of-line</a><br>
+<big><b><a name="field-key">field-key</a> ::=</b></big> "K:" <a href="#key">key</a>
+        <a href="#end-of-line">end-of-line</a></p><p>
+
+<big><b><a name="key">key</a> ::=</b></big> <a href="#key-spec">key-spec</a> / "HP" / "Hp"<br>
+<big><b><a name="key-spec">key-spec</a> ::=</b></big> <a href="#keynote">keynote</a>
+        [<a href="#mode-spec">mode-spec</a>] *(" "
+        <a href="#global-accidental">global-accidental</a>)<br>
+<big><b><a name="keynote">keynote</a> ::=</b></big> <a href="#basenote">basenote</a>
+        [<a href="#key-accidental">key-accidental</a>]<br>
+<big><b><a name="key-accidental">key-accidental</a> ::=</b></big> "#" / "b"<br>
+<big><b><a name="mode-spec">mode-spec</a> ::=</b></big> [" "] <a href="#mode">mode</a>
+        [<a href="#extratext">extratext</a>]<br>
+<big><b><a name="mode">mode</a> ::=</b></big> <a href="#mode-minor">mode-minor</a>
+        / <a href="#mode-major">mode-major</a>
+        / <a href="#mode-lydian">mode-lydian</a>
+        / <a href="#mode-ionian">mode-ionian</a>
+        / <a href="#mode-mixolydian">mode-mixolydian</a>
+        / <a href="#mode-dorian">mode-dorian</a>
+        / <a href="#mode-aeolian">mode-aeolian</a>
+        / <a href="#mode-phrygian">mode-phrygian</a>
+        / <a href="#mode-locrian">mode-locrian</a><br>
+<big><b><a name="extratext">extratext</a> ::=</b></big> *ALPHA<br>
+<big><b><a name="global-accidental">global-accidental</a> ::=</b></big> <a href="#accidental">accidental</a>
+        <a href="#basenote">basenote</a><br>
+<big><b><a name="mode-minor">mode-minor</a> ::=</b></big> ("m"/"M") [("i"/"I") ("n"/"N")]<br>
+<big><b><a name="mode-major">mode-major</a> ::=</b></big> ("m"/"M") ("a"/"A") ("j"/"J")<br>
+<big><b><a name="mode-lydian">mode-lydian</a> ::=</b></big> ("l"/"L") ("y"/"Y") ("d"/"D")<br>
+<big><b><a name="mode-ionian">mode-ionian</a> ::=</b></big> ("i"/"I") ("o"/"O") ("n"/"N")<br>
+<big><b><a name="mode-mixolydian">mode-mixolydian</a> ::=</b></big> ("m"/"M") ("i"/"I") ("x"/"X")<br>
+<big><b><a name="mode-dorian">mode-dorian</a> ::=</b></big> ("d"/"D") ("o"/"O") ("r"/"R")<br>
+<big><b><a name="mode-aeolian">mode-aeolian</a> ::=</b></big> ("a"/"A") ("e"/"E") ("o"/"O")<br>
+<big><b><a name="mode-phrygian">mode-phrygian</a> ::=</b></big> ("p"/"P") ("h"/"H") ("r"/"R")<br>
+<big><b><a name="mode-locrian">mode-locrian</a> ::=</b></big> ("l"/"L") ("o"/"O") ("c"/"C")</p><p>
+
+<big><b><a name="meter">meter</a> ::=</b></big> "C" / "C|" / <a href="#meter-fraction">meter-fraction</a><br>
+<big><b><a name="meter-fraction">meter-fraction</a> ::=</b></big> 1*DIGIT "/" 1*DIGIT<br>
+        <small>; If we allow complex time signatures:<br>
+        ; meter-fraction ::= 1*DIGIT *("+" 1*DIGIT) "/" 1*DIGIT</small></p><p>
+
+<big><b><a name="tempo">tempo</a> ::=</b></big> 1*DIGIT / ("C" [note-length] "=" 1*DIGIT)
+        / (<a href="#note-length-strict">note-length-strict</a> "=" 1*DIGIT)</p><p>
+
+<big><b><a name="note-length-strict">note-length-strict</a> ::=</b></big> 1*DIGIT "/" 1*DIGIT</p><p>
+
+<big><b><a name="parts">parts</a> ::=</b></big> 1*<a href="#part-spec">part-spec</a><br>
+<big><b><a name="part-spec">part-spec</a> ::=</b></big> (<a href="#part">part</a>
+        / ( "(" 1*<a href="#part-spec">part-spec</a> ")" ) ) *DIGIT<br>
+<big><b><a name="part">part</a> ::=</b></big> "A" / "B" / "C" / "D" / "E" / "F" / "G" / "H"
+        / "I" / "J" / "K" / "L" / "M" / "N" / "O" / "P"
+        / "Q" / "R" / "S" / "T" / "U" / "V" / "X" / "Y" / "Z"</p><p>
+
+<big><b><a name="end-of-line">end-of-line</a> ::=</b></big> *(" " / HTAB) ["%" <a href="#text">text</a>]
+        <a href="#linefeed">linefeed</a>
+
+</p><hr><!---------------------------------------------------------------------->
+
+<big><b><a name="abc-music">abc-music</a> ::=</b></big> 1*<a href="#abc-line">abc-line</a>
+        <a href="#linefeed">linefeed</a><br>
+<big><b><a name="abc-line">abc-line</a> ::=</b></big> (1*<a href="#element">element</a>
+        <a href="#line-ender">line-ender</a>)
+        / <a href="#mid-tune-field">mid-tune-field</a>
+        / <a href="#tex-command">tex-command</a><br>
+<big><b><a name="element">element</a> ::=</b></big> <a href="#note-element">note-element</a>
+        / <a href="#tuplet-element">tuplet-element</a>
+        / <a href="#barline">barline</a>
+        / <a href="#nth-repeat">nth-repeat</a>
+        / <a href="#begin-slur">begin-slur</a>
+        / <a href="#end-slur">end-slur</a>
+        / <a href="#space">space</a>
+        / <a href="#user-defined">user-defined</a><br>
+<big><b><a name="line-ender">line-ender</a> ::=</b></big> <a href="#comment">comment</a>
+        / <a href="#linefeed">linefeed</a>
+        / <a href="#line-break">line-break</a>
+        / <a href="#no-line-break">no-line-break</a><p>
+
+<big><b><a name="tuplet-element">tuplet-element</a> ::=</b></big> <a href="#tuplet-spec">tuplet-spec</a>
+        1*<a href="#note-element">note-element</a><br>
+<big><b><a name="tuplet-spec">tuplet-spec</a> ::=</b></big> "(" DIGIT [":" [DIGIT] [":" [DIGIT]]]</p><p>
+
+<big><b><a name="note-element">note-element</a> ::=</b></big> <a href="#note-stem">note-stem</a>
+        [<a href="#broken-rhythm">broken-rhythm</a>]<br>
+<big><b><a name="note-stem">note-stem</a> ::=</b></big> [<a href="#guitar-chord">guitar-chord</a>]
+        [<a href="#grace-notes">grace-notes</a>]
+        *<a href="#gracings">gracings</a>
+        (<a href="#note">note</a>
+        / <a href="#multi-note">multi-note</a>)<br>
+<big><b><a name="multi-note">multi-note</a> ::=</b></big> "[" 1*<a href="#note">note</a> "]"<br>
+<big><b><a name="note">note</a> ::=</b></big> <a href="#note-or-rest">note-or-rest</a>
+        [<a href="#note-length">note-length</a>]
+        [<a href="#tie">tie</a>]<br>
+<big><b><a name="note-or-rest">note-or-rest</a> ::=</b></big> <a href="#pitch">pitch</a>
+        / <a href="#rest">rest</a><br>
+<big><b><a name="pitch">pitch</a> ::=</b></big> [<a href="#accidental">accidental</a>]
+        <a href="#basenote">basenote</a>
+        [<a href="#octave">octave</a>]<br>
+<big><b><a name="octave">octave</a> ::=</b></big> (1*"'") / (1*",")<br>
+<big><b><a name="note-length">note-length</a> ::=</b></big> [1*DIGIT] ["/" [1*DIGIT]]<br>
+<big><b><a name="accidental">accidental</a> ::=</b></big> "^" / "^^" / "_" / "__" / "="<br>
+<big><b><a name="basenote">basenote</a> ::=</b></big> "C" / "D" / "E" / "F" / "G" / "A" / "B"
+             / "c" / "d" / "e" / "f" / "g" / "a" / "b"<br>
+<big><b><a name="rest">rest</a> ::=</b></big> "z"<br>
+<big><b><a name="broken-rhythm">broken-rhythm</a> ::=</b></big> 1*"&lt;" / 1*"&gt;"<br>
+<big><b><a name="tie">tie</a> ::=</b></big> "-"<br>
+<big><b><a name="gracings">gracings</a> ::=</b></big> "~" / "." / "v" / "u"<br>
+<big><b><a name="grace-notes">grace-notes</a> ::=</b></big> "{" 1*<a href="#pitch">pitch</a> "}"</p><p>
+
+<big><b><a name="guitar-chord">guitar-chord</a> ::=</b></big> &lt;"&gt; (<a href="#text">text</a> &lt;"&gt;
+        / <a href="#formal-chord">formal-chord</a><br>
+<big><b><a name="formal-chord">formal-chord</a> ::=</b></big> <a href="#basenote">basenote</a>
+        [<a href="#chord-type">chord-type</a>]
+        ["/" <a href="#basenote">basenote</a>]<br>
+<big><b><a name="chord-type">chord-type</a> ::=</b></big> "m" / "7" / "m7"
+        / "0" / "o" / "+" / "mb5" / "sus" / "sus4" / "maj7" / "mmaj7"
+        / "7sus4" / "dim" / "dim7" / "7b5" / "m7b5" / "6" / "b6" / "m6"
+        / "mb6" / "46" / "maj9" / "9" / "add9" / "7b9" / "m9"<br>
+        <small>; There are more chord types that could be understood</small></p><p>
+
+<big><b><a name="barline">barline</a> ::=</b></big> "|" / "||" / "[|" / "|]" / ":|" / "|:" / "::"<br>
+<big><b><a name="nth-repeat">nth-repeat</a> ::=</b></big> "[1" / "[2" / "|1" / ":|2"</p><p>
+
+<big><b><a name="begin-slur">begin-slur</a> ::=</b></big> "("<br>
+<big><b><a name="end-slur">end-slur</a> ::=</b></big> ")"</p><p>
+
+<big><b><a name="mid-tune-field">mid-tune-field</a> ::=</b></big> <a href="#tune-field">tune-field</a><br>
+<big><b><a name="tune-field">tune-field</a> ::=</b></big> <a href="#field-elemskip">field-elemskip</a>
+        / <a href="#field-key">field-key</a>
+        / <a href="#field-default-length">field-default-length</a>
+        / <a href="#field-meter">field-meter</a>
+        / <a href="#field-part">field-part</a>
+        / <a href="#field-tempo">field-tempo</a>
+        / <a href="#field-title">field-title</a>
+        / <a href="#field-words">field-words</a><br>
+        <small>; field-rhythm may not be in tune (?) field-voice not defined yet</small><br>
+<big><b><a name="field-part">field-part</a> ::=</b></big> "P:" <a href="#part">part</a>
+        <a href="#end-of-line">end-of-line</a><br>
+<big><b><a name="field-words">field-words</a> ::=</b></big> "W:" <a href="#text">text</a>
+        <a href="#end-of-line">end-of-line</a></p><p>
+
+<big><b><a name="user-defined">user-defined</a> ::=</b></big> "H" / "I" / "J" / "K"
+	/ "I" / "J" / "K" / "L" / "M" / "N"<br>
+	/ "O" / "P" / "Q" / "R" / "S" / "T" / "U" / "V" / "W" / "X" / "Y" / "Z"</p><p>
+
+<big><b><a name="tex-command">tex-command</a> ::=</b></big> "\" <a href="#text">text</a>
+        <a href="#linefeed">linefeed</a><br>
+<big><b><a name="space">space</a> ::=</b></big> " " / HTAB<br>
+<big><b><a name="comment">comment</a> ::=</b></big> "%" <a href="#text">text</a>
+        (<a href="#linefeed">linefeed</a>
+        / <a href="#no-line-break">no-line-break</a>
+        / <a href="#line-break">line-break</a>)<br>
+<big><b><a name="line-break">line-break</a> ::=</b></big> "!" <a href="#linefeed">linefeed</a><br>
+<big><b><a name="no-line-break">no-line-break</a> ::=</b></big> "\" <a href="#linefeed">linefeed</a><br>
+<big><b><a name="linefeed">linefeed</a> ::=</b></big> CRLF / LF</p><p>
+
+<big><b><a name="text">text</a> ::=</b></big> *<a href="#text-char">text-char</a><br>
+<big><b><a name="text-char">text-char</a> ::=</b></big> ALPHA / DIGIT / " "
+        / HTAB / &lt;"&gt; / "!" / "#" / "$" / "&amp;"
+        / "'" / "(" / ")" / "*" / "+" / "," / "-" / "." / "/" / ":" / ";"
+        / "&lt;" / "=" / "&gt;" / "?" / "@" / "[" / "\" / "]" / "^" / "_" / "`"
+        / "{" / "|" / "}" / "~"<br>
+        <small>; "%" is not included here (on purpose)!</small>
+
+</p><hr>
+<h2><a name="bnf">BNF format</a></h2>
+
+BNF (Backus-Naur Format) is a way to describe the syntax of file formats.
+It consists of definitions of the form<p>
+
+identifier ::= definition</p><p>
+
+The identifier is a word which describes this part of the syntax.<br>
+The ::= should be interpreted as "consists of".<br>
+The definition is a list of what this part of the syntax may contain. This
+may be other identifiers, or literal strings (enclosed in ""). For example,
+a simple sentence may be defined as</p><p>
+
+simple-sentence ::= (thenoun / pronoun) " " verb [" " adverb] "."<br>
+thenoun ::= "The" noun<br>
+noun ::= "cat" / "dog"<br>
+pronoun ::= "He" / "She" / "It"<br>
+verb ::= "runs" / "bites"<br>
+adverb ::= "quickly" / "fast"</p><p>
+
+* before an element means that it can be repeated 0 or more times.<br>
+1* before an element means that it can be repeated 1 or more times.<br>
+[] around an element means that it is optional.<br>
+/ between elements mean that you may choose any of the elements.<br>
+() can be used to group elements.</p><p>
+
+So legal "simple sentences" according to the definition above are,
+for example, "The cat runs.", "It bites quickly.", "He runs fast.",
+"The dog bites.".</p><p>
+
+Some special words are pre-defined:<br>
+<table cellspacing="3">
+<tbody><tr><td>DIGIT</td><td>Any digit 0-9
+</td></tr><tr><td>ALPHA</td><td>Any letter a-z, A-Z
+</td></tr><tr><td>HTAB</td><td>A horizontal tab character
+</td></tr><tr><td>CRLF</td><td>Carriage return character + linefeed character
+</td></tr><tr><td>LF</td><td>Linefeed character
+</td></tr></tbody></table></p><p>
+
+There is also a special case of literal string: If you want a quote mark,
+you have to write &lt;"&gt;</p><p>
+
+A more complete description of BNF can be found at <a href="http://www.ietf.org/rfc/rfc2234.txt" target="_blank">http://www.ietf.org/rfc/rfc2234.txt</a>.
+
+</p></body></html>

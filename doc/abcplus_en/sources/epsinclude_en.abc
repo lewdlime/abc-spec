@@ -1,0 +1,15 @@
+X: 1
+T: Testing the use of my logo
+K: C
+CDEF GABc |cBAG FEDC |
+cdef gabc'|c'bag fedc|
+%%multicol start
+%%leftmargin 1cm
+%%rightmargin 10cm
+%%text
+%%text Beautiful music presented by...
+%%multicol new
+%%leftmargin 7cm
+%%rightmargin 1cm
+%%EPS logo.eps
+%%multicol end

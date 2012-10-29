@@ -1,0 +1,16 @@
+body { font-family: Verdana, Geneva, Helvetica, Arial; font-size: 13px; background: #ffffff; color: #000000}
+td, p { font-family: Verdana, Geneva, Helvetica, Arial; font-size: 13px }
+h1 { font-family: Verdana, Geneva, Helvetica, Arial; font-size: 24px; font-weight: bold; margin-top: 0; margin-bottom: 0}
+h2 { font-family: Verdana, Geneva, Helvetica, Arial; font-size: 16px; margin-top: 0; margin-bottom: 0}
+h3 { font-family: Verdana, Geneva, Helvetica, Arial; font-size: 12px; margin-top: 0; margin-bottom: 0}
+ul { margin-top: 1px; margin-bottom: 1px}
+form { margin-top: 1px; margin-bottom:1px}
+small { font-size: 10px}
+big { font-size: 16px}
+a:link {color: #000090}
+a:visited {color: #000090}
+
+.small { font-size: 10px}
+.normal { font-size: 13px}
+.big { font-size: 16px}
+

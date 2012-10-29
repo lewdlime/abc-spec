@@ -1,0 +1,29 @@
+X: 1
+T: Garota De Ipanema
+T: (The Girl From Ipanema)
+C: Ant\^onio Carlos Jobim
+M: 4/4
+L: 1/8
+K: F
+P:A
+%%MIDI program 67       % Baritone Sax
+%%MIDI gchord fzcffczc  % bossa nova (approximate)
+%%MIDI chordvol 30
+%%MIDI bassvol 30
+%%MIDI chordprog 25     % Steel String Guitar
+%%MIDI bassprog 25
+|:"Fmaj7"G2 GE E2 ED|G2 GE EE DG-|"G7"G2 GE EE DG-|
+G2 GE EE DF-|"Gm7"F2 FD DD CE-|"Gb7"E2 EC CC B,C-|
+[1"Fmaj7"C8|"Gb7"z8 :|[2"Fmaj7"C8 |z8||
+P:B
+"Gb7"F8-|(3F2_G2F2 (3:2:3_E2F2E2|"B7"_D3 _E-E4-|_E6 z ^G-|
+"F#m7"^G8-|(3^G2A2G2 (3^F2G2F2|"D7"E3 ^F-F4-|^F6 z A-|
+"Gm7"A8-|(3A2B2A2 (3:2:3G2A2G2|"Eb7"F3 G-G4-|G4 (3z2A2B2|
+"Am7"(3c2C2D2 (3E2F2G2|"D7"^G3 A3 z2|"Gm7" (3B2B,2C2
+(3D2E2F2|"C7" ^F3 G3 z2 ||
+P:C
+"Fmaj7"G3 E EE DG-|G2 GE- EE DG-|"G7"G2 GE EE DG-|G2 GE EE DA-|
+"Gm7"A2 AF FF Dc-|"Gb7" c2 cE (3E2E2D2|"Fmaj7" E8-|E2 z6|
+P:D
+%%MIDI gchord c2
+z8|]

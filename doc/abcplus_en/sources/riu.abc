@@ -1,0 +1,56 @@
+%%scale 0.6
+%%barsperstaff 6
+X: 1
+T: Riu, riu, chiu, \241la guarda ribera!
+C: Villancico (Spain, XVIth century)
+M: C|
+L: 1/2
+Q: 1/2 = 240
+%%staves 3
+V: 3 clef=treble-8 name="Tenor\nBass"
+K: Am
+% men only
+[V: 3] [M:none] AAGA|F2ED2EFG|A2A2|
+w: Ri-u, ri-u, chi-u, \241la guar-da ri-be-ra!
+[V: 3] AAGA         |F2EG2GEF|D2D2|
+w: Di\'os guar-d\'o el lo-bo de nue-stra cor-de-ra,
+[V: 3] AAGA         |F2EG2GEF|D2D2|
+w: Di\'os guar-d\'o el lo-bo de nue-stra cor-de-ra.
+% CHANGE OF SYSTEM: everyone
+%%vskip 0
+%%staves [1 2 3 4]
+V: 1 clef=treble   name="S" sname="S"
+V: 2 clef=treble   name="A" sname="A"
+V: 3 clef=treble-8 name="T" sname="T"
+V: 4 clef=bass     name="B" sname="B"
+[V: 1]AAGA|F2ED2EFG |A2A2z2|
+w: Ri-u, ri-u, chi-u, \241la guar-da ri-be-ra!
+[V: 2]FFEC|D2EF2EDD |C2C2z2|
+[V: 3]cccG|A2AA2ADD |E2E2z2|
+w: Ri-u, ri-u, chi-u, \241la guar-da ri-be-ra!
+[V: 4]F,F,C,F,|D,2A,,D,2C,_B,,B,,|A,,2A,,2z2|
+%
+[V: 1] z4      |AAGA   |F2EF2FEE|D2D2z2|
+w: Di\'os guar-d\'o el lo-bo de nue-stra cor-de-ra,
+[V: 2] z2EE    |DCEC   |D2CD2DCC|D2D2z2|
+w: Di\'os guar-d\'o el lob', el lo-bo de nue-stra cor-de-ra,
+[V: 3] ccBc    |A2BA   |A2AA2AAA|A2A2z2|
+w: Di\'os guar-d\'o el lo-bo, el lo-bo de nue-stra cor-de-ra,
+[V: 4] A,A,G,A,|F,2E,F,|D,2A,,D,2D,A,,A,,|D,2D,2z2|
+%
+[V: 1] z4      |AAGA   |F2ED2DCC    |D2D2  |
+w: Di\'os guar-d\'o el lo-bo de nue-stra cor-de-ra.
+[V: 2] z2EE    |DCEC   |D2CA,2A,A,A,|A,2A,2|
+w: Di\'os guar-d\'o el lob', el lo-bo de nue-stra cor-de-ra.
+[V: 3] ccBc    |A2BA   |A2AF2FEE    |D2D2  |
+w: Di\'os guar-d\'o el lo-bo, el lo-bo de nue-stra cor-de-ra.
+[V: 4] A,A,G,A,|F,2E,F,|D,2A,,D,2D,A,,A,,  |D,2D,2  |
+% CHANGE OF SYSTEM: men only
+%%vskip 0
+%%staves 3
+[V: 3] AAGA|F2EG2GEF|D4|AAGA|
+w: El lo-bo ra-bio-so la qui-so mor-der, Mas Di\'os po-de-
+[V: 3] F2FEGGEF|D4|AAGA|F2FEDEFG|
+w: ro-so la su-po de-fen-der; qui so-le ha-ce que no pu-die-sce pe-
+[V: 3] A4|AAGA|F2FEGGEF|D2D2|
+w: car: ni~aun o-ri-gi-nal e-sta Vir-gen no tu-vie-ra.

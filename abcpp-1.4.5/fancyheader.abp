@@ -1,0 +1,44 @@
+# fancyheader.abp
+#
+#define Composer:     C:
+#define Key:          K:
+#define Length:       L:
+#define Meter:        M:
+#define Parts:        P:
+#define Tempo:        Q:
+#define Rhythm:       R:
+#define Subtitle:     T:
+#define Title:        T:
+#define Userdef:      U:
+#define Voice:        V:
+#define Words:        W:
+#define Index:        X:
+#define Lyrics:       w:
+#define Bars/line:    %%barsperstaff
+#define Style:        %%staves
+#define Size:         %%scale
+#define Indent:       %%indent
+#define Duet          "[1 2]"
+#define Trio          "[1 2 3]"
+#define SATB2         "[(1 2) (3 4)]"
+#define SATB4         "[1 2 3 4]"
+#define Piano         "[RH LH]"
+#define Organ         "[RH LH Ped]"
+#define Piano4        "[RH1 RH2 LH1 LH2]"
+#define Organ4        "[RH1 RH2 LH1 LH2 Ped]"
+#
+# These are redundant, IMHO
+#
+#define Area:         A:
+#define Book:         B:
+#define Discography:  D:
+#define File:         F:
+#define Group:        G:
+#define History:      H:
+#define Information:  I:
+#define Notes:        N:
+#define Origin:       O:
+#define Source:       S:
+#define TranscrNotes: Z:
+#
+# End of file fancyheader.abp

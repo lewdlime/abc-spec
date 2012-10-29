@@ -1,0 +1,239 @@
+1.4.4
+
+1) Small change to allow passing escaped characters (e.g. \b) in macro
+definitions through via the use of double escapes (e.g. \\b).
+
+
+1.4.3
+
+1) Added support for +decorations+, specifically:
+
+1a) new -n switch +fine+ -> !fine!
+1b) new -a switch !fine! -> +fine+
+1c) old -k switch changes ! to  +break+ if -a is set
+1d) old -s switch now removes both +fine+ and !fine! style decorations
+
+Specifying both -n and -a generates a warning
+Specifying both -n and -p generates an error
+Specifying both -a and -p should work OK as they are done in a reasonable
+order but its not necessarily encouraged:
+
+> echo "\!fermata\! +abc+" | ./a.out -a -p
++fermata+ [abc]
+
+
+1e) renamed some booleans to reduce confusion (e.g. change_plus now
+change_plus_to_bracket)
+
+2) switch tranformations (e.g. -n -a -b -k etc.) no long apply to header (or
+other) fields.  That is a ! in the T: title or w: lyrics is not transformed
+by -k
+
+3) Strip now strips both w: and W: lyric lines -- let me know if you don't
+want this as it's a simple change.
+
+4) Fixed some bug in my code where break character ! wasn't being handled
+properly
+
+
+1.4.2
+
+1) fixed bug by substituting strncpy for memmove when the target and
+destination were not (should not be) the same string.
+
+1.4.1
+
+1) Folded in the functionality of DGA's modifications though not necessarily
+an identical implementation at all points.
+
+2a) Based on where DGA's modifications want to go in the future, changed
+defines[] array to be of type 'macro' instead of 'char *' so that some day
+defines[] and macros[] can merge.
+
+2b) Added parallel *_macro routines for *_defines and as a result,
+defines[], like macros, are now looked up using binary search instead of
+linear search.
+
+3) Symbol names can no longer have spaces (or tildes that become spaces) in
+them, only symbol definitions.
+
+4) comment line (e.g. %%stretchlast vs. #doremi)
+
+5) -w & -e warning switches
+
+6) recursion handling
+
+apple> echo "a ROW c" | ./a.out -BOAT=FROWN -ROW=BOAT
+abcpp: *** error on command line
+Infinitely expanding macro 'ROW' detected.
+
+apple> echo "a BOAT c" | ./a.out -BO=CA -AT=RT -CART=BOAT
+abcpp: *** error on line 1:1
+Possible infinitely expanding macro detected.
+
+1.4.0
+
+0) The folks who published Security Advisory SA13524 in 2004 regarding the
+buffer overflow in handle_directive() don't appear to have received an
+update regarding which version of abcpp fixes this so it's still listed as
+being vunerable.
+
+1) Incorrect logic in output_line() function.  An example of this is to run
+abcpp 1.3.2 on it's own my_music.abp example with the -k option:
+
+    > abcpp -k my_music.abp
+
+The macros won't be substituted in the output and the processing will hang
+midway through.  The -b option works slightly better on this example but
+still hangs.
+
+2) In remove_bang(), the line:
+
+    skip = skip + i + 7;
+
+is incorrect, it should probably be:
+
+    skip = i + 7;
+
+It's easy to create a line of bangs separated by spaces to show the original
+doesn't work as expected.
+
+3) There are problems with the error handling logic, for example in main the
+following three lines which occur twice:
+
+    error (1, tmp);
+    fclose (in); /* not reached */
+    exit (1);
+
+The error() routine does exit(1) so the following two lines are never
+reached.  Similarly here, the last four lines are never reached:
+
+    error (1, tmp);
+    fclose (in); /* not reached */
+    fclose (out);
+    usage ();
+    exit (1);
+
+4) The chord removal logic also removes text annotations, e.g. "^Moderato".
+I've set it up so that you can make one simple change in the source to have
+it also remove text annotations as before.
+
+5) This code in replace() steps outside the data its examining if the macro
+is at the start of a line:
+
+    ind = tmp - line;         /* position of text to replace */
+
+    /* if the text to replace isn't preceded by '\', go ahead */
+    if ('\\' != line [ind - 1]) {
+
+That is, ind is 0 if the text to replace starts at the beginning of the line
+and line[ind - 1] is potentially stepping into undefined memory.
+
+6) Although abcpp 1.3.2 handles this test correctly given either no command
+line defines or -FROG or -TOAD:
+
+#ifdef TOAD
+w: if TOAD we see this
+#elifdef FROG
+w: we see this if FROG (and not TOAD)
+#else
+w: we should see this if not FROG and not TOAD
+#endif
+
+I believe it does the wrong thing in every case with this test:
+
+#ifdef TOAD
+w: if TOAD we see this
+#elifndef FROG
+w: we see this if not FROG (and not TOAD)
+#else
+w: we should see this if FROG and not TOAD
+#endif
+
+given no command line defines or -TOAD or -FROG.
+
+7a) The error column calculations aren't consistent, for example, for these
+two tests:
+
+> echo 'a b c +' | abcpp -p
+abcpp: *** warning in line 1:6
+Unbalanced char found - the line is probably wrong.
+a b c +
+apple> echo 'a b c "' | abcpp -c
+abcpp: *** warning in line 1:7
+Unbalanced char found - the line is probably wrong.
+a b c "
+
+Even though the error is clearly in the same spot in both cases.
+
+7b) The error column calculations are wrong if a line has deletions, for
+example, abcpp -c on the following will complain about an unbalanced quote
+in column 2 rather than the correct column 7:
+
+"abc" "
+
+8) These two examples should work the same but don't in abcpp 1.3.2:
+
+#define "very soft" p
+!very soft! a b c
+#define "very soft"
+!very soft! a b c
+
+works fine but not:
+
+#define very~soft p
+!very soft! a b c
+#define very~soft
+!very soft! a b c
+
+9a) In these two similar sets of macro definitions, one works as expected
+and the other doesn't due to the order in which macros happened to get
+stored:
+
+#define b a
+#define c b
+c
+
+#define x y
+#define y z
+x
+
+I've fixed this by reapplying all the macros if any of the macros fires
+until none does.
+
+9b) A runaway macro expansion will overstep the end of the array in strins()
+and lead to a segmentation fault:
+
+#define a aa
+a
+
+My version of abcpp traps this via assert() and aborts before it oversteps
+memory.
+
+10) Due to the order of macro expansion vs. switch processing, abcpp -s on
+this file
+
+#define x !y!
+x
+
+won't strip the decoration !y!.  Ditto for a #define that generates a chord
+and the -c switch.  Ditto for plus signs and the -p switch.  I've reordered
+this in my version so it expands macros then applies the switches.
+
+11) Errors in #included files are reported as if they occurred in the outer
+file.
+
+12) abcpp 1.3.2 modifies the content of comments which it really should
+ignore
+
+13) The following code in handle_directive()
+
+while(...) {
+	strcpy (tokens [ntoken], token);
+	...
+	if (MAX_TOKENS == ++ntoken)
+		warning (1, "Too many tokens on directive line - line truncated.");
+}
+
+Issues a warning but continues to process tokens anyway so if you have too
+many, it just overwrites memory until it causes a Segmentation fault.

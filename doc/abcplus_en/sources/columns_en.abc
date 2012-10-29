@@ -1,0 +1,28 @@
+%%pagewidth 21cm
+%%leftmargin 1cm
+%%rightmargin 1cm
+X: 1
+L: 1/4
+K: C
+CDEF|GABc|cdef|gabc'|
+%%multicol start
+%%rightmargin 11cm
+%%begintext justify
+%%Sator arepo tenet opera rotas. Sator arepo tenet opera rotas.
+%%Sator arepo tenet opera rotas. Sator arepo tenet opera rotas.
+%%endtext
+"^left"CDEF|GABc|
+%%text Left column (margins: 1, 11)
+%%text Width: 21 - 1 - 11 = 9 cm
+%%multicol new
+%%leftmargin 13cm
+%%rightmargin 2cm
+%%begintext justify
+%%Sator arepo tenet opera rotas. Sator arepo tenet opera rotas.
+%%Sator arepo tenet opera rotas.
+%%endtext
+"^right"cdef|gabc'|
+%%text Right column (margins: 13, 2)
+%%text Width: 21 - 13 - 2 = 6 cm
+%%multicol end
+CDEF|GABc|cdef|gabc'|

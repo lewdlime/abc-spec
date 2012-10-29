@@ -1,0 +1,6 @@
+X: 1
+Q: "Dolcemente" 1/4=60
+L: 1/4
+K: C
+CDEF|[P:piano]GFED|"^above"CDEF|"_below"GFED|"<left"c'">right"A,DE|
+[Q: "sostenuto"] FGC"@-15,5.7 anywhere"D|

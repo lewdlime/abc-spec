@@ -1,0 +1,27 @@
+X: 1
+T: Ave Verum
+C: W. A. Mozart
+M: 4/4
+L: 1/4
+Q: "Adagio"
+%%staves [(S A) (T B)] | {(MD1 MD2) (MS1 MS2)}
+V: S clef=treble name="Soprano" sname="S"
+V: A clef=treble name="Alto" sname="A"
+V: T clef=bass name="Tenore" sname="T"
+V: B clef=bass name="Basso" sname="B"
+V: MD1 clef=treble name="Organo"
+V: MD2 clef=treble
+V: MS1 clef=bass
+V: MS2 clef=bass
+K: D
+%
+[V: MD1] (DA,D[CE])|([DF]D[DF][EG])|[FA][DF][Fd][DF]|A^G=GG  |
+[V: MD2] x4        |x4             |x4              |E4      |
+[V: MS1] F,2F,A,   |A,F,A,2-       |A,4             |B,4     |
+[V: MS2] D,4-      |D,4-           |D,4-            |D,4     |
+[V: B] z4          |z4             |D,2D,2          |D,2D,2  |
+w: A- ve, A- ve,
+[V: T] z4          |z4             |A,2A,2          |B,2B,2  |
+[V: A] z4          |z4             |F2F2            |E2E2    |
+[V: S] z4          |z4             |A2(dF)          |(A^G)=G2|
+w: A- ve, * A - ve,

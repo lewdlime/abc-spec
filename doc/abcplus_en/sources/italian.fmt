@@ -1,0 +1,35 @@
+% italian.fmt
+% written by Christopher Lane
+% for abcm2ps 5.9.*
+% (adapted for more abcm2ps versions by Hudson Lacerda)
+
+% -- latin guitar chords
+beginps
+/gcshow { % string gcshow
+	-5 0 RM
+	dup 0 get
+	dup dup 65 ge exch 71 le and {
+	65 sub [(La) (Si) (Do) (Re) (Mi) (Fa) (Sol)] exch get show
+	} { currentfont /Encoding get exch get glyphshow
+	} ifelse
+	dup length 1 sub 1 exch getinterval
+	%
+	dup mark exch (m) search {
+	  (di) search { cleartomark } {
+	    length exch pop exch (aj) anchorsearch { cleartomark } {
+	      pop /tempstr 4 2 roll cleartomark
+	      def tempstr exch (-) putinterval tempstr
+	    } ifelse
+	  } ifelse
+	} {
+	cleartomark } ifelse
+
+	currentdict /gchshow known {
+	  /gchshow load cshow   %% abcm2ps older than abcm2ps-5.1.0
+	} {
+	  show                  %% abcm2ps-5.1.0 or newer
+	} ifelse
+}!
+endps
+
+% End of file italian.fmt

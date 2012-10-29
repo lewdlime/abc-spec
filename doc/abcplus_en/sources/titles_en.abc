@@ -1,0 +1,11 @@
+%%titleformat T-1 R1, T-1 T-1 C1, H1
+X: 1
+T: First Title
+T: Second Title
+T: Last Title, The
+C: Anonymous
+H: Written many many years ago...
+L: 1/4
+R: march
+K: C
+CDEF|GABc|CDEF|GABc|]

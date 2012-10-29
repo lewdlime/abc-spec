@@ -1,0 +1,125 @@
+% Ave_Maria_Arcadelt.abc       -*- abc -*-
+%
+% Edited by Guido Gonzato <ggonza@tin.it>, 28 September 2001
+% Produced by abcpp from Ave_Maria.abp
+% Typeset with: abcm2ps Ave_Maria.abc -O=
+%
+%%pageheight     29.7cm
+%%pagewidth      21cm
+%%topspace       0cm
+%%topmargin      1cm
+%%botmargin      0cm
+%%leftmargin     1cm
+%%rightmargin    1cm
+%%titlespace     0cm
+%%titlefont      Times-Bold 20
+%%subtitlefont   Times-Bold 14
+%%composerfont   Times 12
+%%vocalfont      Times-Roman 14
+%%gchordfont     Times-Italic 13
+%%textfont       Helvetica 10
+%%lineskipfac    0.8
+%%textspace      0.0
+%%staffsep       10pt
+%%sysstaffsep    10pt
+%%musicspace     1cm
+%%vocalspace     5pt
+%%measurebox     1
+%%measurenb      0
+%%scale          0.65
+%
+X: 1
+T: Ave Maria
+T: Mottetto a quattro voci miste
+C: Jacob Arcadelt (1514? - 1557)
+Z: Edited by Guido Gonzato <ggonza@tin.it>, 6 September 2001
+L: 1/4
+M: C
+Q: "Andante moderato"
+%%staves [ 1 2 3 4 ]
+V: 1 clef=treble name="Soprano" sname="S"
+V: 2 clef=treble name="Alto"    sname="A"
+V: 3 clef=treble name="Tenor"   sname="T"
+V: 4 clef=f      name="Bass"    sname="B"
+K: F
+%
+% Measures 1 - 6
+%
+V: 1
+z !p!A G A|(F G) !breath!A2|!crescendo(!A c !crescendo)!c2|(!diminuendo(!B A) !diminuendo)!G2  |z A G A|(F G) A2 |
+w: A- ve Ma- ri - a, gra- ti- a ple - na, Do- mi- nus te - cum,
+V: 2
+z !p!F E C|(D E) !breath!F2|!crescendo(!F F !crescendo)!F2|!diminuendo(!F2 !diminuendo)!E2     |z F E C|(D E) F2 |
+w: A- ve Ma- ri - a, gra- ti- a ple- na, Do- mi- nus te - cum,
+V: 3
+z !p!c c A|(A c) !breath!c2|!crescendo(!c A !crescendo)!A2|(!diminuendo(!d c) !diminuendo)!c2  |z c c A|(A c) c2 |
+w: A- ve Ma- ri - a, gra- ti- a ple - na, Do- mi- nus te - cum,
+V: 4
+z !p!f c f|(d c) !breath!f2|!crescendo(!f f !crescendo)!f2|(!diminuendo(!B f) !diminuendo)!c2  |z f c f|(d c) f2 |
+w: A- ve Ma- ri - a, gra- ti- a ple - na, Do- mi- nus te - cum,
+%
+% 7 - 12
+%
+V: 1
+(!crescendo(!G A)(!crescendo)!B/A/) (G/F/)|!diminuendo(!G2 !diminuendo)!F2|!mf!F c c2|(!crescendo(!d e) !crescendo)!f2 |Le c c d|!breath!e f (f/e/) (d/c/) |
+w: a - ve -  Ma - ri- a. Be- ne- di- cta - tu, be- ne- di- cta tu, in mu - li -
+V: 2
+(!crescendo(!E F) !crescendo)!F  D        |!diminuendo(!E2 !diminuendo)!F2|!mf!F F F2|(!crescendo(!F A) !crescendo)!A2 |LA E E G|!breath!G A G E |
+w: a - ve Ma- ri- a. Be- ne- di- cta - tu, be- ne- di- cta tu, in mu- li-
+V: 3
+!crescendo(!c2 !crescendo)!d A            |!diminuendo(!c2 !diminuendo)!A2|!mf!A A A2|(!crescendo(!G ^c) !crescendo)!d2|L=c c c =B|!breath!c c c c |
+w: a- ve Ma- ri- a. Be- ne- di- cta - tu, be- ne- di- cta tu, in mu- li-
+V: 4
+(!crescendo(!c f) !crescendo)!B d         |!diminuendo(!c2 !diminuendo)!F2|!mf!f f f2|(!crescendo(!d A) !crescendo)!d2 |La a a g|!breath!c f c a |
+w: a - ve Ma- ri- a. Be- ne- di- cta - tu, be- ne- di- cta tu, in mu- li-
+%
+% 13 - 19
+%
+V: 1
+d> d Hc !p!!breath!F|c !crescendo(!c (d !crescendo)!e)|!breath!f2 !mf!e c|(c !crescendo(!d) e (!crescendo)!f-|f/e/) d/c/ !diminuendo(!d2|!diminuendo)!c2 z2|z !f!f "a tempo"f e |
+w: e- ri- bus et be- ne- di - ctus fruc- tus ven - tri tu- i___ Je- sus. San- cta Ma-
+V: 2
+G> G HE !p!!breath!F|F !crescendo(!F (F !crescendo)!A)|!breath!A2 !mf!A E|(E !crescendo(!G) G (!crescendo)!A |G) E !diminuendo(!G2      |!diminuendo)!E2 z2|z !f!A "a tempo"A A |
+w: e- ri- bus et be- ne- di - ctus fruc- tus ven - tri tu- i - Je- sus. San- cta Ma-
+V: 3
+=B B Hc !p!!breath!A|A !crescendo(!A (A !crescendo)!^c)|!breath!d2 !mf!=c c|(c !crescendo(!=B) c !crescendo)!c|c2 (c !diminuendo(!=B)   |!diminuendo)!c2 z2|z !f!c "a tempo"c c |
+w: e- ri- bus et be- ne- di - ctus fruc- tus ven - tri tu- i - Je- sus. San- cta Ma-
+V: 4
+g G Hc !p!!breath!f |f !crescendo(!f (d !crescendo)!A) |!breath!d2 !mf!a a |(a !crescendo(!g) c !crescendo)!f |(c a) !diminuendo(!g2    |!diminuendo)!c2 z2|z !f!f "a tempo"f a |
+w: e- ri- bus et be- ne- di - ctus fruc- tus ven - tri tu- i - Je- sus. San- cta Ma-
+%
+% 20 - 26
+%
+V: 1
+d2 !breath!^c2|!p!=c2 d2|d2 c (B/A/)|B2 A2|z !mf!A c d|!diminuendo(!c2 !diminuendo)!!breath!B2|A2 G A |
+w: ri- a o- ra, o- ra pro - no- bis. San- cta Ma- ri- a, o- ra o-
+V: 2
+F2 !breath!E2 |!p!E2 F2 |F2 F F     |F2 F2|z !mf!F F F|!diminuendo(!F2 !diminuendo)!!breath!D2|F2 C C |
+w: ri- a o- ra, o- ra pro no- bis. San- cta Ma- ri- a, o- ra o-
+V: 3
+A2 !breath!A2 |!p!G2 B2 |B2 A c     |d2 c2|z !mf!c A B|!diminuendo(!A2 !diminuendo)!!breath!G2|A2 c F |
+w: ri- a o- ra, o- ra pro no- bis. San- cta Ma- ri- a, o- ra o-
+V: 4
+d2 !breath!A2 |!p!c2 B2 |B2 f f     |B2 f2|z !mf!f f B|!diminuendo(!f2 !diminuendo)!!breath!g2|d2 e f |
+w: ri- a o- ra, o- ra pro no- bis. San- cta Ma- ri- a, o- ra o-
+%
+% 27 - 33
+%
+V: 1
+(B/A/) (!diminuendo(!G/F/) G2|!diminuendo)!!breath!F2 (F A)|c d c !breath!B|"più lento"A2 G A|(B/A/) (G/F/) !diminuendo(!G2|!diminuendo)!!breath!F2 "largo"!pp!F2|F4 |]
+w: ra - pro - no- bis. San - cta Ma- ri- a, o- ra, o- ra - pro - no- bis. A- men.
+V: 2
+D !diminuendo(!A, C2         |!diminuendo)!!breath!C2 (C F)|F F F !breath!D|"più lento"F2 C C|D A, !diminuendo(!C2         |!diminuendo)!!breath!C2 "largo"!pp!D2|C4 |]
+w: ra pro no- bis. San - cta Ma- ri- a, o- ra, o- ra pro no- bis. A- men.
+V: 3
+F !diminuendo(!F (F E)       |!diminuendo)!!breath!F2 (A F)|G B A !breath!G|"più lento"A2 c F|F F (!diminuendo(!F D)       |!diminuendo)!!breath!F2 "largo"!pp!B2|A4 |]
+w: ra pro no - bis. San - cta Ma- ri- a, o- ra, o- ra pro no - bis. A- men.
+V: 4
+B !diminuendo(!d c2          |!diminuendo)!!breath!F2 (f d)|c B f !breath!g|"più lento"d2 e f|B d !diminuendo(!c2          |!diminuendo)!!breath!F2 "largo"!pp!B2|F4 |]
+w: ra pro no- bis. San - cta Ma- ri- a, o- ra, o- ra pro no- bis. A- men.
+%
+%%vskip 1cm
+%%center Copyright © Associazione Corale "I musici di S. Cecilia", 2001
+%%center This edition may bee freely copied, distributed, and performed.
+%
+% End of file Ave_Maria_Arcadelt.abc

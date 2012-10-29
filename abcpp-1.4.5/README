@@ -1,0 +1,517 @@
+                                 abcpp 1.4.5
+
+                       Guido Gonzato, Ph.D. and Others
+
+Introduction
+
+   abcpp is a simple yet powerful preprocessor designed for, but not
+   limited to, ABC music files (http://abcnotation.com). It provides
+   conditional output, macros, symbol renaming, and file inclusion. I
+   wrote it for two reasons: first, I wanted to overcome incompatibilities
+   between ABC packages; secondly, I wanted to be able to write portable
+   and more readable ABC files.
+
+   Inspired by the C and S-Lang (http://www.s-lang.org) preprocessor,
+   abcpp supports a few directives that allow you to play a few tricks.
+   You write your ABC music files with directives lines like #define or
+   #ifdef, defining macros or excluding portions of text according to
+   specific conditions. Then you preprocess your file with abcpp,
+   producing an output file suitable for each ABC application or voice. In
+   a nutshell, have your ABC cake and eat it too!
+
+   The home page for abcpp and other tools is
+   http://abcplus.sourceforge.net.
+
+Conditional Output
+
+   Normally, if you write for one specific ABC application you can use
+   extensions that other ABC applications may not support. For example, I
+   mainly write ABC choral music files, which I convert to PostScript
+   using abcm2ps (http://moinejf.free.fr). abcm2ps supports this type of
+   Q: field:
+Q: "Allegro" 1/4 = 100
+
+   which I want to use as it's standard in printed music. Unfortunately,
+   abc2midi (http://abc.sourceforge.net/abcMIDI) doesn't like it, and will
+   only accept this:
+Q: 1/4 = 100
+
+   Several such incompatibilities exist. So, if I wanted to proof-listen
+   to a tune I should manually modify the ABC source! No way...
+
+   The key is using conditional directives, like #ifdef... #else...
+   #endif, to exclude parts that some applications don't support:
+#ifndef MIDI
+Q: "Allegro" 1/4 = 100
+#else
+Q: 1/4 = 100
+#endif
+
+   Conditional output makes it also possible to extract parts from a
+   score:
+#ifdef SOPRANO ALL
+V: 1
+...
+#endif
+#ifdef ALTO ALL
+V: 2
+...
+#endif
+#ifdef TENOR ALL
+V: 3
+...
+#endif
+#ifdef BASS ALL
+V: 1
+...
+#endif
+
+Macros
+
+   I always found that some decorations like !crescendo(! or !diminuendo(!
+   are just too verbose. I'd much prefer a shorter form like, say, !<(! or
+   !>(!, but no ABC application I'm aware of supports macros of this kind.
+
+   The solution is to use macros to redefine the decorations. Moreover,
+   using macros one could change the syntax of ABC fields:
+#define !<(! !crescendo(!
+#define !<)! !crescendo)!
+#define Title: T:
+#define Composer: C:
+#define System: %%staves
+#ifdef MIDI
+#define !x! z
+#else
+#define !x! x
+#endif
+
+File Inclusion
+
+   You don't want to clutter your ABC sources with macro definitions. It's
+   simpler to write definitions once and for all in external files, which
+   you can include in your ABC files:
+#include <fancyheader.abp>
+#include "my own macros.abp"
+     __________________________________________________________________
+
+Installation
+
+   Unpack the archive, type 'make', and move abcpp to a directory in the
+   $PATH. Suggested destinations are /usr/local/bin for Unix systems,
+   C:\WINDOWS for Windows 9x/ME.
+
+Supported Directives
+
+   In the following, <something> denotes a required argument, while
+   [something] denotes an optional argument.
+
+   Directives lines must begin in column 1, and will not appear in the
+   output file. The current version supports the following directives:
+
+   #
+          used for inserting comments.
+
+   #abc
+          undefines latin notes; see #doremi
+
+   #define <definition> <replacement>
+          defines a simple macro (up to 512 available); <replacement>
+          replaces <definition>. Macros cannot be used in successive macro
+          definitions; that is, you can't do
+
+#define GU   Guido
+#define GG   GU_Gonzato
+
+          Macro definitions cannot contain spaces unless you enclose them
+          in double quotes. If a double quote is a character to be
+          replaced, put a backslash before it: \". The same goes for the
+          backslash itself.
+
+In more detail: In both quoted and unquoted strings, a single \
+means the next character is to be taken as a part of the string,
+not as a terminator. In most cases, the \ is simply skipped, but
+the following cases should be noted:
+        - \\ expands to \ and any character after the sequence is
+        treated as an ordinary character;
+        - \" expands to " but is not considered as marking the
+        beginning or end of a double quoted string;
+        - \<space> is treated like <space> and will terminate an
+        unquoted macro;
+        - \ at the end of the line terminates the string.
+
+#define \"C \"^Do
+
+          Alternatively, use the character '~' whenever a space should
+          appear. For example,
+
+#define GG Guido~Gonzato
+#define AIC "abcpp is cool"
+
+          will expand 'GG' to 'Guido Gonzato', and AIC to "abcpp is cool"
+          (without quotes). If you omit <replacement> and <definition>
+          esists, the macro <definition> will be removed. For example,
+
+#define !lph! !longphrase!
+...
+#define !lph!
+
+          undefines !lph! and increments the number of available macros.
+          Note that this is not the same as replacing the old macro with
+          an empty string! To define a macro as an empty string, do this:
+
+#define EMPTY ""
+
+          Finally, if you want to prevent a macro from being replaced, you
+          can use the \ character to "escape" that macro. For example,
+
+#define do c
+#define re d
+#define mi e
+W: Gui\do, il \re dei \mi\mi
+
+          will not replace the syllables 'do 're' 'mi' in the W: field.
+
+   #doremi
+          defines the macros 'do', 're', 'mi', 'fa', 'sol', 'la', 'si'
+          (upper case form too), that will be replaced by 'c', 'd', 'e',
+          'f', 'g', 'a', 'b'.
+
+   #ifdef <def1> [def2 def3 ...]
+          the lines that follow #ifdef, and before the next #endif or
+          #else, will be preprocessed and written to the output file only
+          if any of the symbols is defined. #ifdefs cannot be nested, and
+          must be terminated by #endif.
+
+   #ifndef <def1> [def2 def3 ...]
+          like #ifdef, but the condition is true only if none of the
+          symbols is defined. #ifndefs cannot be nested, and must be
+          terminated by #endif.
+
+   #else
+          establishes an alternative condition after #ifdef or #ifndef.
+
+   #elifdef <def1> [def2 def3 ...]
+          equivalent to an #else followed by #ifdef.
+
+   #elifndef <def1> [def2 def3 ...]
+          equivalent to an #else followed by #ifndef.
+
+   #endif
+          terminates an #ifdef or #ifndef condition.
+
+   #include <filename> or "filename"
+          processes <filename> and includes it in the output. If you
+          enclose the file name in angular brackets, abcpp will search for
+          the include file in abcpp's library directory. This is C:\abcpp
+          on Windows systems, /usr/share/abcpp under Unix.
+
+   #undefine
+          suspends macro replacement for the following lines.
+
+   #redefine
+          resumes macro replacement.
+
+   #suspend
+          same as #undefine.
+
+   #resume
+          same as #redefine.
+     __________________________________________________________________
+
+Usage
+
+   abcpp is a command line tool. Typical usage is:
+$ abcpp [-s] [-c] [-p|-n|-a] [-b|-k] [-o] [-SYM -SYM=def ...] [input] [output]
+
+   -s
+          : strip input of w: W: fields and decorations
+
+   -c
+          : strip input of accompaniment "chords"
+
+   -p]: change old +abc+ style chords to new [abc
+          style
+
+   -n
+          : change +plus+ style decorations to !plus! style
+
+   -a
+          : change !plus! style decorations to +plus+ style
+
+   -b
+          : remove single '!'
+
+   -k
+          : change single '!' to !break! (or +break+ if -a is set)
+
+   -o
+          : command line macros override defines in input
+
+   -w
+          : suppress warnings
+
+   -e
+          : turn warnings into fatal errors
+
+   -h
+          : show usage
+
+   Switch transformations (e.g. -n -a -k) don't apply to fields. That is,
+   a ! in the T: (title) field is not turned to !break! or +break+.
+
+Example 1: Macros and Conditionals
+
+   The following ABC tune contains directives for making different
+   headers, depending whether the symbol MIDI is defined. Some symbols and
+   decorations are redefined to give the tune a M-Tx-ish look:
+% my_music.abp
+%
+#define Index:  X:
+#define Title:  T:
+#define Meter:  M:
+#define Length: L:
+#define Tempo:  Q:
+#define Voice:  V:
+#define Key:    K:
+#define Style:  %%staves
+#define Duet    [1~2]
+#define !<(!  !crescendo(!
+#define !<)!  !crescendo)!
+#define !>(!  !diminuendo(!
+#define !>)!  !diminuendo)!
+#define !H!   !fermata!
+Index: 1
+Title: %abcpp% test
+Meter: 4/4
+Length: 1/4
+#ifdef MIDI
+Tempo: 1/4 = 80
+#else
+Tempo: "Allegro"
+Voice: 1 clef=treble name="Flute"
+Voice: 2 clef=treble name="Violin"
+Style: Duet
+#endif
+Key: C
+%
+Voice: 1
+cdef|!<(!cde!<)!f|!>(!CDE!>)!F|!H!G4|
+Voice: 2
+ccee|ccgg        |g f e d     |!H!C4|
+%
+% End of file my_music.abp
+
+   That's nice, but there's a better approach. Let's write a file, called
+   my_defines.abp, that reads:
+# my_defines.abp
+#
+#define Index:  X:
+#define Title:  T:
+#define Meter:  M:
+#define Length: L:
+#define Tempo:  Q:
+#define Voice:  V:
+#define Key:    K:
+#define Style:  %%staves
+#define Duet    [1~2]
+#define !<(!  !crescendo(!
+#define !<)!  !crescendo)!
+#define !>(!  !diminuendo(!
+#define !>)!  !diminuendo)!
+#define !H!   !fermata!
+
+   Now, let's rewrite my_music.abp:
+% my_music.abp
+%
+#
+#include my_defines.abp
+#
+Index: 1
+Title: %abcpp% test
+Meter: 4/4
+Length: 1/4
+#ifdef MIDI
+Tempo: 1/4 = 80
+#else
+Tempo: "Allegro"
+Voice: 1 clef=treble name="Flute"
+Voice: 2 clef=treble name="Violin"
+Style: Duet
+#endif
+Key: C
+%
+Voice: 1
+cdef|!<(!cde!<)!f|!>(!CDE!>)!F|!H!G4|
+Voice: 2
+ccee|ccgg        |g f e d     |!H!C4|
+%
+% End of file my_music.abp
+
+   Do you like it like this? I find it much more readable. We're ready to
+   run my_music.abp through abcpp:
+$ abcpp my_music.abp my_music_nomidi.abc
+$ abcpp -MIDI my_music.abp my_music_midi.abc
+
+   The first line doesn't define any symbol, while the second line defines
+   the symbol MIDI. This is used to produce an alternative header. We now
+   have two ABC files: one for typesetting and one for making a MIDI file.
+
+   In case you didn't notice: I suggest that you use the .abp extension
+   for ABC files with abcpp directives, .abc for plain ABC files.
+
+Example 2: Latin Notes
+
+   In Italy, France, and in general in Latin countries, notes are written
+   using Guido d'Arezzo's notation: do re mi fa sol la si -> c d e f g a
+   b. Using built-in macros and a bit of care, you can write ABC tunes
+   using do re mi... instead of normal notes. You don't want this
+   replacement to occur in lyrics lines, though.
+
+   Let's write a sample tune:
+% doremi.abp
+#doremi
+X: 1
+T: Do \re \mi -> c d e
+C: Gui\do
+M: 4/4
+L: 1/4
+Q: 1/4 = 100
+K: C
+%
+#define !tieni! !fermata!
+DO RE MI FA|SOL LA SI !tieni!do|do SI LA SOL|FA MI RE DO|
+#abc
+w: do re mi fa sol la si do, do si la sol fa mi re do.
+#doremi
+DO RE MI FA|SOL LA SI !tieni!do|do SI LA SOL|FA MI RE DO|
+#abc
+w: do re mi fa sol la si do, do si la sol fa mi re do.
+%
+% End of file doremi.abp
+
+   How about it? This trick makes it possible to write ABC music even to
+   people who have no confidence with Anglo-Saxon notation - namely, young
+   Italian students... Note that some syllables in the header start with
+   '\': this prevents them from being replaced by their macro definition.
+
+Example 3: Part Extraction
+
+   The following ABC file is written for SATB. Let's see how to output
+   four different ABC files, one for each voice:
+X: 1
+T: Part extraction
+C: Guido Gonzato
+M: 4/4
+L: 1/4
+Q: 1/4 = 60
+%%staves [S A T B]
+V: S clef=treble name="Soprano" sname="S"
+V: A clef=treble name="Alto"    sname="A"
+V: T clef=treble name="Tenor"   sname="T"
+V: B clef=bass   name="Bass"    sname="B"
+K: C
+%
+#ifdef SOPRANO ALL
+[V: S] cccc|eeee|gggg|c'c'c'c'|
+#endif
+#ifdef ALTO ALL
+[V: A] cccc|GGGG|cccc|eeee|
+#endif
+#ifdef TENOR ALL
+[V: T] CCCC|EEEE|GGGG|cccc|
+#endif
+#ifdef BASS ALL
+[V: B] CCCC|G,G,G,G,|CCCC|EEEE|
+#endif
+%
+
+   Make the four files with these command lines:
+$ abcpp -SOPRANO parts-soprano.abc
+$ abcpp -ALTO parts-alto.abc
+$ abcpp -TENOR parts-tenor.abc
+$ abcpp -BASS parts-bass.abc
+
+   and the four-parts score with:
+$ abcpp -ALL parts.abc parts-all.abc
+
+   Normally, to do part extraction you'll want to use abc2prt - see the
+   home page.
+
+Example 4: Guitar Chords Using Latin Notes
+
+   Guitar chords are only defined if they start in A-G. But some users may
+   want to print the chord names using Latin notes. Here's how it's done:
+% doremi.abp
+#ifndef MIDI
+#define \"C\" \"^Do\"
+#define \"G\" \"^Sol\"
+#endif
+X: 1
+T: do re mi
+M: 4/4
+L: 1/4
+K: C
+%
+"C"CDEF|"G"GABc|"C"C2"G"G2|"C"C2z2|
+     __________________________________________________________________
+
+Other Features
+
+Command Line Options
+
+   '-s': this option (strip) removes w: lines and all decorations from
+   input. This can be useful for fussy ABC applications that follow old
+   ABC standards.
+
+   '-c': this option removes all chords. In many ABC files, "chords" are
+   actually textual annotations. abc2midi will dutifully play them,
+   obviously with unexpected results. Better strip them out.
+
+   '-h': shows usage.
+
+Disabling Macros
+
+   Macro definitions can interfere with each other. To prevent macro
+   replacement in specific spots, use the '\' character. For example, if
+   the syllable 'do' is #defined as 'c', the word 'Guido' will become
+   'Guic', while 'Gui\do' will be converted as 'Guido'.
+
+Limitations
+
+    1. there can be up to 20 command line definitions.
+    2. a directive line can contain up to 20 symbols.
+    3. a symbol length is up to 50 characters.
+    4. there can be up to 100 macros.
+    5. macro definitions can interfere with each other.
+
+   Sooner or later I'll replace all static structures in abcpp.c with
+   dynamic ones.
+     __________________________________________________________________
+
+To Do List
+
+   1. if -s is active, strip lines of symbols redefined with U: 2. a
+   graphic version using Fltk (http://www.fltk.org) 3. implement the
+   'Dyn:' field to add a dynamics line that merges with the following
+   music line 4. same with the 'Text:' field 5. <null> characters are not
+   allowed in files. (This is
+probably not worth fixing, but is noted.)
+
+   6. Recursive #includes can be done ad infinitum but they eventually
+   crash unpredictably. 7. any suggestions?
+     __________________________________________________________________
+
+Copyright and Licence
+
+   abcpp is copyright by Guido Gonzato <guido.gonzato at gmail.com>
+   2001-2012, and released under the General Public Licence. If you find
+   this small program useful, or have bug reports, suggestions, or
+   criticism, please drop me a line. abcpp is very useful to me; I hope
+   I've done something useful for other people too.
+
+   Enjoy,
+
+   Guido =8-)
+     __________________________________________________________________
+
+                              This document was generated using AFT v5.097

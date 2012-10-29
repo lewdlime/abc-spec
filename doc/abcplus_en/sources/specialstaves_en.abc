@@ -1,0 +1,13 @@
+X: 1
+T: Special Staves
+M: 4/4
+L: 1/4
+V: 1 stafflines=6 staffscale=0.7 
+V: 2 stafflines=4 scale=1.2
+V: 3 stafflines=1 staffscale=1.4 perc
+K: C
+%
+[V:1] "^6 staff lines, staffscale=0.7"CDEF|GABc|cBAG|FEDC|
+[V:2] "^4 staff lines, staffscale=1, scale=1.2"CCCC|GGGG|EEEE|G2z2|
+[V:3] "^1 staff line, staffscale=1.4"^c/^c/^c/^c/ ^c/^c/^c/^c/|z4| \
+       ^c/^c/^c/^c/ ^c/^c/^c/^c/|cccc|

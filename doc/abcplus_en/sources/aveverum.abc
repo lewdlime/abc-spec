@@ -1,0 +1,69 @@
+% PAGE LAYOUT
+%
+%%pageheight     29.7cm
+%%pagewidth      21cm
+%%topmargin      1cm
+%%botmargin      1cm
+%%leftmargin     1cm
+%%rightmargin    1cm
+% SPACING
+%%topspace       0cm     % space before the piece
+%%titlespace     0cm     % space before the title
+%%subtitlespace  0.2cm   % space before the subtitle
+%%composerspace  0.5cm   % space before the composer line
+%%musicspace     0.5cm   % space before the first staff
+%%vocalspace     1.5cm   % additional space after lyrics lines
+%%sysstaffsep    1cm     % space between staves in the same system
+%%staffsep       2cm     % space between different systems
+% FONT
+%%titlefont      Times-Bold 32
+%%subtitlefont   Times-Bold 24
+%%composerfont   Times-Italics 16
+%%vocalfont      Times-Roman 14  % for lyrics
+%%gchordfont     Times-Bold 14   % for chords
+% MISC
+%%measurebox     true  % measure numbers in a box
+%%measurenb      0     % measure numbers at first measure
+%%exprabove      true  % expressions above the staff
+%%barsperstaff   5     % number of measures per staff
+%%scale          0.7   % magnification
+%
+X: 1
+T: Ave Verum
+T: per coro e organo
+C: W. A. Mozart (1756-1791)
+M: 4/4
+L: 1/4
+Q: "Adagio"
+%%staves [(1 2) (3 4)] | {(5 6) (7 8)}
+V: 1 clef=treble name="Soprano" sname="S"
+V: 2 clef=treble name="Alto" sname="A"
+V: 3 clef=bass name="Tenore" sname="T"
+V: 4 clef=bass name="Basso" sname="B"
+V: 5 clef=treble name="Organo"
+V: 6 clef=treble
+V: 7 clef=bass
+V: 8 clef=bass
+K: D
+% 1 - 5
+[V: 1] z4        |z4             |A2(dF)          |(A^G)=G2|(GB)(AG)        |
+w: A- ve,_ a - ve, ve - rum_
+[V: 2] z4        |z4             |F2F2            |E2E2    |(EG)(FE)        |
+[V: 3] z4        |z4             |A,2A,2          |B,2B,2  |A,2A,2          |
+w: A- ve, a- ve, ve- rum
+[V: 4] z4        |z4             |D,2D,2          |D,2D,2  |C,2C,2          |
+[V: 5] (DA,D[CE])|([DF]D[DF][EG])|[FA][DF][Fd][DF]|A^G=GG  |[EG][GB][FA][EG]|
+[V: 6] x4        |x4             |x4              |E4      |x4              |
+[V: 7] F,2F,A,   |A,F,A,2-       |A,4             |B,4     |A,4             |
+[V: 8] D,4-      |D,4-           |D,4-            |D,4     |C,4             |
+% 6 - 10
+[V: 1] (GF)F2          |E3E  |FFGG         |(G2F)F      |E4    |
+w: cor - pus na- tum de Ma- ri- a Vir - gi- ne,
+[V: 2] (ED)D2          |C3C  |DDEE         |(E2D)D      |C4    |
+[V: 3] A,2A,2          |A,3A,|A,A,A,A,     |A,3A,       |A,4   |
+w: cor- pus na- tum de Ma- ri- a Vir- gi- ne,
+[V: 4] D,2D,2          |A,,3A,,|D,D,C,C,   |D,3D        |A,,4  |
+[V: 5] [EG][DF][DF][FA]|AEEA |[FA][df][eg]G|[E2G2][D2F2]|[C4E4]|
+[V: 6] x4              |C2C2 |DAAD         |x4          |x4    |
+[V: 7] A,4             |A,4  |A,3A,        |A,4         |x4    |
+[V: 8] D,4             |A,,4 |D,2C,2       |D,D,F,D,    |A,,A,E,C,|

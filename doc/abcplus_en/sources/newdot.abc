@@ -1,0 +1,13 @@
+%%postscript /newdot { % usage: x y newdot
+%%postscript   M 1.2 2.5 rmoveto -2.4 0 rlineto
+%%postscript   1.2 -5 rlineto fill } bdef
+%%deco tu 0 newdot 5 0 0
+%%postscript /toe {  % usage: x y toe
+%%postscript    M 5 0 rmoveto
+%%postscript    -5 5 rlineto -5 -5 rlineto currentpoint stroke
+%%postscript } bdef
+%%deco rtoe 6 toe 5 0 0
+%%deco ltoe 3 toe 5 0 0
+X: 1
+K: C
+!tu!C!tu!D!tu!E!tu!F GABc|!ltoe!c'!rtoe!bag .f.e.d.c|!ltoe!C4 z4|]

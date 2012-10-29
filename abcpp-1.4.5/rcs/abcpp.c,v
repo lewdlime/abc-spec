@@ -1,0 +1,1494 @@
+head	1.7;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.7
+date	2003.07.10.11.27.34;	author guido;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2003.07.09.11.39.55;	author guido;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2003.07.09.11.29.57;	author guido;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2003.07.07.08.36.16;	author guido;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2003.06.04.07.05.32;	author guido;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2003.04.17.05.38.27;	author guido;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2003.04.17.05.36.17;	author guido;	state Exp;
+branches;
+next	;
+
+
+desc
+@Version 1.2.2.
+@
+
+
+1.7
+log
+@This version handles '!' correctly.
+@
+text
+@/*  **************************************************************************
+ * 
+ * --- File: abcpp.c
+ * 
+ * --- Purpose: simple preprocessor for abc music files.
+ * 
+ * --- Copyright (C) Guido Gonzato, ggonza@@tin.it
+ *     Modifications by John Fattaruso, johnf@@ti.com, and
+ *     Ewan A. Macpherson emacpher@@umich.edu
+ * 
+ * --- Last updated: 10 July 2003
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * 
+ * ************************************************************************ */
+
+
+/* this is a no-brainer program. No efficient memory allocation, no lists,
+ * no trees and some such. Only fixed-length arrays for now!
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define PROGNAME       "abcpp"
+#define DATE           "10 July 2003"
+#define VERSION        "1.3.0"
+#define MAX_TOKENS     20	/* # of tokens following #ifdef etc. */
+#define MAX_MACROS     100	/* # of #defined macros */
+#define TOKEN_LENGHT   50	/* max. token length */
+#define LINE_LENGTH    1024	/* max. length of input line */
+#define TRUE           1
+#define FALSE          0
+#ifdef WIN32
+#define LIB_DIR    "C:\\ABCPP\\"
+#else
+#define LIB_DIR    "/usr/share/abcpp/"
+#endif
+
+/* function prototypes */
+void error (char *);
+void handle_directive (char *, FILE *);
+void include_file (char *, FILE *);
+void output_line (FILE *, char *);
+void preprocess_line (FILE *, FILE *, char *);
+void remove_bang (char[], short int);
+void remove_deco (char[], char);
+void replace (char[], char *, char *);
+void replace_plus (char[]);
+void strdel (char[], int, int);
+void strins (char[], char *, int);
+void undefine_macro (char[]);
+void usage (void);
+void warning (char *);
+
+/* global variables */
+int ndefines = 0;		/* # of command line defines    */
+int condition = TRUE;		/* condition after #ifdef       */
+int cond_else = FALSE;		/* condition for #else          */
+int ifdef = FALSE;		/* #ifdef was read              */
+int nmacros = 0;		/* # of defined macros          */
+
+/* program options */
+short int strip = FALSE;	/* strip option                 */
+short int strip_chords = FALSE;	/* strip chords option          */
+short int strip_plus = FALSE;	/* change +abc+ to [abc]        */
+short int strip_bang = FALSE;	/* remove single '!'            */
+short int change_bang = FALSE;	/* change single '!' to !break! */
+short int undefine = FALSE;	/* #undefine was read           */
+short int doremi = FALSE;	/* #define 'do', 're', 'mi'...  */
+
+
+/* this array contains command-line defines */
+char defines[MAX_TOKENS][TOKEN_LENGHT];
+
+enum
+{ MACRO, REPLACEMENT
+};
+
+/* this one will contain user #defined macros */
+char macros[MAX_MACROS][2][TOKEN_LENGHT];
+
+#define NUM_NOTES 14
+/* this one will contain Latin notes */
+char notes[NUM_NOTES][2][4] = {
+  {"DO", "C"}, {"RE", "D"}, {"MI", "E"}, {"FA", "F"},
+  {"SOL", "G"}, {"LA", "A"}, {"SI", "B"},
+  {"do", "c"}, {"re", "d"}, {"mi", "e"}, {"fa", "f"},
+  {"sol", "g"}, {"la", "a"}, {"si", "b"}
+};
+
+/* ----- */
+
+int
+main (int argc, char *argv[])
+{
+  FILE *in, *out;
+  char line[LINE_LENGTH];
+  char tmp[256], tmp1[256], tmp2[256];
+  int i, nfilespec = 0;
+
+  /* parse command line */
+  in = stdin;			// stdin is default unless in-file specified on command line
+  out = stdout;			// stdout is default unless in-file and out-file specified on command line
+  for (i = 1; i < argc; ++i)
+    {
+      if ('-' == argv[i][0])
+	{			// it's a command-line define
+	  // check if it's a built-in define
+	  if (!strcmp ("-s", argv[i])) /* strip */
+	    strip = TRUE;
+	  if (!strcmp ("-c", argv[i])) /* strip_chords */
+	    strip_chords = TRUE;
+          if (!strcmp ("-p", argv[i])) /* strip_plus */
+	    strip_plus = TRUE;
+          if (!strcmp ("-b", argv[i])) /* strip_bang */
+	    strip_bang = TRUE;
+          if (!strcmp ("-k", argv[i])) /* change_bang */
+	    change_bang = TRUE;
+	  if (!strcmp ("-h", argv[i]))
+	    {
+	      usage ();
+	      exit (0);
+	    }
+
+	  // in any case, copy it to defines
+	  if (MAX_TOKENS == ndefines)
+	    {
+	      sprintf (tmp, "Too many command line defines (max. %d).",
+		       MAX_TOKENS);
+	      error (tmp);
+	      exit (1);
+	    }
+
+	  else
+	    {
+	      strcpy ((char *) defines[ndefines], &argv[i][1]);
+	      ndefines++;
+	    }
+	}
+
+      else
+	{			// it's a filespec
+	  switch (nfilespec)
+	    {
+	    case 0:		// no files specified yet, so this is the infile spec
+	      strcpy (tmp1, argv[i]);
+	      if (NULL == (in = fopen (tmp1, "r")))
+		{
+		  sprintf (tmp, "%s: can't open %s\n", PROGNAME, tmp1);
+		  error (tmp);
+		  exit (1);
+		}
+	      nfilespec++;
+	      break;
+	    case 1:		// 1 file specified already, so this is the outfile spec
+	      strcpy (tmp2, argv[i]);
+
+	      /* check if input and output are the same file */
+	      if (!strcmp (tmp1, tmp2))
+		{
+		  sprintf (tmp, "%s and %s cannot be the same file.", tmp1,
+			   tmp2);
+		  error (tmp);
+		  fclose (in);
+		  exit (1);
+		}
+	      if (NULL == (out = fopen (tmp2, "w")))
+		{
+		  sprintf (tmp, "%s: can't open %s\n", PROGNAME, tmp2);
+		  error (tmp);
+		  fclose (in);
+		  exit (1);
+		}
+	      nfilespec++;
+	      break;
+	    default:		// 2 files specified already - error!
+	      sprintf (tmp, "Too many files specified!\n");
+	      error (tmp);
+	      fclose (in);
+	      fclose (out);
+	      usage ();
+	      exit (1);
+	    }			// switch
+	}			//else
+    }				//for
+  while (fgets (line, LINE_LENGTH, in) != NULL)
+    preprocess_line (in, out, line);
+  fclose (in);
+  fclose (out);
+  exit (0);
+}
+
+
+/* ----- */
+
+void
+usage ()
+{
+  fprintf (stderr, "%s %s, %s\n", PROGNAME, VERSION, DATE);
+  fprintf (stderr, "Copyright 2001-2003 Guido Gonzato <ggonza@@tin.it>\n");
+  fprintf (stderr, "This is free software with ABSOLUTELY NO WARRANTY.\n\n");
+  fprintf (stderr, "Usage: %s [-s] [-c] [-p] [-h] [-def1 -def2 ...]"
+	   " [inputfile] [outputfile]\n\n", PROGNAME);
+  fprintf (stderr, "-s:\tstrip input of w: fields and decorations\n");
+  fprintf (stderr, "-c:\tstrip input of accompaniment chords\n");
+  fprintf (stderr, "-p:\tchange '+'-delimited chords to '[]'-delimited\n");
+  fprintf (stderr, "-b:\tremove single '!'\n");
+  fprintf (stderr, "-k:\tchange single '!' to !break!\n");
+  fprintf (stderr, "-h:\tshow usage\n");
+  exit (0);
+}				/* void usage () */
+
+/* ----- */
+
+/* delete num characters from string s, starting from pos. */
+void
+strdel (char s[], int pos, int num)
+{
+  int i, len = strlen (s);
+
+  /* move characters to the left */
+  for (i = pos + num; i < len; i++)
+    s[i - num] = s[i];
+  s[len - num] = '\0';
+}				/* strdel () */
+
+
+/* ----- */
+
+/* insert string 'ins' in string 's', starting in 'pos' */
+void
+strins (char s[], char *ins, int pos)
+{
+  int i, inslen = strlen (ins), slen = strlen (s);
+
+  /* move chars to the right */
+  for (i = slen - 1; i >= pos; i--)
+    s[i + inslen] = s[i];
+  s[slen + inslen] = '\0';
+
+  /* insert 'ins' */
+  for (i = 0; i < inslen; i++)
+    s[i + pos] = ins[i];
+}				/* strins () */
+
+
+/* ----- */
+
+void
+replace (char line[], char *orig, char *repl)
+{
+  int ind, len = strlen (orig), offset = 0;
+  char *tmp;
+
+  /* replace all occurrances of 'orig' in 'line' with 'repl'. The 
+   * character '\' can be used to prevent 'orig' from being replaced,
+   * if need be. For example, if 'do' is #defined as 'c', 
+   * Guido -> Guic, Gui\do -> Guido.
+   */
+  while (NULL != (tmp = strstr (line + offset, orig)))
+    {
+      ind = tmp - line;		/* position of text to replace */
+
+      /* if the text to replace isn't preceded by '\', go ahead */
+      if ('\\' != line[ind - 1])
+	{
+	  strdel (line, ind, len);
+	  strins (line, repl, ind);
+	}
+
+      else
+	{			/* remove the '\' */
+	  strdel (line, ind - 1, 1);
+	  offset = ind + 1;	/* start searching from this new position */
+	}
+    }
+}				/* replace () */
+
+
+/* ----- */
+
+void
+undefine_macro (char line[])
+{
+  char *itemptr;
+  char tmp[2 * TOKEN_LENGHT];
+
+  /* sort macros, find line [] and remove it */
+  if (0 == nmacros)
+    {
+      warning ("No macros #defined yet - ignored.");
+      return;
+    }
+  qsort (macros, nmacros, sizeof (macros[0][0]),
+	 (int (*)(const void *, const void *)) strcmp);
+  itemptr = bsearch (line, macros, nmacros, sizeof (macros[0][0]),
+		     (int (*)(const void *, const void *)) strcmp);
+  if (NULL == itemptr)
+    {
+      sprintf (tmp, "Macro %s non found in definition table - ignored.",
+	       line);
+      warning (tmp);
+    }
+
+  else
+    {
+      strcpy (itemptr, macros[nmacros - 1][MACRO]);
+      strcpy (itemptr + TOKEN_LENGHT, macros[nmacros - 1][REPLACEMENT]);
+      nmacros--;
+    }
+}				/* undefine_macro () */
+
+
+/* ----- */
+
+void
+remove_deco (char line[], char what)
+{
+  char *beg_deco, *end_deco;
+  char drop_me[] = " ";
+  int i, j;
+  drop_me[0] = what;
+  while (NULL != (beg_deco = strstr (line, drop_me)))
+    {
+
+      /* first '!' found */
+      i = beg_deco - line;
+      if (NULL != (end_deco = strstr (beg_deco + 1, drop_me)))
+	{
+
+	  /* second '!' found */
+	  j = end_deco - beg_deco + 1;
+	  strdel (line, i, j);
+	}
+
+      else
+	{
+	  warning ("Unbalanced char found - the line is probably wrong.");
+	  return;
+	}
+    }
+}				/* remove_deco () */
+
+/* ----- */
+
+void
+replace_plus (char line[])
+{
+  char *beg_chord, *end_chord;
+  int i, j;
+  while (NULL != (beg_chord = strstr (line, "+")))
+    {
+
+      /* first '+' found */
+      i = beg_chord - line;
+      if (NULL != (end_chord = strstr (beg_chord + 1, "+")))
+	{
+
+	  /* second '+' found */
+	  j = end_chord - line;
+          /* replace the first '+' with '[', 
+           then the second '+' with ']' */
+	  strdel (line, i, 1);
+          strins (line, "[", i); 
+          strdel (line, j, 1);
+          strins (line, "]", j); 
+	}
+
+      else
+	{
+	  warning ("Unbalanced char found - the line is probably wrong.");
+	  return;
+	}
+    }
+}				/* replace_plus () */
+
+/* ----- */
+
+void
+remove_bang (char line[], short int write_break)
+{
+  char *bang;
+  int i, skip = 0;
+  short int was_deco = FALSE;
+  while (NULL != (bang = strstr (line + skip, "!")))
+    {
+
+      /* '!' found */
+      i = bang - line;
+      if ( ('\n' == line [i + 1]) || (' ' == line [i + 1]) ) 
+        {
+          was_deco = FALSE;
+          /* remove it, it cannot be a !decoration! */
+          strdel (line, i, 1);
+          if (write_break) 
+            {
+              strins (line, "!break!", i);
+              /* skip 7 characters */
+              skip = skip + i + 7;
+            }
+        }
+      else
+        was_deco = TRUE; /* it's a !decoration! */
+    }
+}				/* remove_bang () */
+
+/* ----- */
+
+void
+output_line (FILE * out, char *line)
+{
+  int i;
+  if (condition)
+    {
+      /* ADD OPTIONS HERE */
+      if (TRUE == strip)
+	remove_deco (line, '!');
+      if (TRUE == strip_chords)
+	remove_deco (line, '"');
+      if (TRUE == strip_plus)
+	replace_plus (line);
+      if (TRUE == strip_bang)
+	remove_bang (line, FALSE);
+      if (TRUE == change_bang)
+	remove_bang (line, TRUE);
+
+      else
+	{			/* replace macros and notes */
+	  if (!undefine)
+	    for (i = 0; i < nmacros; i++)
+	      replace (line, macros[i][MACRO], macros[i][REPLACEMENT]);
+	  if (doremi)
+	    for (i = 0; i < NUM_NOTES; i++)
+	      replace (line, notes[i][0], notes[i][1]);
+	}
+
+      /* replace (line, "\\", ""); */
+      if ((FALSE == strip) || (NULL == strstr (line, "w:")))
+	fprintf (out, "%s", line);
+    }
+}				/* void output_line () */
+
+
+/* ----- */
+
+void
+preprocess_line (FILE * in, FILE * out, char *line)
+{
+  if (line[0] != '#')
+    output_line (out, line);
+
+  else
+    handle_directive (line, out);
+}				/* void preprocess_line () */
+
+
+/* ----- */
+
+void
+include_file (char *file, FILE * out)
+{
+  FILE *in;
+  char line[LINE_LENGTH], tmp[256], filename[256];
+
+  /* if the file name starts with '<', then search for it in LIB_DIR */
+  if ('<' == file[0])
+    {
+      strdel (file, 0, 1);
+      strdel (file, strlen (file) - 1, 1);
+      strcpy (filename, LIB_DIR);
+      strcat (filename, file);
+    }
+
+  else
+    strcpy (filename, file);
+  if (NULL == (in = fopen (filename, "r")))
+    {
+      sprintf (tmp, "%s: can't open %s\n", PROGNAME, filename);
+      error (tmp);
+    }
+  while (fgets (line, LINE_LENGTH, in) != NULL)
+    preprocess_line (in, out, line);
+  fclose (in);
+}				/* include_file () */
+
+
+/* ----- */
+
+void
+warning (char *line)
+{
+  fprintf (stderr, "\a%s: *** warning\n", PROGNAME);
+  fprintf (stderr, "%s\n", line);
+}				/* warning () */
+
+
+/* ----- */
+
+void
+error (char *line)
+{
+  fprintf (stderr, "\a%s: *** error\n", PROGNAME);
+  fprintf (stderr, "%s\n", line);
+  exit (1);
+}				/* error () */
+
+
+/* ----- */
+
+#define N_DIRECTIVES   13	/* supported directives */
+void
+handle_directive (char *line, FILE * out)
+{
+  int esc, ch, i, j, ntoken;
+  char tokens[MAX_TOKENS][TOKEN_LENGHT], token[TOKEN_LENGHT];
+  enum
+  { COMMENT, ABC, DEFINE, DOREMI, ELIFDEF, ELIFNDEF, ELSE, ENDIF, IFDEF,
+    IFNDEF, INCLUDE, REDEFINE, UNDEFINE
+  }
+  directive;
+  char *directives[N_DIRECTIVES] =
+    { "#", "#abc", "#define", "#doremi", "#elifdef", "#elifndef", "#else",
+    "#endif", "#ifdef", "#ifndef", "#include", "#redefine", "#undefine",
+  };
+  ch = line[0];
+  i = j = ntoken = 0;
+  esc = FALSE;
+  while ('\0' != line[i])
+    {
+      if ('\\' == line[i])
+	{
+	  esc = TRUE;
+	  i++;
+	}
+
+      /* the token starts and ends with " not preceded by \ */
+      if (('"' == line[i]) && (FALSE == esc))
+	{
+	  i++;
+	  while (('"' != line[i]) && ('\0' != line[i]))
+	    {
+	      token[j++] = line[i++];
+	    }
+	  i++;
+	}
+
+      else
+	while ((!isspace (line[i])) && ('\0' != line[i]))
+	  {
+	    if ('\\' == line[i])
+	      i++;
+	    token[j++] = line[i++];
+	  }
+      token[j] = '\0';
+      esc = FALSE;
+      strcpy (tokens[ntoken], token);
+      while (isspace (line[i]))
+	i++;
+      j = 0;
+      if (MAX_TOKENS == ++ntoken)
+	warning ("Too many tokens on directive line - line truncated.");
+    }				/* while */
+
+  /* ok, now find out the directive and decide what to do */
+  /* no binary search for so few directives... */
+  directive = -1;
+  for (i = 0; i < N_DIRECTIVES; i++)
+    if (!strcmp (tokens[0], directives[i]))
+      {
+	directive = i;
+	break;
+      }
+  switch (directive)
+    {
+    case IFDEF:
+    case IFNDEF:
+      if (1 == ntoken)
+	error ("#if(n)def must be followed by at least 1 symbol.");
+      if (TRUE == ifdef)
+	error ("Cannot nest #if(n)def.");
+      ifdef = TRUE;
+      condition = FALSE;
+      cond_else = TRUE;
+
+      /* if any of the tokens are defined, then TRUE */
+      for (i = 1; i < ntoken; i++)
+	for (j = 0; j < ndefines; j++)
+	  if (!strcmp (tokens[i], defines[j]))
+	    {
+	      condition = TRUE;
+	      cond_else = FALSE;
+	    }
+      if (IFNDEF == directive)
+	{
+	  condition = !condition;
+	  cond_else = !cond_else;
+	}
+      break;
+    case ELIFDEF:
+    case ELIFNDEF:
+      if (1 == ntoken)
+	error ("#elif(n)def must be followed by at least 1 symbol.");
+      if (FALSE == ifdef)
+	warning ("#elif(n)def without #ifdef - unpredictable behaviour.");
+      if (FALSE == condition)
+	{			/* there was an #ifdef or an #elifdef */
+	  for (i = 1; i < ntoken; i++)
+	    for (j = 0; j < ndefines; j++)
+	      if (!strcmp (tokens[i], defines[j]))
+		{
+		  condition = TRUE;
+		  cond_else = FALSE;
+		}
+	}
+
+      else
+	condition = FALSE;
+
+      /* leave cond_else alone */
+      if (ELIFNDEF == directive)
+	condition = !condition;
+      break;
+    case ELSE:
+      if (ntoken != 1)
+	warning ("#else should not be followed by symbols - extra ignored.");
+      if (FALSE == ifdef)
+	error ("#else without #ifdef.");
+      if (TRUE == cond_else)
+	condition = TRUE;
+
+      else
+	condition = FALSE;
+      break;
+    case ENDIF:
+      if (ntoken != 1)
+	warning ("#endif should not be followed by symbols - extra ignored.");
+      if (FALSE == ifdef)
+	warning ("#endif without #ifdef - ignored.");
+      condition = TRUE;
+      ifdef = cond_else = FALSE;
+      break;
+    case DEFINE:
+      if (condition)
+	{
+	  if (ntoken < 2)
+	    error ("#define must be followed by at least 1 string.");
+	  if (MAX_MACROS == nmacros)
+	    {
+	      warning
+		("Max. number of macros reached - macro definition ignored.");
+	      break;
+	    }
+	  if (2 == ntoken)
+	    {
+	      undefine_macro (tokens[1]);
+	      break;
+	    }
+	  strcpy (macros[nmacros][MACRO], tokens[1]);
+
+	  /* replace '~' with ' ' in macro definitions */
+	  replace (tokens[1], "~", " ");
+	  strcpy (macros[nmacros][MACRO], tokens[1]);
+	  replace (tokens[2], "~", " ");
+	  strcpy (macros[nmacros][REPLACEMENT], tokens[2]);
+	  nmacros++;
+	}
+      break;
+    case INCLUDE:
+      if (condition)
+	include_file (tokens[1], out);
+      break;
+    case UNDEFINE:
+      if (condition)
+	undefine = TRUE;
+      break;
+    case REDEFINE:
+      if (condition)
+	undefine = FALSE;
+      break;
+    case ABC:
+      if (condition)
+	doremi = FALSE;
+      break;
+    case DOREMI:
+      if (condition)
+	doremi = TRUE;
+      break;
+    case COMMENT:
+      ;
+      break;
+    default:
+      warning ("Unknown preprocessor directive - check it out.");
+      ;
+    }				/* switch (directive) */
+}				/* void handle_directive () */
+
+
+/* ----- */
+
+/* --- End of file abcpp.c --- */
+@
+
+
+1.6
+log
+@Changed a string...
+@
+text
+@d11 1
+a11 1
+ * --- Last updated: 9 July 2003
+d40 1
+a40 1
+#define DATE           "9 July 2003"
+d398 3
+a400 2
+  int i;
+  while (NULL != (bang = strstr (line, "!")))
+d407 1
+d413 2
+a414 1
+              return;
+d417 2
+@
+
+
+1.5
+log
+@This version deals with '!'.
+@
+text
+@d220 1
+a220 1
+  fprintf (stderr, "-c:\tstrip input of chords\n");
+@
+
+
+1.4
+log
+@This version has old '+' chord support.
+@
+text
+@d11 1
+a11 1
+ * --- Last updated: 7 July 2003
+d40 2
+a41 2
+#define DATE           "7 July 2003"
+#define VERSION        "1.2.5"
+d55 9
+a63 1
+void usage (void);
+a65 2
+void replace (char[], char *, char *);
+void preprocess_line (FILE *, FILE *, char *);
+d67 1
+a67 4
+void remove_deco (char[], char);
+void output_line (FILE *, char *);
+void include_file (char *, FILE *);
+void handle_directive (char *, FILE *);
+a68 1
+void error (char *);
+d71 15
+a85 10
+int ndefines = 0;		/* # of command line defines   */
+int condition = TRUE;		/* condition after #ifdef      */
+int cond_else = FALSE;		/* condition for #else         */
+int ifdef = FALSE;		/* #ifdef was read             */
+int strip = FALSE;		/* strip option                */
+int strip_chords = FALSE;	/* strip chords option         */
+int strip_plus = FALSE;	        /* change +abc+ to [abc]       */
+int undefine = FALSE;		/* #undefine was read          */
+int doremi = FALSE;		/* #define 'do', 're', 'mi'... */
+int nmacros = 0;		/* # of defined macros         */
+d124 1
+a124 1
+	  if (!strcmp ("-s", argv[i]))
+d126 1
+a126 1
+	  if (!strcmp ("-c", argv[i]))
+d128 1
+a128 1
+          if (!strcmp ("-p", argv[i]))
+d130 4
+d222 2
+d392 24
+d425 1
+d432 4
+@
+
+
+1.3
+log
+@This version accepts \ and ".
+@
+text
+@d11 1
+a11 1
+ * --- Last updated: 4 June 2003
+d40 2
+a41 2
+#define DATE           "4 June 2003"
+#define VERSION        "1.2.4"
+d75 1
+d121 2
+d206 1
+a206 1
+  fprintf (stderr, "Usage: %s [-s] [-c] [-h] [-def1 -def2 ...]"
+d210 1
+d335 1
+a335 1
+	  strdel (line, beg_deco - line, j);
+d346 33
+d392 2
+@
+
+
+1.2
+log
+@Version 1.2.3.
+@
+text
+@d11 1
+a11 1
+ * --- Last updated: 17 April 2003
+d29 1
+d40 6
+a45 6
+#define DATE           "17 April 2003"
+#define VERSION        "1.2.3"
+#define MAX_TOKENS     20       /* # of tokens following #ifdef etc. */
+#define MAX_MACROS     100      /* # of #defined macros */
+#define TOKEN_LENGHT   50       /* max. token length */
+#define LINE_LENGTH    1024     /* max. length of input line */
+a54 1
+
+d56 3
+a58 3
+void strdel (char [], int, int);
+void strins (char [], char *, int);
+void replace (char [], char *, char *);
+d60 2
+a61 2
+void undefine_macro (char []);
+void remove_deco (char [], char);
+d69 9
+d79 2
+a80 9
+int ndefines     = 0;        /* # of command line defines   */
+int condition    = TRUE;     /* condition after #ifdef      */
+int cond_else    = FALSE;    /* condition for #else         */
+int ifdef        = FALSE;    /* #ifdef was read             */
+int strip        = FALSE;    /* strip option                */
+int strip_chords = FALSE;    /* strip chords option         */
+int undefine     = FALSE;    /* #undefine was read          */
+int doremi       = FALSE;    /* #define 'do', 're', 'mi'... */
+int nmacros      = 0;        /* # of defined macros         */
+d82 3
+a84 2
+/* this array contains command-line defines */
+char defines [MAX_TOKENS][TOKEN_LENGHT];
+d87 1
+a87 1
+char macros  [MAX_MACROS][2][TOKEN_LENGHT];
+d91 2
+a92 2
+char notes [NUM_NOTES][2][4] = {
+  {"DO", "C"},  {"RE", "D"}, {"MI", "E"}, {"FA", "F"},
+d94 1
+a94 1
+  {"do", "c"},  {"re", "d"}, {"mi", "e"}, {"fa", "f"},
+d100 2
+a101 1
+int main (int argc, char *argv[])
+d104 2
+a105 2
+  char line [LINE_LENGTH];
+  char tmp [256], tmp1 [256], tmp2 [256];
+d109 78
+a186 64
+  in = stdin;     // stdin is default unless in-file specified on command line
+  out = stdout;   // stdout is default unless in-file and out-file specified on command line
+
+  for (i=1; i<argc; ++i) {
+	  if ('-' == argv [i][0]) { // it's a command-line define
+		  // check if it's a built-in define
+          if (!strcmp("-s",argv [i]))
+			  strip = TRUE;
+		  if (!strcmp("-c",argv [i]))
+              strip_chords = TRUE;
+          if (!strcmp("-h",argv [i])) {
+              usage ();
+              exit (0);
+          }
+		  // in any case, copy it to defines
+		  if (MAX_TOKENS == ndefines) {
+              sprintf (tmp, "Too many command line defines (max. %d).", MAX_TOKENS);
+              error (tmp);
+			  exit(1);
+          }
+          else {
+              strcpy ((char *) defines [ndefines], &argv [i][1]);
+              ndefines++;
+          }
+	  }
+	  else { // it's a filespec
+	      switch (nfilespec) {
+	      case 0: // no files specified yet, so this is the infile spec
+		       strcpy (tmp1, argv [i]);
+               if (NULL == (in = fopen (tmp1, "r"))) {
+                   sprintf (tmp, "%s: can't open %s\n", PROGNAME, tmp1);
+                   error (tmp);
+				   exit(1);
+                }
+				nfilespec++;
+                break;
+	      case 1:  // 1 file specified already, so this is the outfile spec
+	           strcpy (tmp2, argv [i]);
+               /* check if input and output are the same file */
+               if (!strcmp (tmp1, tmp2)) {
+                   sprintf (tmp, "%s and %s cannot be the same file.", tmp1, tmp2);
+                   error (tmp);
+				   fclose (in);
+				   exit(1);
+               }
+               if (NULL == (out = fopen (tmp2, "w"))) {
+                   sprintf (tmp, "%s: can't open %s\n", PROGNAME, tmp2);
+                   error (tmp);
+			       fclose (in);
+				   exit(1);
+               }
+			   nfilespec++;
+               break;
+	      default:	// 2 files specified already - error!
+               sprintf (tmp, "Too many files specified!\n");
+			   error(tmp);
+               fclose (in);
+               fclose(out);
+               usage ();
+			   exit (1);
+	      } // switch
+	  } //else
+  } //for
+  
+a188 1
+  
+d194 1
+d197 2
+a198 1
+void usage ()
+d203 2
+a204 3
+  fprintf (stderr, 
+           "Usage: %s [-s] [-c] [-h] [-def1 -def2 ...]"
+           " [inputfile] [outputfile]\n\n", PROGNAME);
+d209 1
+a209 1
+} /* void usage () */
+d214 2
+a215 1
+void strdel (char s [], int pos, int num)
+d218 1
+a218 1
+  
+d221 4
+a224 4
+    s [i - num] = s [i];
+  s [len - num] = '\0';
+  
+} /* strdel () */
+d229 2
+a230 1
+void strins (char s [], char *ins, int pos)
+d233 1
+a233 1
+  
+d236 3
+a238 3
+    s [i + inslen] = s[i];
+  s [slen + inslen] = '\0';
+  
+a239 1
+  
+d241 3
+a243 3
+    s [i + pos] = ins [i];
+  
+} /* strins () */
+d247 2
+a248 1
+void replace (char line [], char *orig, char *repl)
+d250 1
+a250 1
+  int ind, len = strlen(orig), offset = 0;
+d252 1
+a252 1
+  
+d258 16
+a273 7
+  
+  while (NULL != (tmp = strstr (line + offset, orig))) {
+    ind = tmp - line; /* position of text to replace */
+    /* if the text to replace isn't preceded by '\', go ahead */
+    if ('\\' != line [ind - 1]) {
+      strdel (line, ind, len);
+      strins (line, repl, ind);
+d275 2
+a276 7
+    else { /* remove the '\' */
+      strdel (line, ind - 1, 1);
+      offset = ind + 1; /* start searching from this new position */
+    }
+  }
+  
+} /* replace () */
+d280 2
+a281 1
+void undefine_macro (char line [])
+d284 2
+a285 2
+  char tmp [2 * TOKEN_LENGHT];
+  
+d287 24
+a310 21
+  
+  if (0 == nmacros) {
+    warning ("No macros #defined yet - ignored.");
+    return;
+  }
+  qsort (macros, nmacros, sizeof (macros [0][0]),
+         (int(*)(const void *,const void *)) strcmp);
+  itemptr = bsearch (line, macros, nmacros, sizeof(macros [0][0]),
+                     (int(*)(const void *,const void *)) strcmp);
+  if (NULL == itemptr) {
+    sprintf (tmp, "Macro %s non found in definition table - ignored.",
+             line);
+    warning (tmp);
+  }
+  else {
+    strcpy (itemptr, macros [nmacros - 1][0]);
+    strcpy (itemptr + TOKEN_LENGHT, macros [nmacros - 1][1]);
+    nmacros--;
+  }
+  
+} /* undefine_macro () */
+d314 2
+a315 1
+void remove_deco (char line [], char what)
+d318 1
+a318 1
+  char drop_me [] = " ";
+d320 19
+a338 9
+  
+  drop_me [0] = what;
+  while (NULL != (beg_deco = strstr (line, drop_me))) {
+    /* first '!' found */
+    i = beg_deco - line;
+    if (NULL != (end_deco = strstr (beg_deco + 1, drop_me))) {
+      /* second '!' found */
+      j = end_deco - beg_deco + 1;
+      strdel (line, beg_deco - line, j);
+d340 2
+a341 7
+    else {
+      warning ("Unbalanced char found - the line is probably wrong.");
+      return;
+    }
+  }
+    
+} /* remove_deco () */
+d345 2
+a346 1
+void output_line (FILE *out, char *line)
+d349 20
+a368 12
+  if (condition) {
+    if (TRUE == strip)
+      remove_deco (line, '!');
+    if (TRUE == strip_chords)
+      remove_deco (line, '"');
+    else { /* replace macros and notes */
+      if (!undefine)
+        for (i = 0; i < nmacros; i++)
+          replace (line, macros [i][0], macros [i][1]);
+      if (doremi)
+        for (i = 0; i < NUM_NOTES; i++)
+          replace (line, notes [i][0], notes [i][1]);
+d370 2
+a371 5
+    /* replace (line, "\\", ""); */
+    if ( (FALSE == strip) || (NULL == strstr(line, "w:")) ) 
+      fprintf (out, "%s", line);
+  }
+} /* void output_line () */
+d375 2
+a376 1
+void preprocess_line (FILE *in, FILE *out, char *line)
+d380 1
+d383 2
+a384 1
+} /* void preprocess_line () */
+d388 2
+a389 1
+void include_file (char *file, FILE *out)
+d392 2
+a393 2
+  char line [LINE_LENGTH], tmp [256], filename [256];
+  
+d395 8
+a402 7
+  
+  if ('<' == file [0]) {
+    strdel (file, 0, 1);
+    strdel (file, strlen (file) - 1, 1);
+    strcpy (filename, LIB_DIR);
+    strcat (filename, file);
+  }
+d405 5
+a409 6
+  
+  if (NULL == (in = fopen (filename, "r"))) {
+    sprintf (tmp, "%s: can't open %s\n", PROGNAME, filename);
+    error (tmp);
+  }
+  
+a411 1
+  
+d413 2
+a414 2
+  
+} /* include_file () */
+d418 2
+a419 1
+void warning (char *line)
+d423 2
+a424 2
+  
+} /* warning () */
+d428 2
+a429 1
+void error (char *line)
+d434 2
+a435 2
+  
+} /* error () */
+d439 3
+a441 3
+#define N_DIRECTIVES   13  /* supported directives */
+
+void handle_directive (char *line, FILE *out)
+d443 12
+a454 9
+  int ch, i, j, ntoken;
+  char tokens [MAX_TOKENS][TOKEN_LENGHT], token [TOKEN_LENGHT];
+  enum { COMMENT, ABC, DEFINE, DOREMI, ELIFDEF, ELIFNDEF, ELSE,
+         ENDIF, IFDEF, IFNDEF, INCLUDE, REDEFINE, UNDEFINE } directive;
+  char *directives [N_DIRECTIVES] =
+  { "#", "#abc", "#define", "#doremi", "#elifdef", "#elifndef", "#else",
+    "#endif", "#ifdef", "#ifndef", "#include", "#redefine", "#undefine", };
+  
+  ch = line [0];
+d456 37
+a492 24
+  
+  while ('\0' != line [i]) {
+    
+    /* the token starts and ends with " */
+    if ('"' == line [i]) {
+      i++;
+      while ( ('"' != line [i]) && ('\0' != line [i]) ) {
+        token [j++] = line [i++];
+      }
+      i++;
+    }
+    else
+      while ( (! isspace (line [i])) && ('\0' != line [i]) )
+        token [j++] = line [i++];
+    token [j] = '\0';
+    strcpy (tokens [ntoken], token);
+    while (isspace (line [i]))
+      i++;
+    j = 0;
+    if (MAX_TOKENS == ++ntoken)
+      warning ("Too many tokens on directive line - line truncated.");
+    
+  } /* while */
+  
+a494 1
+  
+d497 65
+a561 2
+    if (! strcmp (tokens [0], directives [i])) {
+      directive = i;
+d563 5
+a567 56
+    }
+  
+  switch (directive) {
+    
+   case IFDEF:
+   case IFNDEF:
+
+    if (1 == ntoken)
+      error ("#if(n)def must be followed by at least 1 symbol.");
+    if (TRUE == ifdef)
+      error ("Cannot nest #if(n)def.");
+    ifdef = TRUE;
+    condition = FALSE;
+    cond_else = TRUE;
+    /* if any of the tokens are defined, then TRUE */
+    for (i = 1; i < ntoken; i++)
+      for (j = 0; j < ndefines; j++)
+        if (! strcmp (tokens[i], defines[j])) {
+          condition = TRUE;
+          cond_else = FALSE;
+        }
+    if (IFNDEF == directive) {
+      condition = !condition;
+      cond_else = !cond_else;
+    }
+    break;
+    
+   case ELIFDEF:
+   case ELIFNDEF:
+  
+    if (1 == ntoken)
+      error ("#elif(n)def must be followed by at least 1 symbol.");
+    if (FALSE == ifdef)
+      warning ("#elif(n)def without #ifdef - unpredictable behaviour.");
+    if (FALSE == condition) { /* there was an #ifdef or an #elifdef */
+      for (i = 1; i < ntoken; i++)
+        for (j = 0; j < ndefines; j++)
+          if (! strcmp (tokens[i], defines[j])) {
+            condition = TRUE;
+            cond_else = FALSE;
+          }
+    }
+    else
+      condition = FALSE;
+    /* leave cond_else alone */
+    if (ELIFNDEF == directive)
+      condition = !condition;
+    break;
+    
+   case ELSE:
+
+    if (ntoken != 1)
+      warning ("#else should not be followed by symbols - extra ignored.");
+    if (FALSE == ifdef)
+      error ("#else without #ifdef.");
+    if (TRUE == cond_else)
+d569 57
+a625 70
+    else
+      condition = FALSE;
+    break;
+    
+   case ENDIF:
+  
+    if (ntoken != 1)
+      warning ("#endif should not be followed by symbols - extra ignored.");
+    if (FALSE == ifdef)
+      warning ("#endif without #ifdef - ignored.");
+    condition = TRUE;
+    ifdef = cond_else = FALSE;
+    break;
+    
+   case DEFINE:
+    
+    if (condition) {
+      if (ntoken < 2)
+        error ("#define must be followed by at least 1 string.");
+      if (MAX_MACROS == nmacros) {
+        warning ("Max. number of macros reached - macro definition ignored.");
+        break;
+      }
+      if (2 == ntoken) {
+        undefine_macro (tokens [1]);
+        break;
+      }
+    
+      strcpy (macros [nmacros][0], tokens [1]);
+      /* replace '~' with ' ' in macro definitions */
+      replace (tokens [1], "~", " ");
+      strcpy (macros [nmacros][0], tokens [1]);
+      replace (tokens [2], "~", " ");
+      strcpy (macros [nmacros][1], tokens [2]);
+      nmacros++;
+    }
+    break;
+    
+   case INCLUDE:
+    
+    if (condition) include_file (tokens [1], out);
+    break;
+    
+   case UNDEFINE:
+    if (condition) undefine = TRUE;
+    break;
+    
+   case REDEFINE:
+    if (condition) undefine = FALSE;
+    break;
+   
+   case ABC:
+    if (condition) doremi = FALSE;
+    break;
+   
+   case DOREMI:
+    if (condition) doremi = TRUE;
+    break;
+   
+   case COMMENT:
+    ;
+    break;
+    
+   default:
+    warning ("Unknown preprocessor directive - check it out.");
+    ;
+
+  } /* switch (directive) */
+  
+} /* void handle_directive () */
+d629 1
+a629 1
+/* --- End of file abcpp --- */
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d8 2
+a9 1
+ *     Modifications by John Fattaruso, johnf@@ti.com
+d11 1
+a11 1
+ * --- Last updated: 30 October 2002
+d39 2
+a40 2
+#define DATE           "30 October 2002"
+#define VERSION        "1.2.2"
+d102 1
+a102 31
+  int i = 1, optind = 0;
+  
+  /* parse arguments */
+
+  if (argc > 1)
+    while ('-' == argv [i][0]) {
+      if ('s' == argv [i][1])
+        strip = TRUE;
+      else
+      if ('c' == argv [i][1])
+        strip_chords = TRUE;
+      else
+      if ('h' == argv [i][1]) {
+        usage ();
+        exit (0);
+      }
+      else
+        if (MAX_TOKENS == ndefines) {
+          sprintf (tmp, "Too many command line defines (max. %d).",
+                   MAX_TOKENS);
+          error (tmp);
+        }
+      else {
+        strcpy ((char *) defines [i - 1], &argv [i][1]);
+        ndefines++;
+      }
+      optind++;
+      i++;
+      if (i == argc)
+        break;
+    }
+d104 64
+a167 41
+  in = stdin;
+  out = stdout;
+  
+  switch (argc - optind - 1) {
+    
+   case 0: /* use stdin and stdout */
+    ;
+    break;
+    
+   case 1: /* use file + stdout */
+    strcpy (tmp1, argv [++optind]);
+    if (NULL == (in = fopen (tmp1, "r"))) {
+      sprintf (tmp, "%s: can't open %s\n", PROGNAME, tmp1);
+      error (tmp);
+    }
+    break;
+    
+   case 2:
+    
+    strcpy (tmp1, argv [++optind]);
+    if (NULL == (in = fopen (tmp1, "r"))) {
+      sprintf (tmp, "%s: can't open %s\n", PROGNAME, tmp1);
+      error (tmp);
+    }
+    strcpy (tmp2, argv [++optind]);
+    /* check if input and output are the same file */
+    if (!strcmp (tmp1, tmp2)) {
+      sprintf (tmp, "%s and %s cannot be the same file.", tmp1, tmp2);
+      error (tmp);
+    }
+    if (NULL == (out = fopen (tmp2, "w"))) {
+      sprintf (tmp, "%s: can't open %s\n", PROGNAME, tmp2);
+      error (tmp);
+    }
+    break;
+    
+   default:
+    usage ();
+    exit (1);
+    
+  } /* switch */
+d182 1
+a182 1
+  fprintf (stderr, "Copyright 2001 Guido Gonzato <ggonza@@tin.it>\n");
+@

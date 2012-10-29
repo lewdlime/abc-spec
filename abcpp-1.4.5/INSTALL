@@ -1,0 +1,32 @@
+How to install abcpp
+--------------------
+
+1. Linux and other Unices
+-------------------------
+
+Login as root, unpack the archive, and type
+
+  # make; make install
+
+This will install abcpp in /usr/local/bin, and its support files in
+/usr/share/abcpp.
+
+On Red Hat and derivatives, you can build an .rpm for abcpp with this
+command:
+
+  # rpm -ta abcpp-x.y.z.tar.gz
+  
+Then find out where the .rpm was created, and install it as usual:
+  
+  # rpm -i abcpp-x.y.z-1.i386.rpm
+
+
+2. Windows
+----------
+
+Get the binary package and unpack it. Copy ABCPP.EXE to a directory
+included in the PATH. Confused? C:\WINDOWS will do. Make a new folder
+called C:\ABCPP and copy all .ABP files therein.
+
+Done!
+

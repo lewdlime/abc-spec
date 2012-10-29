@@ -1,0 +1,10 @@
+X: 1
+L: 1/4
+K: C alto4
+%
+[C,0G0]\
+%%staffbreak 0.3cm "f"
+K: C treble
+CCEE|GGcc|"^al coda"ccee!coda!|fgc2|\
+%%staffbreak 1.5cm
+!coda!g2C2|]

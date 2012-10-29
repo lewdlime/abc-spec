@@ -1,0 +1,16 @@
+# my_defines.abp
+#
+#define Index:  X:
+#define Title:  T:
+#define Meter:  M:
+#define Length: L:
+#define Tempo:  Q:
+#define Voice:  V:
+#define Key:    K:
+#define Style:  %%staves
+#define Duet    [1~2]
+#define !<(!  !crescendo(!
+#define !<)!  !crescendo)!
+#define !>(!  !diminuendo(!
+#define !>)!  !diminuendo)!
+#define !H!   !fermata!

@@ -1,0 +1,7 @@
+%%deco fp    6 pf   20 0 0 fp
+%%deco (f)   6 pf   20 0 0 (f)
+%%deco (ff)  6 pf   20 0 0 (ff)
+X: 1
+T: New symbols
+K: C
+!fp!CDEF GABc|CDEF !(f)!GABc|!(ff)!CDEF !ff!GABc|

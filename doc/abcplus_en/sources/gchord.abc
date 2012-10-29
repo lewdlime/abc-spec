@@ -1,0 +1,12 @@
+X: 3
+M: 4/4
+L: 1/8
+V: 1 clef=treble
+V: 2 clef=bass
+K: C
+%
+[V:1] C2D2E2F2|G2A2B2c2|
+[V:2] C,,z [C,E,G,]z C,,z [C,E,G,]z|G,,z [G,B,D]z G,,z [G,B,D]z|
+%
+[V:1] C4E4|C2z2z4|
+[V:2] C,,z [C,E,G,]z G,,z [G,B,D]z|C,,z [C,E,G,]z C,,z [C,E,G,]z|

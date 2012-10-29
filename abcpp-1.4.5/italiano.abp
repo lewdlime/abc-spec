@@ -1,0 +1,45 @@
+# italiano.abp
+#
+#define Compositore:  C:
+#define Autore:       C:
+#define Chiave:       K:
+#define LunghNota:    L:
+#define Metro:        M:
+#define Parti:        P:
+#define Tempo:        Q:
+#define Ritmo:        R:
+#define Sottotitolo:  T:
+#define Titolo:       T:
+#define Userdef:      U:
+#define Voce:         V:
+#define Testo:        W:
+#define Indice:       X:
+#define Parole:       w:
+#define Battute:      %%barsperstaff
+#define Stile:        %%staves
+#define Grandezza:    %%scale
+#define Rientro:      %%indent
+#define Duetto        "[1 2]"
+#define Trio          "[1 2 3]"
+#define SATB2         "[(1 2) (3 4)]"
+#define SATB4         "[1 2 3 4]"
+#define Piano         "[RH LH]"
+#define Organo        "[RH LH Ped]"
+#define Piano4        "[RH1 RH2 LH1 LH2]"
+#define Organo4       "[RH1 RH2 LH1 LH2 Ped]"
+#
+# Questi sono superflui, secondo me
+#
+#define Area:         A:
+#define Libro:        B:
+#define Discografia:  D:
+#define File:         F:
+#define Gruppo:       G:
+#define Storia:       H:
+#define Informazioni: I:
+#define Note:         N:
+#define Origini:      O:
+#define Sorgente:     S:
+#define NoteTrascriz: Z:
+#
+# Fine del file italiano.abp

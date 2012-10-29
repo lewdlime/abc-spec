@@ -1,0 +1,19 @@
+X: 1
+T: Impressioni di Settembre (riff)
+C: PFM
+M: 4/4
+L: 1/8
+Q: 1/4=140
+K: Dm octave=-1
+%
+%%MIDI program 1 81
+%%MIDI chordprog 80
+%%MIDI gchord b4
+%%MIDI chordvol 50
+%
+%%MIDI portamento 0
+|:"Dm"D4-DE F2|G A2 c d2 f e-|"C"e d c2 g4-|gfed- dcg2|
+"G"f e2 d2 c =B2-|=B A G3 BG A-|"Dm"A d- d6-|d8
+%%MIDI portamento 60
+:|
+D8-|D8|]

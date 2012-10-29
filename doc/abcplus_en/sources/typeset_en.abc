@@ -1,0 +1,46 @@
+% declare non-predefined fonts
+%%font AvantGarde-Book
+%%font Bookman-Light
+%
+%%titlefont Times-Italic 21
+%%musicspace -0.5cm
+%%textfont Helvetica 26
+%%center Typesetting example
+%%vskip 0.4cm
+%%textfont Bookman-Light 14
+%%begintext justify
+%%This is an example of text inserted into an ABC file. This abcm2ps
+%%feature allows for the writing of songbooks, music collections or other
+%%publications without having to resort to a word processor. Not bad, is
+%%it? Now let's write a brief musical example.
+%%endtext
+X: 1
+T: Etude
+M: 4/4
+L: 1/4
+Q: "Dolcemente"
+K: C
+%
+!p!CCGG|AA!mf!G2|!diminuendo(!FFEE|DD!diminuendo)!C2|
+
+%%vskip 0.4cm
+%%textfont AvantGarde-Book 14
+%%begintext align
+%%Now we'll have a look at something more lively. To start with, let's
+%%switch fonts: from Bookman-Light to AvantGarde-Book. Here is the same
+%%Etude with a few small variations to make it more interesting:
+%%endtext
+X: 2
+T: Etude
+T: second version
+M: 4/4
+L: 1/4
+Q: "Adagio"
+K: C
+%
+.C{DCB,}C.G{AGF}G|A>AG2|.F{GFE}F.E{FED}E|D>DC2|
+%%sep 0.4cm 0.4cm 6cm
+% the following line increases the character size
+%%textfont * 20
+%%center End of the example.
+%%sep 0.4cm 0.4cm 6cm

@@ -1,0 +1,25 @@
+% my_music.abp
+%
+#
+#include my_defines.abp
+#
+Index: 1
+Title: ABCPP test
+Meter: 4/4
+Length: 1/4
+#ifdef MIDI
+Tempo: 1/4 = 80
+#else
+Tempo: "Allegro"
+Voice: 1 clef=treble name="Flute"
+Voice: 2 clef=treble name="Violin"
+Style: Duet
+#endif
+Key: C
+%
+Voice: 1
+cdef|!<(!cde!<)!f|!>(!CDE!>)!F|!H!G4|
+Voice: 2
+ccee|ccgg        |g f e d     |!H!C4|
+%
+% End of file my_music.abp

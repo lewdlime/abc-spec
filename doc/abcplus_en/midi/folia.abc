@@ -1,0 +1,17 @@
+X: 1
+T: La Folia
+M: 3/4
+L: 1/4
+Q: 80
+K: Dm
+%%MIDI gchord c2c2zc
+%%MIDI chordprog 24 % guitar
+"Dm"z3|"A"z3|"Dm"z3|"C"z3|
+"F"z3|"C"z3|"Dm"z3|
+%%MIDI gchord b3
+"A"z3|
+%%MIDI gchord czb
+"Dm"z3|"A"z3|"Dm"z3|"C"z3|
+"F"z3|"C"z3|"A"z3|
+%%MIDI gchord c3
+"Dm"z3|]

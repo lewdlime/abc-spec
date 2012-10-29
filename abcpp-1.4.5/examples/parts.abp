@@ -1,0 +1,27 @@
+X: 1
+T: Part extraction
+C: Guido Gonzato
+M: 4/4
+L: 1/4
+Q: 1/4 = 60
+%%staves [S A T B]
+V: S clef=treble name="Soprano" sname="S"
+V: A clef=treble name="Alto"    sname="A"
+V: T clef=treble name="Tenor"   sname="T"
+V: B clef=bass   name="Bass"    sname="B"
+K: C
+%
+#ifdef SOPRANO ALL
+[V: S] cccc|eeee|gggg|c'c'c'c'|
+#endif
+#ifdef ALTO ALL
+[V: A] cccc|GGGG|cccc|eeee|
+#endif
+#ifdef TENOR ALL
+[V: T] CCCC|EEEE|GGGG|cccc|
+#endif
+#ifdef BASS ALL
+[V: B] CCCC|G,G,G,G,|CCCC|EEEE|
+#endif
+%
+

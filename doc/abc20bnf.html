@@ -1,0 +1,840 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1"></head><body alink="#0000c0" bgcolor="#ffffff" link="#000090" text="#000000" vlink="#000090"><language=vbscript runat="Server">
+
+
+<title>ABC notation 2.0 - BNF specification</title>
+<link href="abc20bnf_files/bnf.css" rel="stylesheet" type="text/css">
+
+
+<h1>; ABC notation 2.0 - BNF specification</h1>
+; This is a specification of the draft ABC 2.0 standard in BNF.<br>
+; This BNF specification is not finished yet - it needs to be elaborated in some places - other places are under discussion.<br>
+; It uses ABNF as defined in <a href="http://www.ietf.org/rfc/rfc2234.txt" target="_blank">http://www.ietf.org/rfc/rfc2234.txt</a>.<br>
+; This file written by <a href="http://www.norbeck.nu/abc">Henrik Norbeck</a>. Also available as a <a href="http://www.norbeck.nu/abc/bnf/abc20bnf.txt">text file</a>.
+
+<hr>
+
+		<a name="abc-file"><b>abc-file</b></a>
+		::= *(<a href="#abc-tune">abc-tune</a> / <a href="#comment">comment</a> / <a href="#xcommand">xcommand</a> / <a href="#file-field">file-field</a> / <a href="#text-line">text-line</a> / <a href="#tex">tex</a>)
+	<small></small><br>
+	
+		<a name="file-field"><b>file-field</b></a>
+		::= <a href="#field-area">field-area</a> / <a href="#field-book">field-book</a> / <a href="#field-composer">field-composer</a> / <a href="#field-discography">field-discography</a> / <a href="#field-file">field-file</a> / <a href="#field-group">field-group</a> / <a href="#field-history">field-history</a> / <a href="#field-length">field-length</a> / <a href="#field-meter">field-meter</a> / <a href="#field-notes">field-notes</a> / <a href="#field-origin">field-origin</a> / <a href="#field-parts">field-parts</a> / <a href="#field-tempo">field-tempo</a> / <a href="#field-rhythm">field-rhythm</a> / <a href="#field-source">field-source</a> / <a href="#field-userdef-print">field-userdef-print</a> / <a href="#field-userdef-play">field-userdef-play</a> / <a href="#field-words">field-words</a> / <a href="#field-transcription">field-transcription</a> / <a href="#field-key">field-key</a> / <a href="#unused-field">unused-field</a>
+	<small>; Default values for the whole file - all fields except number, title and voice</small><br>
+	
+		<a name="text-line"><b>text-line</b></a>
+		::= [<a href="#non-comment-char">non-comment-char</a> <a href="#tex-text">tex-text</a>] <a href="#eol">eol</a>
+	<small>; Free text between tunes. This is a catch-all rule - check for fields first!</small><br>
+	<hr>
+		<a name="abc-tune"><b>abc-tune</b></a>
+		::= <a href="#abc-header">abc-header</a> <a href="#abc-music">abc-music</a> <a href="#eol">eol</a>
+	<small></small><br>
+	
+		<a name="abc-header"><b>abc-header</b></a>
+		::= [<a href="#field-number">field-number</a>] <a href="#title-fields">title-fields</a> *<a href="#other-field">other-field</a> <a href="#field-key">field-key</a>
+	<small>; note that field-number is optional.</small><br>
+	
+		<a name="field-number"><b>field-number</b></a>
+		::= %x58.3A *WSP 1*DIGIT <a href="#header-eol">header-eol</a>
+	<small>; X:</small><br>
+	
+		<a name="title-fields"><b>title-fields</b></a>
+		::= *(<a href="#comment">comment</a> / <a href="#xcommand">xcommand</a> / <a href="#tex">tex</a>) 1*(<a href="#field-title">field-title</a> *(<a href="#comment">comment</a> / <a href="#xcommand">xcommand</a> / <a href="#tex">tex</a>))
+	<small></small><br>
+	
+		<a name="field-title"><b>field-title</b></a>
+		::= %x54.3A *WSP <a href="#tex-text">tex-text</a> <a href="#header-eol">header-eol</a>
+	<small>; T:</small><br>
+	
+		<a name="other-field"><b>other-field</b></a>
+		::= <a href="#field-area">field-area</a> / <a href="#field-book">field-book</a> / <a href="#field-composer">field-composer</a> / <a href="#field-discography">field-discography</a> / <a href="#field-file">field-file</a> / <a href="#field-group">field-group</a> / <a href="#field-history">field-history</a> / <a href="#field-length">field-length</a> / <a href="#field-meter">field-meter</a> / <a href="#field-notes">field-notes</a> / <a href="#field-origin">field-origin</a> / <a href="#field-parts">field-parts</a> / <a href="#field-tempo">field-tempo</a> / <a href="#field-rhythm">field-rhythm</a> / <a href="#field-source">field-source</a> / <a href="#field-userdef-print">field-userdef-print</a> / <a href="#field-userdef-play">field-userdef-play</a> / <a href="#field-voice">field-voice</a> / <a href="#field-words">field-words</a> / <a href="#field-transcription">field-transcription</a> / <a href="#field-macro">field-macro</a> / <a href="#unused-field">unused-field</a> / <a href="#comment">comment</a> / <a href="#xcommand">xcommand</a> / <a href="#tex">tex</a>
+	<small></small><br>
+	
+		<a name="field-area"><b>field-area</b></a>
+		::= %x41.3A *WSP <a href="#tex-text">tex-text</a> <a href="#header-eol">header-eol</a>
+	<small>; A:</small><br>
+	
+		<a name="field-book"><b>field-book</b></a>
+		::= %x42.3A *WSP <a href="#tex-text">tex-text</a> <a href="#header-eol">header-eol</a>
+	<small>; B:</small><br>
+	
+		<a name="field-composer"><b>field-composer</b></a>
+		::= %x43.3A *WSP <a href="#tex-text">tex-text</a> <a href="#header-eol">header-eol</a>
+	<small>; C:</small><br>
+	
+		<a name="field-discography"><b>field-discography</b></a>
+		::= %x44.3A *WSP <a href="#tex-text">tex-text</a> <a href="#header-eol">header-eol</a>
+	<small>; D:</small><br>
+	
+		<a name="field-file"><b>field-file</b></a>
+		::= %x46.3A *WSP <a href="#tex-text">tex-text</a> <a href="#header-eol">header-eol</a>
+	<small>; F:</small><br>
+	
+		<a name="field-group"><b>field-group</b></a>
+		::= %x47.3A *WSP <a href="#tex-text">tex-text</a> <a href="#header-eol">header-eol</a>
+	<small>; G:</small><br>
+	
+		<a name="field-history"><b>field-history</b></a>
+		::= %x48.3A *WSP 1*(<a href="#tex-text">tex-text</a> <a href="#header-eol">header-eol</a>)
+	<small>; H: field contents may extend over many lines, which is deprecated (maybe not allowed any longer?)</small><br>
+	
+		<a name="field-length"><b>field-length</b></a>
+		::= %x4C.3A *WSP <a href="#note-length-strict">note-length-strict</a> <a href="#header-eol">header-eol</a>
+	<small>; L: default note length</small><br>
+	
+		<a name="field-meter"><b>field-meter</b></a>
+		::= %x4D.3A *WSP <a href="#time-signature">time-signature</a> <a href="#header-eol">header-eol</a>
+	<small>; M:</small><br>
+	
+		<a name="field-notes"><b>field-notes</b></a>
+		::= %x4E.3A *WSP <a href="#tex-text">tex-text</a> <a href="#header-eol">header-eol</a>
+	<small>; N:</small><br>
+	
+		<a name="field-origin"><b>field-origin</b></a>
+		::= %x4F.3A *WSP <a href="#tex-text">tex-text</a> <a href="#header-eol">header-eol</a>
+	<small>; O:</small><br>
+	
+		<a name="field-parts"><b>field-parts</b></a>
+		::= %x50.3A *WSP <a href="#parts-play-order">parts-play-order</a> <a href="#header-eol">header-eol</a>
+	<small>; P: in header defines in which order parts should be played</small><br>
+	
+		<a name="field-tempo"><b>field-tempo</b></a>
+		::= %x51.3A *WSP <a href="#tempo">tempo</a> <a href="#header-eol">header-eol</a>
+	<small>; Q:</small><br>
+	
+		<a name="field-rhythm"><b>field-rhythm</b></a>
+		::= %x52.3A *WSP <a href="#tex-text">tex-text</a> <a href="#header-eol">header-eol</a>
+	<small>; R:</small><br>
+	
+		<a name="field-source"><b>field-source</b></a>
+		::= %x53.3A *WSP <a href="#tex-text">tex-text</a> <a href="#header-eol">header-eol</a>
+	<small>; S:</small><br>
+	
+		<a name="field-userdef-print"><b>field-userdef-print</b></a>
+		::= %x55.3A *WSP <a href="#userdef">userdef</a> <a href="#header-eol">header-eol</a>
+	<small>; U:</small><br>
+	
+		<a name="field-userdef-play"><b>field-userdef-play</b></a>
+		::= %x75.3A *WSP <a href="#userdef">userdef</a> <a href="#header-eol">header-eol</a>
+	<small>; u:</small><br>
+	
+		<a name="field-voice"><b>field-voice</b></a>
+		::= %x56.3A *WSP <a href="#voice">voice</a> <a href="#header-eol">header-eol</a>
+	<small>; V: options should be better defined</small><br>
+	
+		<a name="field-words"><b>field-words</b></a>
+		::= %x57.3A *WSP <a href="#tex-text">tex-text</a> <a href="#header-eol">header-eol</a>
+	<small>; W: unformatted words, printed after the tune</small><br>
+	
+		<a name="field-transcription"><b>field-transcription</b></a>
+		::= %x5A.3A *WSP <a href="#tex-text">tex-text</a> <a href="#header-eol">header-eol</a>
+	<small>; Z:</small><br>
+	
+		<a name="field-macro"><b>field-macro</b></a>
+		::= %x6D.3A *WSP 1*(WSP / VCHAR) <a href="#header-eol">header-eol</a>
+	<small>; m: BarFly-style macros - do be defined better</small><br>
+	
+		<a name="field-key"><b>field-key</b></a>
+		::= %x4B.3A *WSP <a href="#key">key</a> <a href="#header-eol">header-eol</a>
+	<small>; K:</small><br>
+	
+		<a name="unused-field"><b>unused-field</b></a>
+		::= (%x45 / %x49 / %4A / %59 / %61-6c / %6e-%74 / %76 / %78-7A) %3A *(WSP / VCHAR) <a href="#eol">eol</a>
+	<small>; E: I: J: Y: a:-l: n:-t: v: x: y: z: ignore - but for backward and forward compatibility</small><br>
+	<hr>
+		<a name="time-signature"><b>time-signature</b></a>
+		::= %x43 / %x43.7C / "none" / <a href="#meter-num">meter-num</a> / 1*DIGIT
+	<small>; C, C|, none or numeric</small><br>
+	
+		<a name="meter-num"><b>meter-num</b></a>
+		::= (1*DIGIT *("+" 1*DIGIT) "/" 1*DIGIT) [1*SP <a href="#meter-num">meter-num</a>]
+	<small></small><br>
+	
+	<small>; e.g. 2/4 , 6/8 , 2+2+3/16 , 11/8 , 2/4 3/4 , 2+2+3/8 2+2+3+2+2+2/8</small><br>
+	
+		<a name="tempo"><b>tempo</b></a>
+		::= (<a href="#note-length-strict">note-length-strict</a> "=" 1*DIGIT) / (%x43 [<a href="#note-length">note-length</a>] "=" 1*DIGIT) / 1*DIGIT
+	<small>; 1*DIGIT is deprecated, kept for compatibility</small><br>
+	
+		<a name="note-length-strict"><b>note-length-strict</b></a>
+		::= 1*DIGIT "/" 1*DIGIT
+	<small></small><br>
+	
+		<a name="key"><b>key</b></a>
+		::= (<a href="#key-def">key-def</a> [1*WSP <a href="#clef">clef</a>]) / <a href="#clef">clef</a> / "HP" / "Hp"
+	<small></small><br>
+	
+		<a name="key-def"><b>key-def</b></a>
+		::= <a href="#basenote">basenote</a> ["#" / "b"] [<a href="#mode">mode</a>] *(1*WSP <a href="#global-accidental">global-accidental</a>)
+	<small></small><br>
+	
+		<a name="mode"><b>mode</b></a>
+		::= <a href="#minor">minor</a> / <a href="#major">major</a> / <a href="#lydian">lydian</a> / <a href="#ionian">ionian</a> / <a href="#mixolydian">mixolydian</a> / <a href="#dorian">dorian</a> / <a href="#aeolian">aeolian</a> / <a href="#phrygian">phrygian</a> / <a href="#locrian">locrian</a>
+	<small></small><br>
+	
+		<a name="minor"><b>minor</b></a>
+		::= "m" ["in" ["o" ["r"]]] 
+	<small>; m, min, mino, minor - all modes are case insensitive</small><br>
+	
+		<a name="major"><b>major</b></a>
+		::= "maj" ["o" ["r"]]
+	<small></small><br>
+	
+		<a name="lydian"><b>lydian</b></a>
+		::= "lyd" ["i" ["a" ["n"]]]
+	<small>; major with sharp 4th</small><br>
+	
+		<a name="ionian"><b>ionian</b></a>
+		::= "ion" ["i" ["a" ["n"]]]
+	<small>; =major</small><br>
+	
+		<a name="mixolydian"><b>mixolydian</b></a>
+		::= "mix" ["o" ["l" ["y" ["d" ["i" ["a" ["n"]]]]]]]
+	<small>; major with flat 7th</small><br>
+	
+		<a name="dorian"><b>dorian</b></a>
+		::= "dor" ["i" ["a" ["n"]]]
+	<small>; minor with sharp 6th</small><br>
+	
+		<a name="aeolian"><b>aeolian</b></a>
+		::= "aeo" ["l" ["i" ["a" ["n"]]]]
+	<small>; =minor</small><br>
+	
+		<a name="phrygian"><b>phrygian</b></a>
+		::= "phr" ["y" ["g" ["i" ["a" ["n"]]]]]
+	<small>; minor with flat 2nd</small><br>
+	
+		<a name="locrian"><b>locrian</b></a>
+		::= "loc" ["r" ["i" ["a" ["n"]]]]
+	<small>; minor with flat 2nd and 5th</small><br>
+	
+		<a name="global-accidental"><b>global-accidental</b></a>
+		::= <a href="#accidental">accidental</a> <a href="#basenote">basenote</a>
+	<small>; e.g. ^f =c _b</small><br>
+	
+		<a name="parts-play-order"><b>parts-play-order</b></a>
+		::= 1*( ALPHA / ( "(" <a href="#parts-play-order">parts-play-order</a> ")" ) *DIGIT) / "."
+	<small>; dots are ignored - for legibility only</small><br>
+	<hr>
+		<a name="voice"><b>voice</b></a>
+		::= 1*(ALPHA / DIGIT) *(1*WSP (<a href="#clef">clef</a> / <a href="#voice-name">voice-name</a> / <a href="#voice-subname">voice-subname</a> / <a href="#voice-transpose">voice-transpose</a> / "merge" / "up" / "down"))
+	<small>; maybe "stems=up" / "stems=down" / "stems=normal" instead?</small><br>
+	
+		<a name="voice-name"><b>voice-name</b></a>
+		::= ("name=" / "nm=") %x22 *<a href="#non-quote">non-quote</a> %x22
+	<small>; \n in name = linefeed</small><br>
+	
+		<a name="voice-subname"><b>voice-subname</b></a>
+		::= ("subname=" / "snm=") %x22 *<a href="#non-quote">non-quote</a> %x22
+	<small>; \n in name = linefeed</small><br>
+	
+		<a name="voice-transpose"><b>voice-transpose</b></a>
+		::= "transpose=" ["-"] 1*DIGIT
+	<small></small><br>
+	<hr>
+		<a name="clef"><b>clef</b></a>
+		::= ( ("clef=" (<a href="#clef-note">clef-note</a> / <a href="#clef-name">clef-name</a>)) / <a href="#clef-name">clef-name</a>) <a href="#clef-line">clef-line</a> ["+8" / "-8"] [1*WSP clef-middle]
+	<small></small><br>
+	
+		<a name="clef-note"><b>clef-note</b></a>
+		::= "G" / "C" / "F" / "P"
+	<small></small><br>
+	
+		<a name="clef-name"><b>clef-name</b></a>
+		::= "treble" / "alto" / "tenor" / "baritone" / "bass" / "mezzo" / "soprano" / "perc" / "none"
+	<small>; Maybe also Doh1-4, Fa1-4</small><br>
+	
+		<a name="clef-line"><b>clef-line</b></a>
+		::= "1" / "2" / "3" / "4" / "5"
+	<small></small><br>
+	
+		<a name="cleff-middle"><b>cleff-middle</b></a>
+		::= "middle=" <a href="#basenote">basenote</a> [<a href="#octave">octave</a>]
+	<small></small><br>
+	<hr>
+		<a name="userdef"><b>userdef</b></a>
+		::= <a href="#userdef-symbol">userdef-symbol</a> *WSP "=" *WSP (<a href="#long-gracing">long-gracing</a> / <a href="#chord-or-text">chord-or-text</a>)
+	<small></small><br>
+	
+		<a name="header-eol"><b>header-eol</b></a>
+		::= *WSP (<a href="#comment">comment</a> / <a href="#eol">eol</a>)
+	<small>; there may be comments at the end of header lines</small><br>
+	<hr>
+		<a name="abc-music"><b>abc-music</b></a>
+		::= *(<a href="#abc-line">abc-line</a> / <a href="#comment">comment</a> / <a href="#xcommand">xcommand</a> / <a href="#tune-field">tune-field</a> / <a href="#tex">tex</a>)
+	<small></small><br>
+	
+		<a name="abc-line"><b>abc-line</b></a>
+		::= <a href="#barline">barline</a> / ([<a href="#barline">barline</a>] 1*<a href="#element">element</a> *(<a href="#barline">barline</a> 1*<a href="#element">element</a>) [<a href="#barline">barline</a>]) <a href="#abc-eol">abc-eol</a>
+	<small></small><br>
+	
+		<a name="barline"><b>barline</b></a>
+		::= ( *":" *"[" 1*"|" *"]" ( *":" / <a href="#nth-repeat-num">nth-repeat-num</a> ) ) / <a href="#invisible-barline">invisible-barline</a> / <a href="#dashed-barline">dashed-barline</a>
+	<small>; e.g. :| | |:: |2 :||:</small><br>
+	
+		<a name="invisible-barline"><b>invisible-barline</b></a>
+		::= "[|]" | "[]"
+	<small></small><br>
+	
+		<a name="dashed-barline"><b>dashed-barline</b></a>
+		::= ":"
+	<small></small><br>
+	
+		<a name="element"><b>element</b></a>
+		::= <a href="#stem">stem</a> / WSP / <a href="#chord-or-text">chord-or-text</a> / <a href="#gracing">gracing</a> / <a href="#grace-notes">grace-notes</a> / <a href="#broken-rhythm">broken-rhythm</a> / <a href="#tuplet">tuplet</a> / <a href="#slur-begin">slur-begin</a> / <a href="#slur-end">slur-end</a> / <a href="#rollback">rollback</a> / <a href="#multi-measure-rest">multi-measure-rest</a> / <a href="#measure-repeat">measure-repeat</a> / <a href="#nth-repeat">nth-repeat</a> / <a href="#end-nth-repeat">end-nth-repeat</a> / <a href="#inline-field">inline-field</a> / <a href="#unused-char">unused-char</a>
+	<small></small><br>
+	<hr>
+		<a name="stem"><b>stem</b></a>
+		::= <a href="#note">note</a> / ( "[" 2*<a href="#note">note</a> "]" )
+	<small>; stem</small><br>
+	
+		<a name="note"><b>note</b></a>
+		::= <a href="#pitch">pitch</a> [<a href="#note-length">note-length</a>] [<a href="#tie">tie</a>]
+	<small>; note</small><br>
+	
+		<a name="pitch"><b>pitch</b></a>
+		::= [<a href="#accidental">accidental</a>] <a href="#basenote">basenote</a> [<a href="#octave">octave</a>]
+	<small></small><br>
+	
+		<a name="rest"><b>rest</b></a>
+		::= (<a href="#normal-rest">normal-rest</a> / <a href="#invisible-rest">invisible-rest</a> / <a href="#inaudible-rest">inaudible-rest</a>) [<a href="#note-length">note-length</a>]
+	<small></small><br>
+	
+		<a name="normal-rest"><b>normal-rest</b></a>
+		::= %x7A
+	<small>; z = normal rest</small><br>
+	
+		<a name="invisible-rest"><b>invisible-rest</b></a>
+		::= %x78
+	<small>; x = invisible rest</small><br>
+	
+		<a name="inaudible-rest"><b>inaudible-rest</b></a>
+		::= %x79
+	<small>; y = inaudible and invisible rest, for spacing</small><br>
+	
+		<a name="accidental"><b>accidental</b></a>
+		::= "^" / "^^" / "_" / "__" / "="
+	<small></small><br>
+	
+		<a name="basenote"><b>basenote</b></a>
+		::= %x43 / %x44 / %x45 / %x46 / %x47 / %x41 / %x42 / %x63 / %x64 / %x65 / %x66 / %x67 / %x61 / %x62
+	<small>; CDEFGABcdefgab</small><br>
+	
+		<a name="octave"><b>octave</b></a>
+		::= 1*"'" / 1*","
+	<small></small><br>
+	
+		<a name="note-length"><b>note-length</b></a>
+		::= (*DIGIT ["/" *DIGIT]) / 1*"/"
+	<small></small><br>
+	
+		<a name="tie"><b>tie</b></a>
+		::= "-"
+	<small>; tie</small><br>
+	<hr>
+		<a name="broken-rhythm"><b>broken-rhythm</b></a>
+		::= <a href="#stem">stem</a> *<a href="#b-elem">b-elem</a> (1*"&lt;" / 1*"&gt;") *<a href="#b-elem">b-elem</a> <a href="#stem">stem</a>
+	<small></small><br>
+	
+		<a name="b-elem"><b>b-elem</b></a>
+		::= WSP / <a href="#chord-or-text">chord-or-text</a> / <a href="#gracing">gracing</a> / <a href="#grace-notes">grace-notes</a> / <a href="#slur-begin">slur-begin</a> / <a href="#slur-end">slur-end</a>
+	<small></small><br>
+	
+		<a name="tuplet"><b>tuplet</b></a>
+		::= "("1*DIGIT [":" [1*DIGIT] ":" [1*DIGIT]] 2*(*<a href="#t-elem">t-elem</a> <a href="#stem">stem</a>)
+	<small></small><br>
+	
+		<a name="t-elem"><b>t-elem</b></a>
+		::= WSP / <a href="#chord-or-text">chord-or-text</a> / <a href="#gracing">gracing</a> / <a href="#grace-notes">grace-notes</a> / <a href="#broken-rhythm">broken-rhythm</a> / <a href="#slur-begin">slur-begin</a> / <a href="#slur-end">slur-end</a>
+	<small></small><br>
+	<hr>
+		<a name="gracing"><b>gracing</b></a>
+		::= "." / <a href="#userdef-symbol">userdef-symbol</a> / <a href="#long-gracing">long-gracing</a>
+	<small>; gracings</small><br>
+	
+		<a name="userdef-symbol"><b>userdef-symbol</b></a>
+		::= "~" / %x48-59 / %x68-77
+	<small>; user definable symbols ~ H-Y, h-w</small><br>
+	
+		<a name="grace-notes"><b>grace-notes</b></a>
+		::= "{" <a href="#acciaccatura">acciaccatura</a> 1*( <a href="#grace-note-stem">grace-note-stem</a> ) "}"
+	<small>; grace notes can have length</small><br>
+	
+		<a name="grace-note-stem"><b>grace-note-stem</b></a>
+		::= <a href="#grace-note">grace-note</a> / ( "[" 2*<a href="#grace-note">grace-note</a> "]" )
+	<small></small><br>
+	
+		<a name="grace-note"><b>grace-note</b></a>
+		::= <a href="#pitch">pitch</a> [<a href="#note-length">note-length</a>]
+	<small>; as note, but without tie</small><br>
+	
+		<a name="acciaccatura"><b>acciaccatura</b></a>
+		::= "/"
+	<small></small><br>
+	<hr>
+		<a name="chord-or-text"><b>chord-or-text</b></a>
+		::= %x22 (<a href="#chord">chord</a> / <a href="#text-expression">text-expression</a>) *(<a href="#chord-newline">chord-newline</a> (<a href="#chord">chord</a> / <a href="#text-expression">text-expression</a>)) %x22
+	<small>; ".."</small><br>
+	
+		<a name="chord"><b>chord</b></a>
+		::= <a href="#basenote">basenote</a> [<a href="#chord-accidental">chord-accidental</a>] [<a href="#chord-type">chord-type</a>] ["/" <a href="#basenote">basenote</a> [<a href="#chord-accidental">chord-accidental</a>]] *<a href="#non-quote">non-quote</a>
+	<small></small><br>
+	
+		<a name="chord-accidental"><b>chord-accidental</b></a>
+		::= "#" / "b" / "="
+	<small></small><br>
+	
+		<a name="chord-type"><b>chord-type</b></a>
+		::= 1*( ALPHA / DIGIT / "+" / "-" )
+	<small>; e.g. m, 7, m7, +, mb5, sus, sus4, maj7, mmaj7, 7sus4, dim</small><br>
+	
+		<a name="text-expression"><b>text-expression</b></a>
+		::= [ "^" / "&lt;" / "&gt;" / "_" / "@" ] 1*<a href="#non-quote">non-quote</a>
+	<small>; above, left, right, below, anywhere</small><br>
+	
+		<a name="non-quote"><b>non-quote</b></a>
+		::= SP / %x21 / %x23-7E
+	<small>; all characters except quote</small><br>
+	
+		<a name="chord-newline"><b>chord-newline</b></a>
+		::= "\n" / ";"
+	<small></small><br>
+	<hr>
+		<a name="slur-begin"><b>slur-begin</b></a>
+		::= "("
+	<small></small><br>
+	
+		<a name="slur-end"><b>slur-end</b></a>
+		::= ")"
+	<small></small><br>
+	
+		<a name="rollback"><b>rollback</b></a>
+		::= "&amp;"
+	<small></small><br>
+	
+		<a name="measure-repeat"><b>measure-repeat</b></a>
+		::= "/" ["/"]
+	<small>; repeat whole measure</small><br>
+	
+		<a name="multi-measure-rest"><b>multi-measure-rest</b></a>
+		::= %5A *DIGIT
+	<small>; e.g. Z4</small><br>
+	
+		<a name="nth-repeat"><b>nth-repeat</b></a>
+		::= "[" ( <a href="#nth-repeat-num">nth-repeat-num</a> / <a href="#nth-repeat-text">nth-repeat-text</a> )
+	<small></small><br>
+	
+		<a name="nth-repeat-num"><b>nth-repeat-num</b></a>
+		::= 1*DIGIT *(("," / "-") 1*DIGIT)
+	<small></small><br>
+	
+		<a name="nth-repeat-text"><b>nth-repeat-text</b></a>
+		::= %x22 *<a href="#non-quote">non-quote</a> %x22
+	<small></small><br>
+	
+		<a name="end-nth-repeat"><b>end-nth-repeat</b></a>
+		::= "]"
+	<small></small><br>
+	
+		<a name="unused-char"><b>unused-char</b></a>
+		::= "#" / "$" / "*" / "+" / ";" / "?" / "@" / "`"
+	<small>; ignore for backward and forward compatibility, but maybe warn about them</small><br>
+	<hr>
+		<a name="inline-field"><b>inline-field</b></a>
+		::= <a href="#ifield-area">ifield-area</a> / <a href="#ifield-book">ifield-book</a> / <a href="#ifield-composer">ifield-composer</a> / <a href="#ifield-discography">ifield-discography</a> / <a href="#ifield-group">ifield-group</a> / <a href="#ifield-history">ifield-history</a> / <a href="#ifield-length">ifield-length</a> / <a href="#ifield-meter">ifield-meter</a> / <a href="#ifield-notes">ifield-notes</a> / <a href="#ifield-origin">ifield-origin</a> / <a href="#ifield-part">ifield-part</a> / <a href="#ifield-tempo">ifield-tempo</a> / <a href="#ifield-rhythm">ifield-rhythm</a> / <a href="#ifield-source">ifield-source</a> / <a href="#ifield-title">ifield-title</a> / <a href="#ifield-voice">ifield-voice</a> / <a href="#ifield-words">ifield-words</a> / <a href="#ifield-lyrics">ifield-lyrics</a> / <a href="#ifield-transcription">ifield-transcription</a> / <a href="#ifield-key">ifield-key</a>
+	<small></small><br>
+	
+		<a name="ifield-area"><b>ifield-area</b></a>
+		::= %5B.%41.%3A <a href="#tex-text-ifield">tex-text-ifield</a> %5D
+	<small>; [A:..]</small><br>
+	
+		<a name="ifield-book"><b>ifield-book</b></a>
+		::= %5B.%42.%3A *WSP <a href="#tex-text-ifield">tex-text-ifield</a> %5D
+	<small>; [B:..]</small><br>
+	
+		<a name="ifield-composer"><b>ifield-composer</b></a>
+		::= %5B.%43.%3A *WSP <a href="#tex-text-ifield">tex-text-ifield</a> %5D
+	<small>; [C:..]</small><br>
+	
+		<a name="ifield-discography"><b>ifield-discography</b></a>
+		::= %5B.%44.%3A *WSP <a href="#tex-text-ifield">tex-text-ifield</a> %5D
+	<small>; [D:..]</small><br>
+	
+		<a name="ifield-group"><b>ifield-group</b></a>
+		::= %5B.%47.%3A *WSP <a href="#tex-text-ifield">tex-text-ifield</a> %5D
+	<small>; [G:..]</small><br>
+	
+		<a name="ifield-history"><b>ifield-history</b></a>
+		::= %5B.%48.%3A *WSP <a href="#tex-text-ifield">tex-text-ifield</a> %5D
+	<small>; [H:..]</small><br>
+	
+		<a name="ifield-length"><b>ifield-length</b></a>
+		::= %5B.4C.3A *WSP <a href="#note-length-strict">note-length-strict</a> %5D
+	<small>; e.g. [L:1/8]</small><br>
+	
+		<a name="ifield-meter"><b>ifield-meter</b></a>
+		::= %5B.4D.3A *WSP meter %5D
+	<small>; e.g. [M:C|] [M: 2+3/8]</small><br>
+	
+		<a name="ifield-notes"><b>ifield-notes</b></a>
+		::= %5B.%4E.%3A *WSP <a href="#tex-text-ifield">tex-text-ifield</a> %5D
+	<small>; [N:..]</small><br>
+	
+		<a name="ifield-origin"><b>ifield-origin</b></a>
+		::= %5B.%4F.%3A *WSP <a href="#tex-text-ifield">tex-text-ifield</a> %5D
+	<small>; [O:..]</small><br>
+	
+		<a name="ifield-part"><b>ifield-part</b></a>
+		::= %5B.%50.%3A *WSP (ALPHA / <a href="#tex-text-ifield">tex-text-ifield</a>) %5D
+	<small>; e.g. [P:A]</small><br>
+	
+		<a name="ifield-tempo"><b>ifield-tempo</b></a>
+		::= %5B.%51.%3A *WSP <a href="#tempo">tempo</a> %5D
+	<small>; e.g. [Q:1/4=120]</small><br>
+	
+		<a name="ifield-rhythm"><b>ifield-rhythm</b></a>
+		::= %5B.%52.%3A *WSP <a href="#tex-text-ifield">tex-text-ifield</a> %5D
+	<small>; e.g. [R:reel]</small><br>
+	
+		<a name="ifield-source"><b>ifield-source</b></a>
+		::= %5B.%53.%3A *WSP <a href="#tex-text-ifield">tex-text-ifield</a> %5D
+	<small>; [S:..]</small><br>
+	
+		<a name="ifield-title"><b>ifield-title</b></a>
+		::= %5B.%54.%3A *WSP <a href="#tex-text-ifield">tex-text-ifield</a> %5D
+	<small>; e.g. [T:second version]</small><br>
+	
+		<a name="ifield-voice"><b>ifield-voice</b></a>
+		::= %5B.%56.%3A *WSP <a href="#voice">voice</a> %5D
+	<small>; [V:..] options should be better defined</small><br>
+	
+		<a name="ifield-words"><b>ifield-words</b></a>
+		::= %5B.%57.%3A *WSP <a href="#tex-text-ifield">tex-text-ifield</a> %5D
+	<small>; [W:..]</small><br>
+	
+		<a name="ifield-lyrics"><b>ifield-lyrics</b></a>
+		::= %5B.%77.%3A *WSP <a href="#tex-text-ifield">tex-text-ifield</a> %5D
+	<small>; [w:..]</small><br>
+	
+		<a name="ifield-transcription"><b>ifield-transcription</b></a>
+		::= %5B.%5A.%3A *WSP <a href="#tex-text-ifield">tex-text-ifield</a> %5D
+	<small>; [Z:..]</small><br>
+	
+		<a name="ifield-key"><b>ifield-key</b></a>
+		::= %5B.4B.3A *WSP <a href="#key">key</a> %5D
+	<small>; e.g. [K:Ador] [K: Bphr ^d]</small><br>
+	
+		<a name="unused-ifield"><b>unused-ifield</b></a>
+		::= %5B (%x45 / %x49 / %4A / %59 / %61-6c / %6e-%74 / %76 / %78-7A) %3A *(WSP / VCHAR) %5D
+	<small>; E: I: J: Y: a:-l: n:-t: v: x: y: z: ignore - but for backward and forward compatibility</small><br>
+	
+		<a name="non-bracket-char"><b>non-bracket-char</b></a>
+		::= *(WSP / %21-%5C / %5E-7E)
+	<small>; all except ]</small><br>
+	<hr>
+		<a name="abc-eol"><b>abc-eol</b></a>
+		::= <a href="#comment">comment</a> / ([<a href="#line-continuation">line-continuation</a> / <a href="#hard-line-break">hard-line-break</a>] *WSP <a href="#eol">eol</a>)
+	<small></small><br>
+	
+		<a name="line-continuation"><b>line-continuation</b></a>
+		::= "\"
+	<small></small><br>
+	
+		<a name="hard-line-break"><b>hard-line-break</b></a>
+		::= "!"
+	<small>; kept for compatibility with abc2win</small><br>
+	<hr>
+		<a name="tune-field"><b>tune-field</b></a>
+		::= <a href="#field-area">field-area</a> / <a href="#field-book">field-book</a> / <a href="#field-composer">field-composer</a> / <a href="#field-discography">field-discography</a> / <a href="#field-group">field-group</a> / <a href="#field-history">field-history</a> / <a href="#field-length">field-length</a> / <a href="#field-meter">field-meter</a> / <a href="#field-notes">field-notes</a> / <a href="#field-origin">field-origin</a> / <a href="#field-part">field-part</a> / <a href="#field-tempo">field-tempo</a> / <a href="#field-rhythm">field-rhythm</a> / <a href="#field-source">field-source</a> / <a href="#field-title">field-title</a> / <a href="#field-voice">field-voice</a> / <a href="#field-words">field-words</a> / <a href="#field-lyrics">field-lyrics</a> / <a href="#field-transcription">field-transcription</a> / <a href="#field-key">field-key</a> / <a href="#unused-field">unused-field</a>
+	<small></small><br>
+	
+		<a name="field-part"><b>field-part</b></a>
+		::= %x50.3A *WSP (ALPHA / <a href="#tex-text">tex-text</a>) <a href="#header-eol">header-eol</a>
+	<small>; P:</small><br>
+	
+		<a name="field-lyrics"><b>field-lyrics</b></a>
+		::= %x56.3A *WSP <a href="#lyrics">lyrics</a> <a href="#header-eol">header-eol</a>
+	<small>; w: formatted lyrics printed under staff</small><br>
+	<hr>
+		<a name="long-gracing"><b>long-gracing</b></a>
+		::= <a href="#gracing-grace">gracing-grace</a> / <a href="#gracing-vol">gracing-vol</a> / <a href="#gracing-style">gracing-style</a> / <a href="#gracing-finger">gracing-finger</a> / <a href="#gracing-phrase">gracing-phrase</a> / <a href="#gracing-exec">gracing-exec</a> / <a href="#gracing-other">gracing-other</a>
+	<small></small><br>
+	
+		<a name="gracing-grace"><b>gracing-grace</b></a>
+		::= "!trill!" / "!mordent!" / "!lowermordent!" / "!pralltriller!" / 
+"!uppermordent!" / "!turn!" / "!roll!" / "!turnx!" / "!invertedturn!" / 
+"!invertedturnx!" / "!trill(!" / "!trill)!"
+	<small></small><br>
+	
+		<a name="gracing-vol"><b>gracing-vol</b></a>
+		::= "!accent!" / "!emphasis!" / "!crescendo(!" / "!crescendo)!" / 
+"!diminuendo(!" / "!diminuendo)!" /  "!p!" / "!pp!" / "!ppp!" / "!pppp!"
+ / "!mp!" / "!mf!" / "!fp!" / "!f!" / "!ff!" / "!fff!" / "!ffff!" / 
+"!sfz!" / "!cresc!" / "!decresc!" / "!dimin!"
+	<small></small><br>
+	
+		<a name="gracing-style"><b>gracing-style</b></a>
+		::= "!+!" / "!open!" / "!snap!" / "!upbow!" / "!downbow!" / "!slide!" / "!arpeggio!"
+	<small></small><br>
+	
+		<a name="gracing-len"><b>gracing-len</b></a>
+		::= "!fermata!" / "!invertedfermata!" / "!tenuto!"
+	<small></small><br>
+	
+		<a name="gracing-finger"><b>gracing-finger</b></a>
+		::= "!0!" / "!1!" / "!2!" / "!3!" / "!4!" / "!5!"
+	<small></small><br>
+	
+		<a name="gracing-phrase"><b>gracing-phrase</b></a>
+		::= "!shortphrase!" / "!mediumphrase!" / "!longphrase!"
+	<small></small><br>
+	
+		<a name="gracing-exec"><b>gracing-exec</b></a>
+		::= "!segno!" / "!coda!" / "!D.S.!" / "!D.C.!" / "!fine!" / ("!repeatbar" *DIGIT "!")
+	<small></small><br>
+	
+		<a name="gracing-other"><b>gracing-other</b></a>
+		::= "!wedge!" / "!thumb!" / "!breath!" / ("!" 1*(SP / %x22-x7E) "!")
+	<small>; any text between !! is allowed</small><br>
+	<hr>
+		<a name="comment"><b>comment</b></a>
+		::= "%" ([<a href="#non-comment-char">non-comment-char</a> *(VCHAR / WSP)]) <a href="#eol">eol</a>
+	<small></small><br>
+	
+		<a name="non-comment-char"><b>non-comment-char</b></a>
+		::= %x20-24 / %x26-%x7E / HTAB
+	<small>; all characters except %</small><br>
+	
+		<a name="xcommand"><b>xcommand</b></a>
+		::= "%%" <a href="#xcom">xcom</a> <a href="#eol">eol</a>
+	<small></small><br>
+	
+		<a name="xcom"><b>xcom</b></a>
+		::= <a href="#xcom-staff">xcom-staff</a> / <a href="#xcom-measurenb">xcom-measurenb</a> / <a href="#xcom-text">xcom-text</a> / <a href="#xcom-layout">xcom-layout</a> / <a href="#xcom-margins">xcom-margins</a> / <a href="#xcom-midi">xcom-midi</a> / <a href="#xcom-other">xcom-other</a>
+	<small>; more need to be defined</small><br>
+	
+		<a name="xcom-staff"><b>xcom-staff</b></a>
+		::= <a href="#xcom-staffbreak">xcom-staffbreak</a> / <a href="#xcom-multicol">xcom-multicol</a> / <a href="#xcom-staves">xcom-staves</a> / <a href="#xcom-indent">xcom-indent</a>
+	<small></small><br>
+	
+		<a name="xcom-staffbreak"><b>xcom-staffbreak</b></a>
+		::= "staffbreak" 1*WSP <a href="#xcom-number">xcom-number</a> <a href="#xcom-unit">xcom-unit</a>
+	<small></small><br>
+	
+		<a name="xcom-multicol"><b>xcom-multicol</b></a>
+		::= "multicol" 1*WSP ("start" / "new" / "end")
+	<small></small><br>
+	
+		<a name="xcom-staves"><b>xcom-staves</b></a>
+		::= "staves" 1*WSP <a href="#stave-voice">stave-voice</a> *( <a href="#bar-staves">bar-staves</a> <a href="#stave-voice">stave-voice</a>)
+	<small></small><br>
+	
+		<a name="stave-voice"><b>stave-voice</b></a>
+		::= <a href="#single-voice">single-voice</a> / <a href="#bracketed-voice">bracketed-voice</a> / <a href="#braced-voice">braced-voice</a> / <a href="#paren-voice">paren-voice</a>
+	<small></small><br>
+	
+		<a name="bracketed-voice"><b>bracketed-voice</b></a>
+		::= "[" *WSP (<a href="#single-voice">single-voice</a> / <a href="#braced-voice">braced-voice</a> / <a href="#paren-voice">paren-voice</a>) 1*(<a href="#bar-staves">bar-staves</a> (<a href="#single-voice">single-voice</a> / <a href="#braced-voice">braced-voice</a> / <a href="#paren-voice">paren-voice</a>)) *WSP "]"
+	<small>; staves joined by bracket</small><br>
+	
+		<a name="braced-voice"><b>braced-voice</b></a>
+		::= "{" *WSP (<a href="#single-voice">single-voice</a> / <a href="#paren-voice">paren-voice</a>) 1*(<a href="#bar-staves">bar-staves</a> (<a href="#single-voice">single-voice</a> / <a href="#paren-voice">paren-voice</a>)) *WSP "}"
+	<small>; staves joined by brace</small><br>
+	
+		<a name="paren-voice"><b>paren-voice</b></a>
+		::= "(" <a href="#single-voice">single-voice</a> 1*( 1*WSP <a href="#single-voice">single-voice</a>) ")"
+	<small>; on same staff</small><br>
+	
+		<a name="single-voice"><b>single-voice</b></a>
+		::= 1*(ALPHA / DIGIT)
+	<small></small><br>
+	
+		<a name="bar-staves"><b>bar-staves</b></a>
+		::= (*WSP "|" *WSP) / 1*WSP
+	<small>; | to not bar</small><br>
+	
+		<a name="xcom-indent"><b>xcom-indent</b></a>
+		::= "indent" 1*WSP <a href="#xcom-number">xcom-number</a> <a href="#xcom-unit">xcom-unit</a>
+	<small></small><br>
+	
+		<a name="xcom-measurenb"><b>xcom-measurenb</b></a>
+		::= "measurenb" / "measurebox" / "measurefirst" / ("setbarnb" 1*WSP 1*DIGIT)
+	<small></small><br>
+	
+		<a name="xcom-text"><b>xcom-text</b></a>
+		::= <a href="#xcom-textline">xcom-textline</a> / <a href="#xcom-textcenter">xcom-textcenter</a> / <a href="#xcom-textblock">xcom-textblock</a>
+	<small></small><br>
+	
+		<a name="xcom-textline"><b>xcom-textline</b></a>
+		::= "text" 1*WSP <a href="#tex-text">tex-text</a>
+	<small></small><br>
+	
+		<a name="xcom-textcenter"><b>xcom-textcenter</b></a>
+		::= "center" 1*WSP <a href="#tex-text">tex-text</a>
+	<small></small><br>
+	
+		<a name="xcom-textblock"><b>xcom-textblock</b></a>
+		::= "begintext" [<a href="#textblock-param">textblock-param</a>] <a href="#eol">eol</a> *(["%%"] <a href="#tex-text">tex-text</a>) "%%endtext"
+	<small></small><br>
+	
+		<a name="textblock-param"><b>textblock-param</b></a>
+		::= "obeylines" / ("fill" / "ragged") / ("align" / "justify") / "skip"
+	<small></small><br>
+	
+		<a name="xcom-layout"><b>xcom-layout</b></a>
+		::= <a href="#xcom-sep">xcom-sep</a> / <a href="#xcom-vskip">xcom-vskip</a> / <a href="#xcom-newpage">xcom-newpage</a>
+	<small></small><br>
+	
+		<a name="xcom-sep"><b>xcom-sep</b></a>
+		::= "sep" [3(1*WSP <a href="#xcom-number">xcom-number</a> <a href="#xcom-unit">xcom-unit</a>)]
+	<small>; space-above, space-below, width</small><br>
+	
+		<a name="xcom-vskip"><b>xcom-vskip</b></a>
+		::= "vskip" 1*WSP <a href="#xcom-number">xcom-number</a> <a href="#xcom-unit">xcom-unit</a>
+	<small></small><br>
+	
+		<a name="xcom-newpage"><b>xcom-newpage</b></a>
+		::= "newpage" [1*WSP 1*DIGIT]
+	<small>; optionally restart page numbering at n</small><br>
+	
+		<a name="xcom-margins"><b>xcom-margins</b></a>
+		::= ("botmargin" / "topmargin" / "leftmargin" / "rightmargin") 1*WSP <a href="#xcom-number">xcom-number</a> <a href="#xcom-unit">xcom-unit</a>
+	<small></small><br>
+	
+		<a name="xcom-midi"><b>xcom-midi</b></a>
+		::= "midi" 1*WSP (<a href="#midi-channel">midi-channel</a> / <a href="#midi-program">midi-program</a> / <a href="#midi-transpose">midi-transpose</a>)
+	<small></small><br>
+	
+		<a name="midi-channel"><b>midi-channel</b></a>
+		::= "channel" 1*WSP <a href="#midi-channel-number">midi-channel-number</a>
+	<small></small><br>
+	
+		<a name="midi-program"><b>midi-program</b></a>
+		::= "program" 1*WSP [<a href="#midi-channel-number">midi-channel-number</a> 1*WSP] <a href="#midi-program-number">midi-program-number</a>
+	<small></small><br>
+	
+		<a name="midi-channel-number"><b>midi-channel-number</b></a>
+		::= %x31-39 / (%x31 %x30-36)
+	<small>; channels 1-16</small><br>
+	
+		<a name="midi-program-number"><b>midi-program-number</b></a>
+		::= %x31-39 / (%x31-39 %x30-39) / (%x31 %x30-31 %x30-39) / (%x31.32 %x30-38)
+	<small>; programs 1-128</small><br>
+	
+		<a name="midi-transpose"><b>midi-transpose</b></a>
+		::= "transpose" 1*WSP ["-"] 1*DIGIT
+	<small></small><br>
+	
+		<a name="xcom-other"><b>xcom-other</b></a>
+		::= *(VCHAR / WSP)
+	<small></small><br>
+	
+		<a name="xcom-number"><b>xcom-number</b></a>
+		::= 1*DIGIT ["." 1*DIGIT]
+	<small></small><br>
+	
+		<a name="xcom-unit"><b>xcom-unit</b></a>
+		::= ["cm" / "pt" / "in"]
+	<small></small><br>
+	<hr>
+		<a name="lyrics"><b>lyrics</b></a>
+		::= *(<a href="#lyrics-char">lyrics-char</a> / <a href="#lyrics-syllable-break">lyrics-syllable-break</a> / <a href="#lyrics-next-bar">lyrics-next-bar</a> / <a href="#lyrics-hold">lyrics-hold</a> / <a href="#lyrics-skip-note">lyrics-skip-note</a> / <a href="#lyrics-nbsp">lyrics-nbsp</a> / <a href="#lyrics-dash">lyrics-dash</a> / <a href="#tex-escape">tex-escape</a>)
+	<small></small><br>
+	
+		<a name="lyrics-ifield"><b>lyrics-ifield</b></a>
+		::= *(<a href="#lyrics-char-ifield">lyrics-char-ifield</a> / <a href="#lyrics-syllable-break">lyrics-syllable-break</a> / <a href="#lyrics-next-bar">lyrics-next-bar</a> / <a href="#lyrics-hold">lyrics-hold</a> / <a href="#lyrics-skip-note">lyrics-skip-note</a> / <a href="#lyrics-nbsp">lyrics-nbsp</a> / <a href="#lyrics-dash">lyrics-dash</a> / <a href="#tex-escape">tex-escape</a>)
+	<small></small><br>
+	
+		<a name="lyrics-syllable-break"><b>lyrics-syllable-break</b></a>
+		::= "-"
+	<small>; break between syllables in a word</small><br>
+	
+		<a name="lyrics-next-bar"><b>lyrics-next-bar</b></a>
+		::= "|"
+	<small>; advance to next bar</small><br>
+	
+		<a name="lyrics-hold"><b>lyrics-hold</b></a>
+		::= "_"
+	<small>; hold syllable for one more note</small><br>
+	
+		<a name="lyrics-skip-note"><b>lyrics-skip-note</b></a>
+		::= "*"
+	<small>; =blank syllable</small><br>
+	
+		<a name="lyrics-nbsp"><b>lyrics-nbsp</b></a>
+		::= "~"
+	<small>; non-breaking space = words on same note</small><br>
+	
+		<a name="lyrics-dash"><b>lyrics-dash</b></a>
+		::= "\-"
+	<small>; printed as a -</small><br>
+	
+		<a name="lyrics-char"><b>lyrics-char</b></a>
+		::= WSP / DIGIT / ALPHA / %x21-29 / %x2B-2C / %x2E-2F / %x3A-40 / %x5B / %x5D / %x5E / %x60 / %x7B-7D
+	<small>; all characters without special meaning</small><br>
+	
+		<a name="lyrics-char-ifield"><b>lyrics-char-ifield</b></a>
+		::= WSP / DIGIT / ALPHA / %x21-29 / %x2B-2C / %x2E-2F / %x3A-40 / %x5B / %x5E / %x60 / %x7B-7D
+	<small>; all characters without special meaning and except ]</small><br>
+	<hr>
+		<a name="tex-text"><b>tex-text</b></a>
+		::= *(WSP / %21-%5B / %5D-7E / <a href="#tex-escape">tex-escape</a>)
+	<small>; text that may contain TeX escapes</small><br>
+	
+		<a name="tex-text-ifield"><b>tex-text-ifield</b></a>
+		::= *(WSP / %21-%5B / %5E-7E / <a href="#tex-escape">tex-escape</a>)
+	<small>; as above, but except ]</small><br>
+	
+		<a name="tex-escape"><b>tex-escape</b></a>
+		::= "\" 1*(VCHAR)
+	<small>; to be defined better</small><br>
+	<hr>
+		<a name="tex"><b>tex</b></a>
+		::= "\" *(VCHAR / WSP) <a href="#eol">eol</a>
+	<small>; deprecated - kept only for backward compatibility with abc2mtex</small><br>
+	
+		<a name="eol"><b>eol</b></a>
+		::= CRLF / LF / CR
+	<small>; only one version should occur in the whole file - win / *nix / mac line breaks</small><br>
+	
+<hr>
+<b>; Core rules in ABNF:</b><br>
+
+	; ALPHA ::= %x41-5A / %x61-7A <small>; A-Z / a-z</small><br>
+	
+	; CR ::= %x0D <small>; carriage return</small><br>
+	
+	; CRLF ::= %x0D.0A <small>; CR+LF</small><br>
+	
+	; DIGIT ::= %x30-39 <small>; 0-9</small><br>
+	
+	; DQUOTE ::= %x22 <small>; "</small><br>
+	
+	; HTAB ::= %x09 <small>; tab</small><br>
+	
+	; LF ::= %x0A <small>; linefeed</small><br>
+	
+	; SP ::= %x20 <small>; space</small><br>
+	
+	; VCHAR ::= %x21-7e <small>; printing chars</small><br>
+	
+	; WSP ::= SP / HTAB <small>; whitespace</small><br>
+	
+<small>
+; %xDD means a hexadecimal code for a character<br>
+; %xCC-DD means any character in that range<br>
+; %xCC.DD means two characters<br>
+; / means or<br>
+; * means 0 or more occurences of <br>
+; 1* means 1 or more occurences of <br>
+; 2* means 2 or more occurences of <br>
+; [ ] means optional<br>
+; ( ) used for grouping<br>
+; " " is a literal string (note that it is case insensitive)<br>
+; ; starts a comment to end of line<br>
+; read more about ABNF at <a href="http://www.ietf.org/rfc/rfc2234.txt" target="_blank">http://www.ietf.org/rfc/rfc2234.txt</a>.<br>
+</small>
+
+
+</language=vbscript></body></html>

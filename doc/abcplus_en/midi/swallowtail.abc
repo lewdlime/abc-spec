@@ -1,0 +1,25 @@
+X:1
+T:The Swallowtail Jig
+R:Jig
+M:6/8
+L:1/8
+Q:180
+K:D
+%%MIDI program 1 22
+E/F/|
+% flattish
+%%MIDI beat 90 90 90 1
+"Em"GEE BEE |GEG BAG |"D"FDD ADD    |dcd "Bm"AGF|
+"Em"GEE BEE |GEG B2c |"D"dcd "Bm"AGF|"Em"GEE E2 E/F/|
+% more swing
+%%MIDI beat 105 90 60 3
+"Em"GEE BEE |GEG BAG |"D"FDD ADD    |dcd "Bm"AGF|
+"Em"GEE BEE |GEG B2c |"D"dcd "Bm"AGF|"Em"GEE E2 B|
+% flattish
+%%MIDI beat 90 90 90 1
+"Em"Bcd e2 f|e2 f edB|Bcd e2 f      |edB "D"d2 c|
+"Em"Bcd e2 f|e2 f edB|"D"dcd "Bm"AGF|"Em"GEE E2B|
+% more swing
+%%MIDI beat 105 90 60 3
+"Em"Bcd e2 f|e2 f edB|Bcd e2 f      |edB "D"d2 c|
+"Em"Bcd e2 f|e2 f edB|"D"dcd "Bm"AGF|"Em"GEE E2z|]

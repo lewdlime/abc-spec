@@ -1,0 +1,14 @@
+%%font Fette-Haenel-Fraktur
+%%titlefont Fette-Haenel-Fraktur 24
+%%textfont Fette-Haenel-Fraktur 18
+%%composerfont Fraktur 16 % alias
+%%vocalfont Fraktur 12
+X: 1
+T: Test: Fette-Haenel-Fraktur font (Fraktur)
+L: 1/4
+K: C
+%
+CDEF|GABc|cBAG|FEDC|
+w: Do Re Mi Fa... ||||
+%%text ABCDEFGHIJKLMNOPQRSTUVWXYZ
+%%text abcdefghijklmnopqrstuvwxyz 1234567890

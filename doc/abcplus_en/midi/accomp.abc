@@ -1,0 +1,20 @@
+X: 1
+M: C
+L: 1/4
+Q: 1/4 = 120
+V: 1 name="Piano"
+V: 2 clef= perc name="Low Tom"
+V: 3 clef= perc name="Open Hi Hat"
+V: 4 clef= perc name="Open Triangle"
+K: C
+%
+[V: 1] CDEF         |GABc                | % Piano
+[V: 2] \
+%%MIDI channel 10
+A,,zA,,z            |A,,zA,,z            | % Low Tom
+[V: 3] \
+%%MIDI channel 10
+z^A,,z^A,,          |z^A,,z^A,,          | % Open Hi Hat
+[V: 4] \
+%%MIDI channel 10
+a/a//a//a/a/a/a/a/a/|a/a//a//a/a/a/a/a/a/| % Open Triangle

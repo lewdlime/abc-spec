@@ -1,0 +1,36 @@
+%%topmargin 2cm
+%%scale 0.7
+%%leftmargin 1cm
+%%rightmargin 1cm
+%%squarebreve 1
+X: 1
+T: Missa Brevis
+C: Andrea Gabrieli (1510? - 1586)
+M: C|
+L: 1/4
+%%staves [1 2 3 4]
+V: 1 clef=treble
+V: 2 clef=treble
+V: 3 clef=treble-8
+V: 4 clef=bass
+U: L = !longphrase!
+K: F
+%
+[P: Kyrie]
+[V: 1] [M:none] F4 c2d2c2LG2 A2B2c2A2G2LF2 G2 c4 =B2 Lc4 z2 G2
+w: Ky- ri - e e- lei ---son e- lei --son Ky-
+[V: 2] [M:none] Lz8 C4 F2G2 FECD E2 F4 E2C2G2A2G2F2E2
+w: Ky- ri - e * * e- lei --son e- lei ---
+[V: 3] [M:none] z8 Lz8 F4 c2d2c2G2A2d2f2e2d2c2
+w: Ky- ri - e e- lei -----
+[V: 4] [M:none] z8 z8 Lz8 C,4 F,2G,2F,2LC,2 D,2E,2
+w: Ky- ri - e e- lei -
+%
+[V: 1] c2d2c2LG2 A2B2A3 GAB c2 d4 c3 B/LA/ G4 A16      |]
+w: ri - e e- lei -----------son.
+[V: 2] A2 F4 E2F2D2 F4 F2 G3 F LF2 E2 F4 E2 F16        |]
+w: ---son Ky- ri- e~e- lei -----son.
+[V: 3] A3 =B Lc4 z2 G2c2d2c2LG2 A2_B2G2LA2 c4 c16      |]
+w: son__ Ky- ri - e e- lei ----son.
+[V: 4] LF,4 z2 C,2F,2G,2F,2LD,2 F,2E,2D,2LB,,2 C,8 F,16|]
+w: son Ky- ri - e e- lei ----son.

@@ -1,0 +1,49 @@
+X: 1
+M: none
+L: 1/4
+K: none
+%
+%%partsfont Times-Bold 16
+%%partsbox 1
+% %textspace 0.5cm
+%
+% %text Dynamics
+P: Dynamics
+!<(!G !<)!G !>(!G !>)!G 
+w: !<(! !<)! !>(! !>)!
+!crescendo(!G !crescendo)!G !diminuendo(!G !diminuendo)!G|
+w: !crescendo(! !crescendo)! !diminuendo(! !diminuendo)!
+!f!G !ff!G !fff!G !ffff!G !mf!G !mp!G !p!G !pp!G !ppp!G !pppp!G !sfz!G|
+w: !f! !ff! !fff! !ffff! !mf! !mp! !p! !pp! !ppp! !pppp! !sfz!
+% %text Fingering
+P: Fingering
+!0!G !1!G !2!G !3!G !4!G !5!G !slide!G !snap!G !thumb!G|
+w: !0! !1! !2! !3! !4! !5! !slide! !snap! !thumb!
+% %text Parts
+P: Tune parts
+!D.C.!G !D.S.!G !coda!G !fine!G !segno!G|
+w: !D.C.! !D.S.! !coda! !fine! !segno!|
+% %text Beams & measure bars
+P: Beams & measure bars
+G///G///!beambr1!G///G/// G///G///!beambr2!G///G///
+w: ** !beambr1! * ** !beambr2! *
+|1-2 G/G/!beamon!|G/!rbstop!G/ G ||
+w: ** !beamon! !rbstop! *
+!longphrase!G !mediumphrase!G !shortphrase!G|
+w: !longphrase! !mediumphrase! !shortphrase!
+% %text Others
+P: Others
+!/!G !//!G !///!G !+!G !>!G !accent!G !arpeggio![CEGc]
+w: !/! !//! !///! !+! !>! !accent! !arpeggio!
+!breath!G !dot!G !downbow!G !upbow!G | !emphasis!G !fermata!G
+w: !breath! !dot! !downbow! !upbow! !emphasis! !fermata!
+!invertedfermata!G !gmark!G !invisible!G !mordent!G !lowermordent!G|
+w: !invertedfermata! !gmark! !invisible! !mordent! !lowermordent!
+!uppermordent!G !open!G !plus!G !pralltriller!G !roll!G !tenuto!G|
+w: !uppermordent! !open! !plus! !pralltriller! !roll! !tenuto!
+C/!trem1!c/ C!trem2!c C2!trem3!c2 C!trem4!c|
+w: * !trem1! * !trem2! * !trem3! * !trem4!
+!trill!G !trill(!G !trill)!G !turn!G !turnx!G !invertedturn!G
+w: !trill! !trill(! !trill)! !turn! !turnx! !invertedturn!
+!invertedturnx!G !wedge!G|]
+w: !invertedturnx! !wedge!

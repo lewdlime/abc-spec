@@ -1,0 +1,186 @@
+% ----- format.tex
+
+% ----- DEBUG
+% \overfullrule=5pt
+% \widowpenalty=10000
+% \clubpenalty=10000
+
+\frenchspacing % we're in Europe after all - \@ not necessary
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+% \setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+% \graphicspath{{./images/}}
+
+\definecolor{defaultshadecolor}{rgb}{0.85,0.85,1}
+\definecolor{shadecolor}{rgb}{0.85,0.85,1}
+\definecolor{gray}{rgb}{0.7,0.7,0.7}
+\definecolor{charcolor}{rgb}{1,0.85,0.85}
+\definecolor{lightred}{rgb}{1,0.7,0.7}
+\definecolor{darkblue}{rgb}{0,0,0.5}
+\definecolor{darkred}{rgb}{0.75,0,0}
+
+% ----- DEFINITIONS
+
+\newcommand{\version}{March 2012} % VERSION
+
+\newcommand{\abcmdev}{7.0.3}
+\newcommand{\abcmstable}{6.6.8}
+\newcommand{\abcmoldstable}{5.9.25}
+\newcommand{\abcmidi}{2012\_03\_27}
+\newcommand{\ABCPLUS}{\textsc{Abc Plus}}
+\newcommand{\ABC}{\textsc{Abc}}
+\newcommand{\abcm}{\texttt{abcm\-2ps}}
+\newcommand{\abctab}{\texttt{abc\-tab\-2ps}}
+\newcommand{\abcpp}{\texttt{abc\-pp}}
+\newcommand{\abcmid}{\texttt{abc\-2mi\-di}}
+\newcommand{\abcMID}{\texttt{abc\-MI\-DI}}
+\newcommand{\abcprt}{\texttt{abc\-2prt}}
+\newcommand{\jedabc}{\textsc{Jed\-Abc}}
+\newcommand{\abcexplorer}{ABC\-ex\-plo\-rer}
+\newcommand{\runabc}{\texttt{run\-abc.\-tcl}}
+\newcommand{\easyabc}{Easy\-ABC}
+\newcommand{\ps}{Post\-Script}
+\newcommand{\bl}{\textbackslash}
+\newcommand{\qs}{\textquotesingle}
+% \newcommand{\devel}{\textcolor{darkred}{\Industry}}
+
+% ----- NEW COMMANDS AND ENVIRONMENTS
+
+\newcommand{\entry}[2]
+{\textsf{#1/#2}}
+
+\newcommand{\app}[1]
+{\texttt{#1}}
+
+\newcommand{\menu}[1]
+{\textsf{#1}}
+
+\newcommand{\file}[1]
+{\texttt{#1}}
+
+\newcommand{\field}[1]
+{\texttt{#1}}
+
+\newcommand{\cmd}[1]
+{\texttt{#1}}
+
+\newcommand{\icmd}[1]
+{\textit{\texttt{#1}\/}}
+
+\newcommand{\metacmd}[1]
+{\texttt{\%\%#1}}
+
+\newcommand{\parm}[1]
+{\textit{$\langle$#1$\rangle$}}
+
+\newcommand{\optparm}[1]
+{\textit{[#1]}}
+
+\newcommand{\car}[1]
+{\colorbox{charcolor}{\rule{0pt}{1ex}\texttt{#1}}}
+
+\newcommand{\notes}[1]
+{\texttt{#1}}
+
+\newcommand{\graph}[1]
+{\textsc{#1}}
+
+\newcommand{\noteseparator}
+{\begin{center}
+\twonotes~\twonotes~\twonotes~\twonotes~\twonotes~\twonotes~\twonotes\
+\end{center}}
+
+\newenvironment{margins}[2]
+{ % begin def
+\begin{list}{}
+{
+\setlength{\leftmargin}{#1}
+\setlength{\rightmargin}{#2}
+} \item
+} % end def
+{\end{list}}
+
+\newenvironment{abcsource}
+{ % beg def
+  \begin{snugshade}
+    \begin{alltt}
+}
+{ % end def
+    \end{alltt}
+  \end{snugshade}
+}
+
+\newenvironment{bytheway}
+{ % beg def
+  \definecolor{shadecolor}{rgb}{0.9,0.9,0.9}
+  \begin{flushright}
+    \begin{minipage}{0.92\linewidth}
+      \begin{snugshade}
+  }      
+{ % end def
+      \end{snugshade}
+    \end{minipage}
+  \end{flushright}
+}
+
+\newenvironment{note}
+{ % beg def
+  \definecolor{shadecolor}{rgb}{0.9,0.9,0.9}
+  \begin{flushright}
+    \begin{minipage}{0.92\linewidth}
+      \begin{snugshade}
+        {\large \Writinghand}~~\textbf{Note}
+}
+{ % end def
+      \end{snugshade}
+    \end{minipage}
+  \end{flushright}
+}
+
+\newenvironment{warn}
+{ % beg def
+  \definecolor{shadecolor}{rgb}{1,0.85,0.85}
+  \begin{flushright}
+    \begin{minipage}{0.92\linewidth}
+      \begin{snugshade}
+         {\large \Pointinghand}~~\textbf{Warning}
+}
+{ % end def
+  \end{snugshade}
+    \end{minipage}
+  \end{flushright}
+}
+
+\newenvironment{vimp}
+{ % beg def
+  \definecolor{shadecolor}{rgb}{1,0.85,0.85}  
+  \begin{flushright}
+    \begin{minipage}{0.92\linewidth}
+      \begin{snugshade}
+        \textcolor{red}%
+	{\large \Stopsign}~~\textbf{Very important!}
+}
+{ % end def
+      \end{snugshade}
+    \end{minipage}
+  \end{flushright}
+}
+
+\newcommand{\score}[1]
+{
+\begin{margins}{-1cm}{-1cm}
+  \includegraphics[width=\linewidth]{#1.pdf}
+\end{margins}
+}
+
+\newcommand{\scoreshort}[1]
+{
+\includegraphics{#1.pdf}
+}
+
+\newcommand{\scorepage}[1]
+{
+\includegraphics[width=\linewidth]{#1.pdf}
+}
+
+% ----- End of file format.tex

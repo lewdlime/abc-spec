@@ -1,0 +1,13 @@
+X: 1
+T: Notes relative to "c"
+L: 1/4
+K: C bass
+cdef|gabc'|CDEF|C,D,E,F,|
+w: c d e f g a b c' C D E F C, D, E, F,
+
+X: 2
+T: Notes relative to "C,"
+L: 1/4
+K: C bass
+C,D,E,F,|G,A,B,C|CDEF|cdef|
+w: C, D, E, F, G, A, B, C C D E F c d e f

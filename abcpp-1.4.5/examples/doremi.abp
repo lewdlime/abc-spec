@@ -1,0 +1,23 @@
+% doremi.abp
+#
+# this file shows how to use #undefine and #redefine
+#
+#doremi
+X: 1
+T: Do \re \mi -> c d e
+C: Gui\do Gonzato
+M: 4/4
+L: 1/4
+Q: 1/4 = 100
+K: C
+%
+#define !tieni! !fermata!
+DO RE MI FA|SOL LA SI !tieni!do|do SI LA SOL|FA MI RE DO|
+#abc
+w: do re mi fa sol la si do, do si la sol fa mi re do.
+#doremi
+DO RE MI FA|SOL LA SI !tieni!do|do SI LA SOL|FA MI RE DO|
+#abc
+w: do re mi fa sol la si do, do si la sol fa mi re do.
+%
+% End of file doremi.abp
