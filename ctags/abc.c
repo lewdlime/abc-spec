@@ -14,6 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "general.h"
+#include "parse.h"
+#include "read.h"
+
 const char *name;               /* name of language */
 kindOption *kinds;              /* tag kinds handled by parser */
 unsigned int kindCount;         /* size of `kinds' list */
