@@ -8,7 +8,7 @@ T: Missa Brevis
 C: Andrea Gabrieli (1510? - 1586)
 M: C|
 L: 1/4
-%%staves [1 2 3 4]
+%%score [1 2 3 4]
 V: 1 clef=treble
 V: 2 clef=treble
 V: 3 clef=treble-8

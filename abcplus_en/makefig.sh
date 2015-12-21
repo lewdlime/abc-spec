@@ -7,7 +7,7 @@ fi
 
 # get the latest stable release of abcm2ps
 # rename it and make sure it's in your PATH
-ABCM2PS="abcm2ps-5.9.25"
+ABCM2PS="abcm2ps-7.8.14"
 # possible issues with the static Linux version?
 
 # also get ps2eps or ps2epsi (recommended)
@@ -16,20 +16,20 @@ PS2EPSI="ps2epsi"
 
 TMP=$(basename $1 .abc)
 
-if [ $TMP = bang -o $TMP = measures-en -o $TMP = riu \
-  -o $TMP = scale2 -o $TMP = staffnonote ]
+if [ $TMP = bang -o $TMP = length -o $TMP = measures_en \
+  -o $TMP = riu -o $TMP = scale2 -o $TMP = staffnonote ]
 then
-  $ABCM2PS -O $TMP.ps sources/$TMP.abc
+  $ABCM2PS -O $TMP.ps Sources/$TMP.abc
 else
-  $ABCM2PS -O $TMP.ps -c sources/$TMP.abc
+  $ABCM2PS -O $TMP.ps -c Sources/$TMP.abc
 fi
 
 if [ $TMP = whistle ] ; then
-  $ABCM2PS -O $TMP.ps -c -F sources/flute.fmt -T1 sources/$TMP.abc
+  $ABCM2PS -O $TMP.ps -c -F Sources/flute.fmt -T1 Sources/$TMP.abc
 fi
 
 if [ $TMP = itachords ] ; then
-  $ABCM2PS -O $TMP.ps -c -F sources/italian sources/$TMP.abc
+  $ABCM2PS -O $TMP.ps -c -F Sources/italian Sources/$TMP.abc
 fi
 
 echo "Converting to PDF..."

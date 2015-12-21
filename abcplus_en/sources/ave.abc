@@ -4,7 +4,7 @@ C: W. A. Mozart
 M: 4/4
 L: 1/4
 Q: "Adagio"
-%%staves [(S A) (T B)] | {(MD1 MD2) (MS1 MS2)}
+%%score [(S A) | (T B)] {(MD1 MD2) | (MS1 MS2)}
 V: S clef=treble name="Soprano" sname="S"
 V: A clef=treble name="Alto" sname="A"
 V: T clef=bass name="Tenore" sname="T"

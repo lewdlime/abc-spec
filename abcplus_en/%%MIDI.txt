@@ -1,0 +1,48 @@
+%%MIDI barlines ...
+%%MIDI bassprog n
+%%MIDI bassvol n
+%%MIDI beat a b c n
+%%MIDI beataccents
+%%MIDI beatmod n
+%%MIDI beatstring <string of f, m and p>
+%%MIDI C n
+%%MIDI channel n
+%%MIDI chordattack n
+%%MIDI chordname name n1 n2 n3 n4 n5 n6
+%%MIDI chordprog n
+%%MIDI chordvol n
+%%MIDI control [bass/chord] n1 n2 
+%%MIDI deltaloudness n
+%%MIDI drone n1 n2 n3 n4 n5
+%%MIDI droneoff
+%%MIDI droneon
+%%MIDI drumbars n
+%%MIDI drummap note midipitch
+%%MIDI drumoff
+%%MIDI drumon
+%%MIDI drum string [drum programs] [drum velocities]
+%%MIDI fermatafixed 
+%%MIDI fermataproportional
+%%MIDI gchordbars n
+%%MIDI gchordoff
+%%MIDI gchordon
+%%MIDI gchord string
+%%MIDI grace a/b
+%%MIDI gracedivider b
+%%MIDI makechordchannels n
+%%MIDI nobarlines ...
+%%MIDI nobeataccents
+%%MIDI noportamento [bass/chord] 
+%%MIDI pitchbend [bass/chord] <high byte> <low byte>
+%%MIDI portamento [bass/chord] n
+%%MIDI program [c] n
+%%MIDI ptstress filename
+%%MIDI randomchordattack n
+%%MIDI ratio n m
+%%MIDI rtranspose n
+%%MIDI stressmodel n
+%%MIDI temperament 1200.5 698.0
+%%MIDI temperamentlinear octave_cents fifth_cents
+%%MIDI termperamentnormal
+%%MIDI transpose n
+%%MIDI trim x/y

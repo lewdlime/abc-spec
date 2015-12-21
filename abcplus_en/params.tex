@@ -11,23 +11,24 @@
 % \setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
 % \graphicspath{{./images/}}
 
+\definecolor{covercolor}{RGB}{50, 110, 180}
+\definecolor{textcovercolor}{rgb}{1, 1, 1}
 \definecolor{defaultshadecolor}{rgb}{0.85,0.85,1}
 \definecolor{shadecolor}{rgb}{0.85,0.85,1}
 \definecolor{gray}{rgb}{0.7,0.7,0.7}
-\definecolor{charcolor}{rgb}{1,0.85,0.85}
+\definecolor{charcolor}{rgb}{0.85,1,0.85}
 \definecolor{lightred}{rgb}{1,0.7,0.7}
 \definecolor{darkblue}{rgb}{0,0,0.5}
 \definecolor{darkred}{rgb}{0.75,0,0}
 
 % ----- DEFINITIONS
 
-\newcommand{\version}{March 2012} % VERSION
+\newcommand{\version}{June 2015} % VERSION
 
-\newcommand{\abcmdev}{7.0.3}
-\newcommand{\abcmstable}{6.6.8}
-\newcommand{\abcmoldstable}{5.9.25}
-\newcommand{\abcmidi}{2012\_03\_27}
-\newcommand{\ABCPLUS}{\textsc{Abc Plus}}
+\newcommand{\abcmdev}{8.8.3}
+\newcommand{\abcmstable}{7.8.14}
+\newcommand{\abcmidi}{2015\_08\_31}
+\newcommand{\ABCPLUS}{\textsc{Abc 2}}
 \newcommand{\ABC}{\textsc{Abc}}
 \newcommand{\abcm}{\texttt{abcm\-2ps}}
 \newcommand{\abctab}{\texttt{abc\-tab\-2ps}}
@@ -42,7 +43,7 @@
 \newcommand{\ps}{Post\-Script}
 \newcommand{\bl}{\textbackslash}
 \newcommand{\qs}{\textquotesingle}
-% \newcommand{\devel}{\textcolor{darkred}{\Industry}}
+\newcommand{\devel}{\textcolor{darkred}{\Industry}}
 
 % ----- NEW COMMANDS AND ENVIRONMENTS
 
@@ -114,7 +115,7 @@
 { % beg def
   \definecolor{shadecolor}{rgb}{0.9,0.9,0.9}
   \begin{flushright}
-    \begin{minipage}{0.92\linewidth}
+    \begin{minipage}{\linewidth} % 0.92
       \begin{snugshade}
   }      
 { % end def
@@ -127,9 +128,9 @@
 { % beg def
   \definecolor{shadecolor}{rgb}{0.9,0.9,0.9}
   \begin{flushright}
-    \begin{minipage}{0.92\linewidth}
+    \begin{minipage}{\linewidth} % 0.92
       \begin{snugshade}
-        {\large \Writinghand}~~\textbf{Note}
+        {\large \Writinghand}~~\textbf{Note}\smallskip
 }
 { % end def
       \end{snugshade}
@@ -141,9 +142,9 @@
 { % beg def
   \definecolor{shadecolor}{rgb}{1,0.85,0.85}
   \begin{flushright}
-    \begin{minipage}{0.92\linewidth}
+    \begin{minipage}{\linewidth} % 0.92
       \begin{snugshade}
-         {\large \Pointinghand}~~\textbf{Warning}
+         {\large \Pointinghand}~~\textbf{Warning}\smallskip
 }
 { % end def
   \end{snugshade}
@@ -155,10 +156,10 @@
 { % beg def
   \definecolor{shadecolor}{rgb}{1,0.85,0.85}  
   \begin{flushright}
-    \begin{minipage}{0.92\linewidth}
+    \begin{minipage}{\linewidth} % 0.92
       \begin{snugshade}
         \textcolor{red}%
-	{\large \Stopsign}~~\textbf{Very important!}
+	{\large \Stopsign}~~\textbf{Very important!}\smallskip
 }
 { % end def
       \end{snugshade}
@@ -168,9 +169,9 @@
 
 \newcommand{\score}[1]
 {
-\begin{margins}{-1cm}{-1cm}
+%\begin{margins}{-0.7cm}{-0.7cm}
   \includegraphics[width=\linewidth]{#1.pdf}
-\end{margins}
+%\end{margins}
 }
 
 \newcommand{\scoreshort}[1]

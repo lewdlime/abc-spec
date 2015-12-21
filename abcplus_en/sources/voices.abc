@@ -1,0 +1,12 @@
+X: 1
+C: 
+M: 4/4
+L: 1/4
+%%score (S T)
+K: C
+%
+% let's make voice S smaller
+[V: S] [I: voicescale 0.6] g2 g2|g2 g2|
+[V: T] CDEF|GABc|
+[V: S] f2 f2|e2 z2|
+[V: T] cBAG|FEDC|

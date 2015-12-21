@@ -1,7 +1,7 @@
 X: 1
 M: 4/4
 L: 1/4
-%%staves [S A T]
+%%score [S | A | T]
 V: S name="Soprano" sname="S"
 V: A name="Alto"    sname="A"
 V: T name="Tenor"   sname="T"

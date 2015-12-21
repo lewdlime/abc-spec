@@ -1,14 +1,15 @@
-%%font Fette-Haenel-Fraktur
-%%titlefont Fette-Haenel-Fraktur 24
-%%textfont Fette-Haenel-Fraktur 18
-%%composerfont Fraktur 16 % alias
-%%vocalfont Fraktur 12
+%%font HollaScript
+%%titlefont HollaScript 24
+%%textfont HollaScript 18
+%%composerfont Jazz 16 % alias
+%%vocalfont Jazz 16
+%%gchordfont Jazz 18
 X: 1
-T: Test: Fette-Haenel-Fraktur font (Fraktur)
+T: Test: HollaScript font (Jazz)
 L: 1/4
 K: C
 %
-CDEF|GABc|cBAG|FEDC|
-w: Do Re Mi Fa... ||||
+"C"CDEF|"G"GA"G7"Bc|"C"cBAG|"G"FEDC|"C"C4|]
+w: Do Re Mi Fa... |||||
 %%text ABCDEFGHIJKLMNOPQRSTUVWXYZ
 %%text abcdefghijklmnopqrstuvwxyz 1234567890

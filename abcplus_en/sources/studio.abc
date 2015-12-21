@@ -2,7 +2,7 @@ X: 1
 T: Studio Op. 10 - N. 3
 C: F. Chopin
 M: C
-%%staves {RH1 (LH1 LH2)}
+%%score {RH1 | (LH1 LH2)}
 V: RH1 clef=treble name="Piano"
 V: LH1 clef=bass
 V: LH2 clef=bass

@@ -2,11 +2,11 @@
 %
 % By Guido Gonzato, PhD <guido.gonzato (at) gmail.com>
 %
-% Last updated: March 30, 2012
+% Last updated: September 3, 2015
 %
 % This document converts to PDF only!
 
-\documentclass[a4paper,fullpage,12pt]{book}
+\documentclass[a4paper,12pt]{book}
 
 % ----- PACKAGES
 
@@ -32,7 +32,9 @@
 \usepackage{lettrine} % dropped capitals
 \usepackage{fancybox} % for \Ovalbox
 \usepackage{fancyvrb} % for fancypage
-\usepackage[margin=2.6cm]{geometry}
+% if the PDF is meant to be read on a computer screen:
+% \usepackage[margin=2.6cm]{geometry}
+\usepackage[outer=2.2cm,inner=3cm,top=3cm,bottom=2.6cm]{geometry}
 \usepackage{setspace} 
 \usepackage{supertabular} % table spanning over 2 pages
 \usepackage{boxedminipage}
@@ -57,46 +59,45 @@ urlcolor=blue,filecolor=blue,breaklinks=true]{hyperref}
 
 % ----- Title page
 
+\pagecolor{covercolor}
+
 \begin{titlepage}
 
   \setcounter{page}{0}
 
-  \pagecolor{shadecolor}
-  \thisfancypage{
-  \Ovalbox}{}
   \centering
 
   {
-    \null % placeholder
+    \null
+    \vspace{0.1cm}
+    
+    \color{textcovercolor}
+     
+    \resizebox{!}{1.2cm}{Making Music with}
+    
     \vspace{0.5cm}
+    
+    \resizebox{!}{1.6cm}{\ABCPLUS{}}
+    
+    \vspace{0.6cm}
+    
+    \begin{margins}{-2.2cm}{-3cm}
+      \makebox[\linewidth]{\includegraphics[width=\linewidth]{music.jpg}}
+    \end{margins}
 
-    \resizebox{!}{0.6cm}{\textit{Guido Gonzato}}
-
-    \vspace{6cm}
-
-    \resizebox{!}{1.15cm}{Making Music with}
-
-    \bigskip
-
-    \resizebox{!}{1.35cm}{\ABCPLUS{}}
-
-    \vspace{4cm}
-
-    \setlength{\fboxsep}{1cm}
-    {\includegraphics[width=.65\textwidth]{titlepage.pdf}}
-
-    \vfill
-
-    \resizebox{!}{0.55cm}{\textit{A guide to the notation and
-    its applications}}
-  
-    \vspace{1cm}
-
+    \vspace{0.6cm}
+    
+    \resizebox{!}{0.65cm}{\textit{A practical guide to modern \ABC{}
+    notation}}
+    
+    \vspace{1.5cm}
+    \resizebox{!}{0.55cm}{by Guido Gonzato}
+    
   }
 
 \end{titlepage}
 
-% ----- Copyright (copyleft actually)
+% ----- Copyright (copyleft, actually)
 
 % \pagestyle{plain}
 \thispagestyle{empty}
@@ -105,8 +106,11 @@ urlcolor=blue,filecolor=blue,breaklinks=true]{hyperref}
 \vfill
 
 \textit{Making Music with \ABCPLUS}
+(formerly, \textit{Making Music with \ABC{} \textsc{Plus}})
 
-Copyleft \textcopyright{} Guido Gonzato, PhD, 2003--2012
+Copyleft \textcopyright{} Guido Gonzato, PhD, 2003--2015
+
+Image cover by Horia Varlan, [CC--BY--2.0], via Wikimedia Commons
 
 Latest update: \today
 
@@ -117,7 +121,7 @@ Typeset with \LaTeX, with the help of the
 }
 
 This manual is released under the terms of the GNU Free Documentation
-License,
+License 1.3:
 
 \url{http://www.gnu.org/licenses/fdl.html}
 
@@ -195,6 +199,12 @@ Cheers,
 
 \hspace{2cm}Guido Gonzato \texttt{=8-)}
 
+\vfill
+
+% \begin{center}
+%   \large{THIS IS A WORK-IN-PROGRESS (\today) RELEASE.}
+% \end{center}
+
 % -----
 
 \mainmatter
@@ -226,18 +236,19 @@ have other advantages.
 Many text-based notations have been invented. \ABC{}, introduced by
 Chris Walshaw in 1991, is one of the best: being simple, easy to learn
 yet very powerful, it has gained widespread popularity. Thousands of
-tunes written in \ABC{} are available on the Internet: in fact,
-this notation is the de facto standard among folk musicians. The
+tunes written in \ABC{} are available on the Internet: in fact, this
+notation is the \emph{de facto} standard among folk musicians. The
 \ABC{} home page is \url{http://abcnotation.com}.
 
 \ABC{} was later expanded to provide multiple voices
-(po\-ly\-pho\-ny), page layout details, and MIDI commands. This was
-called \ABC{} 2.1: its formal description is available at
-\url{http://abcnotation.com/wiki/abc:standard:v2.1}.
+(po\-ly\-pho\-ny), page layout details, and MIDI commands. This is a
+major release of the \ABC{} notation, and has been called \ABCPLUS:
+its formal description is available at
+\url{http://abcnotation.com/wiki/abc:standard:v2.2}.
 
-A few programs implement most \ABC{} 2.1 features and provide some
-extensions. In this guide, this extended notation will be informally
-called \ABCPLUS. The purpose of this guide is to introduce the reader to
+A few programs implement most \ABCPLUS{} features and provide some
+extensions, which in turn may become part of the \ABC{} standard in
+the future. The purpose of this guide is to introduce the reader to
 \ABCPLUS{} and the most important features of its related programs.
 Ideally, people who could benefit from this manual are:
 
@@ -261,17 +272,27 @@ The \ABCPLUS{} home page is \url{http://abcplus.sourceforge.net}.
 
 \paragraph{A Few Words About ``Standards''.}
 
-While \ABC{} is formally defined, the status of \ABCPLUS{} is a bit
-fuzzy. It has no official definition, and it can be described as
-``whatever feature and/or extension to \ABC{} 2.* is implemented by
-the best software available''. In other words, \ABC{} 2.* is a
-theoretical standard, while \ABCPLUS{} is what you can do with
-available programs. It should be emphasised that \ABCPLUS{} is fully
-upwards compatible with \ABC; in the future, these two ``releases'' of
-the same music notation language might even merge.
+% While \ABC{} is formally defined, the status of \ABCPLUS{} is a bit
+% fuzzy. It has no official definition, and it can be described as
+% ``whatever feature and/or extension to \ABC{} 2.* is implemented by
+% the best software available''. In other words, \ABC{} 2.* is a
+% theoretical standard, while \ABCPLUS{} is what you can actually do
+% with available programs. It should be emphasised that \ABCPLUS{} is
+% fully upwards compatible with \ABC; in the future, these two
+% ``releases'' of the same music notation language might even merge.
+
+Although \ABCPLUS{} is formally defined, what you get using software
+differs sligthly from the theoretical standard. This guide will
+concentrate on practical implementations of \ABCPLUS, not on
+theoretical features.
+
+Deprecated syntax variations of old \ABC{} releases will not be
+explained, or even mentioned unless necessary. I'll try and show you
+just \emph{one} way to do things: the right way (hopefully). I will be
+covering most features and options of the available programs.
 
 For the sake of simplicity, in the following I shall simply write
-``\ABC{}'' instead of ``\ABCPLUS{}''.
+``\ABC{}'' instead of ``\ABCPLUS{}''. 
 
 
 % -----
@@ -279,7 +300,9 @@ For the sake of simplicity, in the following I shall simply write
 \subsection{Requirements}
 
 I assume that you have a PC with Windows, Mac OS X, GNU/Linux or other
-Unix variants, and that you are reasonably familiar with computers.
+Unix variants, and that you are reasonably familiar with computers. An
+Android tablet (or even phone) is a viable alternative.
+
 Expertise in the Windows or Unix command line interface is not
 required. It is required, however, that you can read music: the treble
 clef and two octaves starting at middle C should suffice.
@@ -292,27 +315,37 @@ The state of the art of \ABC{} is currently represented by two great
 little programs: the \abcm{} typesetter, and the MIDI creator \abcmid.
 Both are free software released under the GNU GPL license.
 
-\abcm{} reads \ABC{} files and converts them to \ps. This is a format
-related to PDF, and it can be viewed and printed with another free
-program: Ghostscript. This application converts \ps{} files into
-several formats, Acrobat PDF being the most important.
-
-% TO DO: cite Sumatra, ps_view
+\abcm{} reads \ABC{} files and converts them to SVG (Scalable Vector
+Graphics) or \ps. The latter is a file format closely related to PDF,
+and it can be viewed and printed with another free program:
+Ghostscript. This application converts \ps{} files into several
+formats, PDF being the most important. SVG output is currently
+slightly less complete than \ps; however, SVG output is great for Web
+pages, and is fully editable with graphics programs such as Inkscape.
 
 The author of \abcm, an organist and programmer called Jean-Fran\c
 cois Moine, releases ``stable'' and ``development'' versions of his
-program. The latter has many enhancements, but it may be buggy. As of
-this writing,\footnote{\today.} the stable release is \abcmstable, the
-previous stable release is \abcmoldstable, the development release is
-\abcmdev. This guide will only describe features of the former stable
-release \abcmoldstable; the new release introduces several changes
-(most notably, SVG output, UTF--8 support, and transposition) which
-will be described in future versions of this guide. 
+program. The latter has many enhancements, but it may be also contain
+bugs and/or alter the score looks in some way. As of this
+writing,\footnote{\today.} the stable release is \abcmstable, and the
+development release is \abcmdev. In the following sections, features
+provided by the development release will be marked by the \devel{}
+symbol.
 
 \abcmid{} converts \ABC{} files to MIDI. It is part of the \abcMID{}
 package, which include other utility applications. Its usage will be
 described in Part~\ref{sec:sound} (page~\pageref{sec:sound}) of this
 guide.
+
+\begin{warn}
+
+  Please note that \abcm{} and \abcMID{} are not completely compatible
+  with each other. The former supports several \ABC{} features that
+  only make sense in printed music, plus others that the latter does
+  not support (yet); for example, nested tuplets. Therefore, don't be
+  surprised if you can't hear some music features that you can see.
+
+\end{warn}
 
 Since \ABC{} files are plain text files, an essential tool for writing
 them is a good text editor. Countless free editors exist, some of
@@ -332,58 +365,38 @@ application that can be used to write text can also be used to write
 \abcm{} and \abcmid{} are \emph{command-line driven} programs: in
 short, you cannot start them double-clicking on their icons. To use
 these programs, you have to open a command shell (Windows Command
-Prompt or Unix terminal) and type commands. Geeky stuff.
+Prompt, Unix or Android terminal) and type commands. Geeky stuff!
 
-Scared off? Don't worry: the command line can be avoided. There exist
+Scared off? Don't worry: the command line can be avoided. There are
 programs that gather all relevant pieces of software in a single
-integrated environment:
+integrated environment; they are listed at the \ABCPLUS{} home page.
+Let me cite these two options:
 
 \begin{itemize}
 
-  \item \abcexplorer{} (Figure~\ref{fig:abcexplorer}), a Windows
-  application;
+  \item \easyabc{} (Figure~\ref{fig:easyabc}), a multiplatform program
+  available for Windows, GNU/Linux, OS X;
   
-  \item \easyabc, multiplatform;
-  
-  \item \jedabc{} (Figure~\ref{fig:jedabc}), primarily designed for
-  GNU/Linux but also available on Windows;
-  
-  \item \runabc, multiplatform;
-  
-  \item The Folkinfo Abc Converter (Figure~\ref{fig:folkinfo}): a web
-  interface to \abcm{} and \abcMID. Highly recommended.
+  \item The MandolinTab (once Folkinfo) Abc Converter
+  (Figure~\ref{fig:mandolintab}): a web interface to \abcm{} and \abcMID.
   
 \end{itemize}
 
-I feel that none of these programs are ``perfect''; however, I would
-suggest that Windows users adopt \abcexplorer, while GNU/Linux and Mac
-OS X users may prefer \jedabc{} or \runabc{} to other
-general-purpose editors like \app{vim} or \app{gedit}. The Folkinfo
-converter is probably the easiest solution, as you don't have to
-install anything.
-
-Many more applications are available and are listed on the \ABC{}
-home page.
+The MandolinTab converter is probably the easiest solution, as you
+don't have to install anything.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.8 \linewidth]{screenshot-win.png}
-\caption{Managing a tune collection with \abcexplorer.}
-\label{fig:abcexplorer}
+\includegraphics[width=0.9 \linewidth]{screenshot-easyabc.png}
+\caption{Managing a tune  collection with EasyABC.}
+\label{fig:easyabc}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.8 \linewidth]{screenshot-linux.png}
-\caption{Writing a tune with \jedabc{} and \runabc.}
-\label{fig:jedabc}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.8 \linewidth]{screenshot-folkinfo.png}
-\caption{Writing a tune with the Folkinfo abc converter.}
-\label{fig:folkinfo}
+\includegraphics[width=0.9 \linewidth]{screenshot-mandolintab.png}
+\caption{Writing a tune with the MandolinTab abc converter.}
+\label{fig:mandolintab}
 \end{figure}
 
 % -----
@@ -423,7 +436,7 @@ Well, compared to graphical programs \ABC{} has many advantages:
   copied and shared with your friends or students;
   
   \item [low resources:] \ABC{} programs are very compact and can run
-  on old computers, or even handhelds or smartphones;
+  on old computers, or even tablets or smartphones;
   
   \item [portability:] music is created as \ps{} or PDF and
   MIDI files instead of proprietary file formats. This way, you can
@@ -468,11 +481,6 @@ examples of \ABC{} in action. The \ABC{} home page has many links to
 \ABC{} collections; on the \ABCPLUS{} page you will find more complex
 choral scores.
 
-% In my opinion, there is little reason to use other music programs
-% (often an illegal copy), given the many advantages of switching to
-% \ABCPLUS{}. Read this manual and see what \ABCPLUS{} can do for you.
-% You will not regret it!
-
 % -----
 
 \section{Getting Started}
@@ -483,16 +491,17 @@ In order to write music with \ABC, you follow these steps:
   
   \item using an editor, write the tune using the \ABC{} syntax;
   
-  \item convert the tune using \abcm{}, creating a \ps{} file;
+  \item convert the tune using \abcm{}, creating a \ps{} or SVG file;
   
-  \item view the \ps{} file with Ghostscript or other viewer;
+  \item view the \ps{} file with Ghostscript or other viewer, or the
+  SVG file with any browser;
   
-  \item convert the \ps{} file into PDF format;
+  \item convert the \ps{} or the SVG file into PDF format;
   
-  \item create a MIDI file with \abcmid;
+  \item optionally, create a MIDI file with \abcmid;
   
   \item finally, if the music you wrote is free from copyright, publish
-  it for others to enjoy!
+  it on the web for others to enjoy!
   
 \end{enumerate}
 
@@ -512,54 +521,27 @@ Relevant web pages:
   \url{http://ifdo.pugmarks.com/~seymour/runabc/top.html}\\
   \url{http://abcplus.sourceforge.net/#abcMIDI}
 
-  \item Ghostscript and GSview:\\
-  \url{http://pages.cs.wisc.edu/~ghost}
+  \item Ghostscript (all platforms except Android):\\
+  \url{http://www.ghostscript.com/}
   
-  A rather old but convenient version is Ghostscript 5.50, packaged
-  with GSview 2.7. Unlike newer releases of GSview, this release has
-  no nag screen, and is especially suitable for use with \jedabc. Get
-  the installer \file{gsv27550.exe} from:
+  \item Sumatra PDF viewer (Windows):\\
+  \url{http://www.sumatrapdfreader.org/free-pdf-reader.html}
   
-  \url{ftp://mirror.cs.wisc.edu/pub/mirrors/ghost/aladdin/gs550/}
-  
-  European mirror:\\
-  \url{ftp://mirror.switch.ch/mirror/ghost/aladdin/gs550/}
-  
-  However, if you wish to convert the scores to PDF files you will
-  need the latest release of Ghostscript from this directory:\\
-  \url{http://mirror.cs.wisc.edu/pub/mirrors/ghost/GPL/}\\ and the
-  latest GSview from:\\
-  \url{http://mirror.cs.wisc.edu/pub/mirrors/ghost/ghostgum/}
-  
-  \item \abcexplorer:\\
-  \url{http://abc.stalikez.info/abcex.php}
-
   \item \easyabc:\\
-  \url{http://www.nilsliberg.se/ksp/easyabc/}
-
-  \item \jedabc{}:\\
-  \url{http://abcplus.sourceforge.net/#JedABC}
+  \url{http://easyabc.sourceforge.net}
   
-  \item \app{runabc}:\\
-  \url{http://ifdo.pugmarks.com/~seymour/runabc/runabc.html}
-  
-  \item The Folkinfo converter:\\
-  \url{http://www.folkinfo.org/songs/abcconvert.php}
+  \item The MandolinTab (once Folkinfo) converter:\\
+  \url{http://mandolintab.net/abcconverter.php}
   
 \end{itemize}
 
-Ready-to-run packages for Windows, GNU/Linux, and Mac OS X are
-available from the \ABCPLUS{} web site. Besides, all GNU/Linux
-distributions include Ghostscript and the \app{gv}, \app{evince}, and
-\app{okular} viewers.
+Ready-to-run packages for Windows, GNU/Linux, Mac OS X, and Android
+are available from the \ABCPLUS{} web site. Besides, all GNU/Linux
+distributions include Ghostscript and a document viewer that reads
+PostScript. SVG output can be viewed with any web browser.
 
-I assume that GNU/Linux and Mac OS X users will be able to install the
-programs. On Windows, the easiest and highly recommended solution is
-installing \abcexplorer, which includes all relevant programs;
-alternatively, download \abcm{} and \abcmid{}, extract the \file{.exe}
-files from the archives, then copy them to \path{C:\WINDOWS}.
-Ghostscript and GSview are installed like any standard Windows
-applications.
+At the moment, Android has no Ghostscript support and only SVG output
+is usable. It's not as powerful as \ps, but it's pretty close.
 
 % -----
 
@@ -643,10 +625,10 @@ When the programs are installed, we are ready to write our first
 score. As our first example, we shall write the C major scale and
 study the source carefully.
 
-In the following, I'll describe the very basic commands: the
+In the following, I'll describe the very basics of \ABC{} usage: the
 command-line interface, plus an editor. You will see that it's not
 that difficult after all. Anyhow, remember that you can use the
-Folkinfo converter.
+MandolinTab online converter.
 
 There's a very important detail to stress beforehand. Whenever you
 write an \ABC{} file, you'll have to choose a file name. Any file name
@@ -664,7 +646,7 @@ very important, because \abcm{} cannot easily use filenames containing
 spaces. Besides, file names containing spaces are not web-friendly
 either.
 
-Ok? Good. Let's proceed. Commands you must enter are printed in
+Ok? Good, let's proceed. Commands you must enter are printed in
 \textbf{boldface}.
 
 % -----
@@ -673,8 +655,8 @@ Ok? Good. Let's proceed. Commands you must enter are printed in
 
 Start the \cmd{cmd} program. (Windows XP: from
 \entry{Start}{Run{\ldots}}, insert \cmd{cmd}, then click on ``Ok''.
-Windows 7: start the menu then insert \cmd{cmd} in ``Search Programs
-and Files''.)
+Windows 7 and later: start the menu then insert \cmd{cmd} in ``Search
+Programs and Files''.)
 
 A black window will pop up showing a line that reads something like:
 
@@ -689,9 +671,9 @@ type this command:
 C:\bl{}Users\bl{}Guido>\textbf{md abcmusic}
 \end{alltt}
 
-and press the \fbox{Enter} key. This command creates a directory
-(folder), called \cmd{abcmusic}, where we will save our \ABC{} files.
-Now, let's enter (double click) the folder:
+and press the \fbox{Enter} key. This command creates a directory (that
+is, a folder), called \cmd{abcmusic}, where we will save our \ABC{}
+files. Now, let's enter (double click) the folder:
 
 \begin{alltt}
 C:\bl{}Users\bl{}Guido>\textbf{cd abcmusic}
@@ -723,9 +705,9 @@ We are ready to make the \ps{} output using \abcm:
 
 \begin{alltt}
 C:\bl{}Users\bl{}Guido\bl{}abcmusic>\textbf{abcm2ps -c -O= scale1.abc}
-abcm2ps-5.9.25 (November 2, 2011)
+abcm2ps-7.8.14 (March 25, 2015)
 File scale1.abc
-Output written on scale1.ps (1 page, 1 title, 17899 bytes)
+Output written on scale1.ps (1 page, 1 title, 18832 bytes)
 C:\bl{}Users\bl{}Guido\bl{}abcmusic>_
 \end{alltt}
 
@@ -735,7 +717,7 @@ Settings\user\abcmusic}. The score will look like this:
 
 \medskip
 
-\score{scale1}
+\scoreshort{scale1}
 
 \medskip
 
@@ -749,12 +731,12 @@ will get this error message:
 
 \begin{alltt}
 C:\bl{}Users\bl{}user\bl{}abcmusic>\textbf{abcm2ps -c -O= scale1.abc}
-abcm2ps-5.9.25 (November 2, 2011)
+abcm2ps-7.8.14 (March 25, 2015)
 File scale1.abc
 Error in line 3.16: Bad character
    3 C D E F G A B c # c d e f g a b c' |
                      ^
-Output written on scale1.ps (1 page, 1 title, 17877 bytes)
+Output written on scale1.ps (1 page, 1 title, 18810 bytes)
 C:\bl{}Users\bl{}user\bl{}abcmusic>_
 \end{alltt}
 
@@ -763,7 +745,7 @@ Fix the error in the source, save it and convert it again.
 
 % -----
 
-\paragraph{GNU/Linux and Mac OS X.}
+\paragraph{GNU/Linux, Mac OS.}
 
 Open a terminal window (Ubuntu: Applications/Accessories; Mac OS X:
 Applications/Utilities). The first time, and only the first time you
@@ -773,9 +755,9 @@ use the command prompt, type this command:
 $ \textbf{mkdir abcmusic}
 \end{alltt}
 
-and press the \fbox{Enter} key. This command creates a directory (folder),
-called \cmd{abcmusic}, where we will save our \ABC{} files. Now, let's
-enter (double click) the folder:
+and press the \fbox{Enter} key. This command creates a directory (that
+is, a folder), called \cmd{abcmusic}, where we will save our \ABC{}
+files. Now, let's enter (double click) the folder:
 
 \begin{alltt}
 ~$ \textbf{cd abcmusic}
@@ -807,26 +789,26 @@ the \ps{} output using \abcm:
 
 \begin{alltt}
 ~/abcmusic$ \textbf{abcm2ps -c -O= scale1.abc}
-abcm2ps-5.9.25 (November 2, 2011)
+abcm2ps-7.8.14 (March 25, 2015)
 File scale1.abc
-Output written on scale1.ps (1 page, 1 title, 17899 bytes)
+Output written on scale1.ps (1 page, 1 title, 18832 bytes)
 ~/abcmusic$ _
 \end{alltt}
 
-To display the \ps{} output, GNU/Linux users should use the \app{gv}
-or \cmd{evince} or \cmd{okular} viewer. Mac OS X has a Preview utility
-that will automatically open \file{scale1.ps} and convert it into PDF
-format.
+To display the \ps{} output, GNU/Linux users have a wide choice of
+viewers; use \cmd{xdg-open} if you're in doubt. Mac OS X has a Preview
+utility that will automatically open \file{scale1.ps} and convert it
+into PDF format.
 
 \begin{alltt}
-~/abcmusic$ \textbf{evince scale1.ps &}
+~/abcmusic$ \textbf{xdg-open scale1.ps &}
 \end{alltt}
 
 The score will look like this:
 
 \medskip
 
-\score{scale1}
+\scoreshort{scale1}
 
 \medskip
 
@@ -839,39 +821,47 @@ Finally, to convert the file into PDF type this command:
 
 The file \file{scale1.pdf} will be silently created.
 
-\begin{warn}
-
-  Probably, an environment variable needs to be set in order to get A4
-  paper format from \cmd{ps2pdf}. Insert this line in
-  \file{/etc/profile}:
-  
-  \medskip
-  
-  \cmd{export GS\_OPTIONS="-sPAPERSIZE=a4"}
-  
-  \medskip
-  
-  If you use the \app{gv} viewer, remember to set the correct paper
-  format, otherwise the page margins will be displayed incorrectly.
-  
-\end{warn}
-
 Now, let us make a mistake on purpose: insert the \car{\#} character
 instead of the first bar \car{\textbar}. Save and try to convert; you
 will get this error message:
 
 \begin{alltt}
 ~/abcmusic$ \textbf{abcm2ps -c -O= scale1.abc}
-abcm2ps-5.9.25 (November 2, 2011)
+abcm2ps-7.8.14 (March 25, 2015)
 File scale1.abc
 Error in line 3.16: Bad character
    3 C D E F G A B c # c d e f g a b c' |
                      ^
-Output written on scale1.ps (1 page, 1 title, 17877 bytes)
+Output written on scale1.ps (1 page, 1 title, 18810 bytes)
 ~/abcmusic$ _
 \end{alltt}
 
 Fix the error in the source, save it and convert it again.
+
+
+\paragraph{Android (expert users only!)}
+
+To use \ABC{} software on Android, you will have to install a terminal
+emulator beforehand. Please refer to the instructions available at the
+\ABCPLUS{} home page.
+
+Android users will follow almost the same procedure as GNU/Linux
+users. The difference is the lack of Ghostscript for the Android
+platform: you will have to use SVG output instead.
+
+Once your \ABC{} source is ready, use this command line:
+
+\begin{alltt}
+~/abcmusic$ \textbf{abcm2ps -c -O= -X scale1.abc}
+abcm2ps-7.8.14 (March 25, 2015)
+File scale1.abc
+Output written on scale1.xhtml (1 page, 1 title, 5782 bytes)
+~/abcmusic$ _
+\end{alltt}
+
+please note the \cmd{-X} switch: it tells \abcm{} to produce SVG
+output in a file called \file{scale1.xhtml}. To browse this file, just
+open it with a web browser.
 
 % ----
 
@@ -1051,6 +1041,10 @@ The \field{L:} field is used to modify the default note length,
 specifying a value as in \field{L:1/4}. (To change the metre, the
 \field{M:} field is used; see Section~\ref{sec:metre}.)
 
+In addition, \field{L:} may contain a ``keyword'', \field{auto}. In
+this case, note lengths are adjusted to fill a measure. This option
+does not work with \abcmid{}, so you may want to avoid it.
+
 To double, triple etc.\ the length of a note, you write the number 2,
 3, etc.\ immediately after. To divide the value of a note by 2, 4
 etc., you write \car{/2}, \car{/4}, \car{/8}{\ldots} or, equivalently,
@@ -1061,8 +1055,11 @@ digit or the slash are not allowed. Let us see an example:
 X: 1
 L: 1/4
 K: C
-C16|C8|C4|D2 D2|E0 E E F/ F/ F/ F/|
+C16|C8|C4|D2 D2|E0 E E F/ F/|
 G3 G// G/4 G/8 G/8 G/16 G/16 G/16 G/32 G/32 |
+% automatic length
+L:auto
+c | cc | cccc | cccc cccc |
 \end{abcsource}
 
 \score{length}
@@ -1073,10 +1070,13 @@ and its length is four whole notes. The second note is a
 \emph{brevis}, two whole notes. The spacing between notes is
 proportional to their length. (We shall see in
 Section~\ref{sec:format} how to make the spacing of notes constant
-instead of proportional.) Another weird note is the first \car{E} in
-measure 5: the trailing \car{0} denotes a stemless quarter
-note.\footnote{these peculiar note lengths are sometimes found in
-early music.}
+instead of proportional.)
+
+Another weird note is the first \car{E} in measure 5. The trailing
+\car{0} denotes a stemless quarter note, which is sometimes found in
+early music. \devel{} The same effect may obtained with the
+\cmd{!stemless!} \emph{ornament} preceding the note. Ornaments will be
+explained in Section~\ref{sec:ornaments}.
 
 Spaces between notes and measure bars can be freely inserted when the
 notes are longer than one eighth, and are used to improve the
@@ -1134,7 +1134,7 @@ points. This unit of measurement is widely used in typography; a
 ``point'' (\ps{} point) is $\approx$ 0.353mm.
 
 Invisible rests are often used for transcribing piano music; examples
-will be shown in Section~\ref{sec:staves}.
+will be shown in Section~\ref{sec:score}.
 
 % -----
 
@@ -1159,9 +1159,9 @@ Double accidentals are indicated doubling the special character:
 double sharp $\sharp\sharp$ by \car{\char94\char94} and double flat
 $\flat\flat$ by \car{\_\_}.
 
-Quarter tone accidentals are also available. That is, 1/4 and 3/4
-sharps and flats can be obtained adding \car{/} after \car{\char94} or
-\car{\_}, while 3/4 are obtained adding \cmd{3/2}:
+Quarter tone accidentals (microtones) are also available. That is, 1/4
+and 3/4 sharps and flats can be obtained adding \car{/} after
+\car{\char94} or \car{\_}, while 3/4 are obtained adding \cmd{3/2}:
 
 \begin{abcsource}
 X: 1
@@ -1180,6 +1180,8 @@ G ^/G ^G ^3/2G A4|A _/A _A _3/2A G4|G3 ^G A4|A3 _A G4|]
   when you make a MIDI file, to avoid unexpected results.
  
 \end{note}
+
+% TO DO: %%microscale + %%micronewps in 8.*
 
 % -----
 
@@ -1352,8 +1354,9 @@ D^FAd|[D^FAd][D^FAd]>[D^FAd][D^FAd]|[C2-E2-G2-][CEG]z|
   
   \includegraphics{nochord.pdf}
   
-  these are not chords, but different \emph{voices} on the same staff.
-  This will be the subject of Section~\ref{sec:polyphony}.
+  please note that these are not chords, but different \emph{voices}
+  on the same staff. This will be the subject of
+  Section~\ref{sec:polyphony}.
 
 \end{warn}
 
@@ -1418,14 +1421,12 @@ W: tanti auguri felici, tanti auguri a te!
 
 \score{happyb}
 
-\begin{note}
-  
-  Believe or not, ``Happy Birthday'' is a copyrighted song---even if
-  it existed over a century ago. Have a look on Wikipedia. You might
-  want to write to the copyright holder to tell them what you think
-  about it.
-  
-\end{note}
+% \begin{note}
+%   Believe or not, ``Happy Birthday'' is a copyrighted song---even if
+%   it existed over a century ago. Have a look on Wikipedia. You might
+%   want to write to the copyright holder to tell them what you think
+%   about it.
+% \end{note}
 
 Beware of the difference between \car{-} (hyphen) and \car{\_}
 (underscore). Usually, \car{-} is used to skip syllables within a
@@ -1478,10 +1479,10 @@ $\flat$, and \bl{203} prints $\natural$.
 
 \subsection{Foreign Characters}
 
-As long as you write lyrics in English, no problem. Things get tricky
-when you have to write lyrics in foreign languages like Italian,
-German, Hungarian{\ldots} you will need accented characters that don't
-appear on standard US keyboards.
+As long as you write lyrics in English, no problem. Things may get
+tricky when you have to write lyrics in foreign languages like
+Italian, German, Hungarian{\ldots} you will need accented characters
+that don't appear on standard US keyboards.
 
 The problem is solved by using special character sequences: you start
 with \car{\bl}, then a special character, then the character to be
@@ -1514,59 +1515,29 @@ A complete table of symbols is shown in Appendix~\ref{sec:isolatin}.
 
 % -----
 
-\subsubsection{Never Type Accented Letters!}
+\subsubsection{Typing Accented Letters: Beware!}
 
 Let's suppose that your computer keyboard, like mine, provides
-accented letters. You may be tempted not to use backslash sequences.
-After all, the letters you need are there. Typing them directly is
-handy, so why bother?
+accented letters: you'll want to use them instead of backslash
+sequences. There's a catch, though.
 
-Below, I'll tell you the reason why you should bother. But let me
-start with a strong statement:
+As a matter of fact, not all characters were created equal. Different
+computers employ different character encodings: Unicode UTF--8,
+ISO--8859, and many others. A \file{.abc} file encoded in, say,
+UTF--8, could be partially unreadable on computers that use an ISO
+encoding; or vice versa. The problems lies the accented letters and
+special characters.
 
-\begin{vimp}
-  
-  \emph{never ever} write accented letters directly, \emph{always} use
-  backslash sequences instead!
-  
-\end{vimp}
+Fortunately, \abcm{} can cope with files encoded in both UTF--8/16 and
+ISO--8859. It also accepts 16-bit Unicode sequences; for example,
+\cmd{\textbackslash{}U0024} produces \car{\textdollar}.
 
-The reason is somewhat technical. Different computers employ different
-character encodings: ISO 8859--1, UTF--8, and many others. A
-\file{.abc} file encoded in, say, UTF--8, could be unreadable on
-computers that use an ISO encoding; or vice versa.
+ISO--8859 is currently used by EasyABC, while many editors use UTF--8.
+At the end of the day the encoding doesn't matter, \emph{as long as
+you don't want to share your files.}
 
-More importantly, \abcm{} only understands ISO 8859. Let's suppose
-that the following source is encoded in UTF--8. Apparently it's OK,
-but look what happens when you feed it to \abcm:
-
-\begin{abcsource}
-X: 1
-T: Wrong letters: \`a \`e \`\i{} \`o \`u
-L: 1/4
-K: C
-CDEF|GABc|CEGc|cGEC|
-\end{abcsource}
-
-\score{utf8_en}
-
-(The \field{T:} field will be explained later on.) As you can see, the
-title is completely wrong! Now, a question for you: are you sure that
-your editor or \ABC{} application is properly configured to encode its
-files in ISO 8859?
-
-Unless you're a geek and you know what you're doing, the obvious
-conclusion is simple: to obtain foreign characters, always use
-backslash sequences. More information will be given in
-Appendix~\ref{sec:isolatin}.
-
-\begin{note}
-  
-  The latest stable version of \abcm{} supports UTF--8, so the 
-  problems with accented letters are solved. But beware: what encoding
-  does your editor use? Can you change it?
-  
-\end{note}
+If you're in doubt, type accented letters using backslash sequences:
+it's the safest option.
 
 % -----
 
@@ -1588,7 +1559,10 @@ A grace note length can also be specified. (Music theorists need not
 apply{\ldots}.) The grace note length does not depend on \field{L:} or
 \field{M:}; it is always 1/8 for a single grace note, 1/16 for two or
 more, and 1/32 in bagpipe tunes.\footnote{\abcm{} has special support
-for Great Highland Bagpipe music.}
+for Great Highland Bagpipe music, to be explained someday.}
+
+Chords can also be specified instead of a single grace note;
+currently, \abcmid{} can't play these ``grace chords''.
 
 % TO DO: explain bagpipe music!
 
@@ -1596,8 +1570,8 @@ for Great Highland Bagpipe music.}
 X: 1
 L: 1/4
 K: C
-~c2 {/d}c {c2d2}c|{d/c/d/}c {ede}d {fef}e f|
-c/{gfef}d/e/f/ f/e/{gfedc}d/c/|c G E {cBAGFED}C|
+~c2 \{/d\}c \{c2d2\}c|\{d/c/d/\}c \{ede\}c \{fef\}c c|
+c/\{[ceg][gc]\}c/c/c/ c/c/\{gfedc\}c/c/| c2 c \{cBAGFED\}C|
 \end{abcsource}
 
 \score{grace}
@@ -1634,23 +1608,18 @@ breaks should be done with care to avoid ugly results.
 
 Usually, \parm{n} measures in a source line produce \parm{n} measures
 in the score. Sometimes is not convenient to write, say, six measures
-on the same line, because the source becomes less readable.
-
-In such cases, the \car{\bl} character can be added to the end of a
-line to indicate that the staff is to be continued. Similarly, a
-lyrics line (\cmd{w:}) may be broken into several lines in the same
-manner.
-
-The first part of a music line that ends in \car{\bl} must be followed
-by the corresponding \field{w:} line, if any.
+on the same line, because the source becomes less readable. In such
+cases, the \car{\bl} character can be added to the end of a line to
+indicate that the staff is to be continued. Similarly, a lyrics line
+(\cmd{w:}) may be broken into several lines in the same manner. The
+first part of a music line that ends in \car{\bl} must be followed by
+the corresponding \field{w:} line, if any.
 
 The following example yields two staves, four measures each. Do not
 use the \cmd{-c} switch:
 
 \begin{abcsource}
 X: 1
-T: Brother John
-C: Traditional
 L: 1/4
 K: C
 CDEC|CDEC|EFGz|\ % continues
@@ -1690,6 +1659,24 @@ CDEF|GABc| [M:6/8][L:1/8] CDE FFF|GAB c2 z|
 
 % -----
 
+%% This section will be written when the bugs in this features are fixed.
+
+% \subsection{Repeated Sequences}
+% \label{sec:repeats}
+
+% Now that we know inline fields, let's start using them.
+
+% Sometimes, we want to repeat a sequence of notes (or a bar) several
+% times; this can be done with the inline field \field{I: repeat}. It
+% can also specify one or two numbers, 
+
+% \begin{abcsource}
+% \end{abcsource}
+
+% \score{repseq}
+
+% -----
+
 % \noteseparator
 % \newpage
 
@@ -1711,7 +1698,8 @@ the clef.
 \field{K:} must be followed by a note name in upper case, followed by
 \car{m} or \field{min} when the mode is minor. Accidentals are written as
 \car{\#} for $\sharp$ and \car{b} for $\flat$; e.g. \field{Bb}, or
-\field{F\#m}.
+\field{F\#m}. When there are no accidentals, the keyword \field{none}
+may also be used.
 
 I remind you the simple rule to find out the major key according to
 the number of sharps or flats: \emph{one tone} higher than the last
@@ -1730,7 +1718,7 @@ downwards.
 \toprule % \hline
 \textbf{Keys with sharps} & \textbf{Keys with flats}\\
 \midrule % \hline
-none: C (Am) & \\
+none: C (Am) none & \\
 1 sharp: G (Em) & 1 flat: F (Dm) \\
 2 sharps: D (Bm) & 2 flats: B$\flat$ (Gm) \\
 3 sharps: A (F$\sharp$m) & 3 flats: E$\flat$ (Cm) \\
@@ -1842,8 +1830,7 @@ The general syntax of the \field{K:} field is:
 \medskip
 
 \field{K:} \parm{key} \optparm{clef=} \optparm{clef type}
-\optparm{line number} \optparm{+8} \optparm{-8}
-\optparm{middle=\parm{pitch}} \optparm{transpose=}\\
+\optparm{line number} \optparm{+8} \optparm{-8} \optparm{transpose=}\\
 \optparm{stafflines=\parm{number}} \optparm{staffscale=\parm{number}}
 
 \medskip
@@ -1867,20 +1854,20 @@ where:
     \item a clef name: \field{treble}, \field{alto}, \field{tenor},  
     \field{bass};
     
-    \item the word \field{none} indicates that there is no clef;
+    \item the kwyword \field{none} indicates that there is no clef;
     
-    \item the word \field{perc} indicates a clef for percussion 
-    instruments.
+    \item the keyword \field{perc} (or, equivalently, the letter
+    \car{p}) indicates a clef for percussion instruments.
 
   \end{itemize}
 
   \item \parm{line number} indicates the staff line on which the clef
   is drawn;
   
-  \item \field{+8} and \field{-8} draws ``8'' above or below the staff;
+  \item \field{+8} and \field{-8} draws `8' above or below the staff;
   
-  \item \field{middle=}\parm{pitch} (or \field{m=}\parm{pitch})
-  specifies the note on the third (middle) line of the staff;
+  \item \field{\textasciicircum{}8} and \field{\_8} draws `8' above
+  or below the staff, and performs octave transposition;
   
   \item \field{transpose=} (or \field{t=}) currently does nothing, but
   is supported by \abcMID;
@@ -1912,7 +1899,6 @@ Table~\ref{tab:clefs} and in the following example:
   Tenor & \field{K: alto4}\\ Alto & \field{K: alto}\\
   Mezzosoprano & \field{K: alto2}\\
   Soprano & \field{K: alto1}\\
-  G on third line & \field{K: middle=G}\\
   no clef & \field{K: clef=none}\\
   percussions & \field{K: perc}\\
   \bottomrule % \hline
@@ -1932,31 +1918,33 @@ w: none | treble | bass |
 w: baritone | tenor | alto |
 [K: Cm alto2]CEGc | [K: C alto1]CEGc | [K: perc] cdef |]
 w: mezzosoprano | soprano | percussions |
+w: +octave\ indication | \-octave\ indication |
+[K: C treble^8] CEGc | [K: C treble_8] CEGc |
+w: +octave\ and\ transposition * | \-octave\ and\ transposition * |
 \end{abcsource}
 
 \score{clefs_en}
 
-The \field{clef=} field is very useful if you don't want to write
-notes in bass or alto clefs with all those commas. When you specify
-for instance \field{K: C clef=f}, the \car{f} note will be placed on
-the fourth line; with \field{K: C clef=c}, the \car{c} note will be
-placed on the third line.
+The \car{\textbackslash} in the example above are used to insert the
+next character literally, avoiding its special meaning; for example,
+\car{\textbackslash{}-} will not produce a new syllable. (More details
+in Section~\ref{sec:lyrics}.)
 
 The following example shows how the very same notes can be set in
-different clefs:
+different clefs using the \field{octave} field:
 
 \begin{abcsource}
 X: 1
 M: C
 L: 1/4
-K: C clef=f
+K: C clef=bass
 %
-CDEF|GABc||
-K: C clef=F
-CDEF|GABc||
-K: C clef=c
+CDEF|GABC||
+K: C clef=F octave=-1
 CDEF|GABc||
 K: C clef=C
+CDEF|GABc||
+K: C clef=G octave=1
 CDEF|GABc||
 \end{abcsource}
 
@@ -2030,8 +2018,9 @@ The \field{M:} field specifies the tune metre in different ways:
   
   \item as a textual indication: \field{M:C} or \field{M:C|} denote the
   metre of 4/4 and cut time (``alla breve''). Ancient metre
-  indications are supported: \field{M: c} \field{M: c.} \field{M: o}
-  \field{M: o.};
+  indications are also supported: \field{M: o} (perfect minor),
+  \field{M: o.} (perfect major), \field{M: c} (imperfect minor),
+  \field{M: c.} (imperfect major);
 
   \item as an explicit measure duration: \field{M:C|=2/1};
 
@@ -2106,8 +2095,6 @@ K: C
 
 \score{repeat2_en}
 
-% TO DO: does abc2midi support |1-3 and |"stuff"?
-
 Most commonly, the start repeat bar \cmd{|:} is left out. This is not
 a problem in printed music, but \abcMID{} is a bit more restrictive
 and expects to find it. In Section~\ref{sec:ornaments} we will see how
@@ -2115,8 +2102,8 @@ to include \cmd{|:} in the source, but hide it in printed output.
 
 \begin{warn}
 
-  Unfortunately, repeats are a field where incompatibilities between
-  \abcm{} and \abcMID{} emerge:
+  Unfortunately, repeats are one of the features that make \abcm{} and
+  \abcMID{} not compatible with each other. In the latter,
   
   \begin{itemize}
     
@@ -2156,15 +2143,16 @@ w: birth-day dear fel-low, hap-py birth-day to you!
 \score{happyb2_en}
 
 The text indication in the \field{Q:} field (``Allegro'' in our
-example) may be omitted. In Section~\ref{sec:format} we will learn how
-to change the title fonts.
+example) may be omitted. Besides, \field{Q:} also accepts references
+to previous tempos, as in \field{Q: 3/8 = 1/4}.
+
+In Section~\ref{sec:format} we will learn how to change the title
+fonts.
 
 % -----
 
 \subsection{Parts: \icmd{P:}}
 \label{sec:parts}
-
-% TO DO: P: in multivoice tunes
 
 Some tunes are made of different parts, possibly repeated in several
 ways. To specify the order in which parts are played, the \field{P:}
@@ -2173,8 +2161,6 @@ parts should be played; in the body, it marks the beginning of each
 part.
 
 Part names must be upper-case letters, \car{A}\ldots\car{Z}.
-
-% TO DO: sure? what about P: Trio?
 
 \begin{abcsource}
 X: 1
@@ -2383,7 +2369,7 @@ C,4 C,4 C,4 C,4 C,4 C,4 C,4 C,4 C,4]
 s: "_6;4" "_\#" "_\b6;\b" "_6+" "_6-" "_-" "_\bl{}\bl{}6" "_/6" "_6 4"
 \end{abcsource}
 
-\score{figuredbass}
+\scoreshort{figuredbass}
 
 % TO DO: check it out
 % TO DO: add reference
@@ -2415,7 +2401,7 @@ K: C
 !p!GGG!>!!f!G|!segno!GG!trill!G2|!coda!GGG!fine!G|
 \end{abcsource}
 
-\score{deco}
+\scoreshort{deco}
 
 As shown above, some symbols are printed above the staff by default,
 while others are printed under the staff. Forcing ornaments under or
@@ -2568,8 +2554,6 @@ symbols; definitions are shown in Table~\ref{tab:deco}.
 \end{center}
 \end{table}
 
-% TO DO: letters supported by abc2midi.
-
 % -----
 
 \subsection{Information Fields}
@@ -2701,6 +2685,13 @@ This score was written alternating the lines of voices 1 and 2, as in
 real sheet music. We could have written all of the music of voice 1,
 then all of voice 2: the result would have been the same.
 
+\begin{warn}
+
+  In multivoice tunes, the \field{P:} field must be indicated in the
+  top voice.
+
+\end{warn}
+
 We can add some declarations in the header that specify the properties
 of each voice. The syntax is:
 
@@ -2741,7 +2732,7 @@ The voice name may be a digit or a word (e.g.\ ``Tenor''). Possible
   forces the grace note stem direction.
   
   \item \field{dyn=}\parm{up}, \field{down} or \field{auto}
-  forces the placement of dynamic marks.
+  forces the placement of dynamics marks.
 
   \item \field{lyrics=}\parm{up}, \field{down} or \field{auto}
   forces the placement of lyrics lines.
@@ -2805,21 +2796,19 @@ K: C
 
 % -----
 
-\subsection{Positioning Voices: \icmd{\%\%staves} and \icmd{\%\%score}}
-\label{sec:staves}
+\subsection{Positioning Voices: \icmd{\%\%score}}
+\label{sec:score}
 
 % TO DO: floating staves
 
 A polyphonic piece is played by several instruments, which have one or
 two staves associated to them. One or more voices belong to each
 staff. To specify how voices and instruments are positioned on the
-score, you use either the \metacmd{staves} or \metacmd{score} command.
-They are basically equivalent, with one exception I shall explain
-later on.
+score, you use the \metacmd{score} command.
 
-The \metacmd{staves} command must be followed by voice names,
+The \metacmd{score} command must be followed by voice names,
 optionally enclosed by a pair of delimiters: \field{[]}, \field{\{\}},
-and \field{()}. As other commands in the header, \metacmd{staves} must
+and \field{()}. As other commands in the header, \metacmd{score} must
 appear before \field{K:}. In the tune body, if voices exist that were
 not declared in the header, they will be ignored.
 
@@ -2829,34 +2818,26 @@ The delimiters are used following these rules:
   
   \item when voices are not enclosed by any delimiter, they will be
   simply printed on separate staves. The uppermost voice in the system
-  will be the first voice in the list. For example: \metacmd{staves
+  will be the first voice in the list. For example: \metacmd{score
   SATB}
   
   \item when two or more voices are enclosed in square brackets, their
   staves will be joined by a thick bracket. This arrangement is often
-  used for the choral part of a system. For example: \metacmd{staves
+  used for the choral part of a system. For example: \metacmd{score
   [SATB]}
   
   \item when two or more voices are enclosed in curly brackets,
   their staves will be joined by a bracket. This is typically used for
-  the piano or organ part of a system: \metacmd{staves \{MS MD\}}
+  the piano or organ part of a system: \metacmd{score \{MS MD\}}
   
   \item if two or more voices are enclosed between parentheses,
-  they will be printed on the same staff. For example: \metacmd{staves
+  they will be printed on the same staff. For example: \metacmd{score
   [(SA) (TB)]}
   
-  \item by default, measure bars cross the staves. To keep measure bars
-  within each staff, use the character \car{\textbar} between all
-  voice names: \metacmd{staves [S|A|T|B]}
+  \item to add measure bars that cross the staves, use the character
+  \car{\textbar} between voice names: \metacmd{score [S|A|T|B]}
   
 \end{itemize}
-
-The command \metacmd{score} accepts the same parameters as
-\metacmd{staves}, but measure bar indications work the opposite way:
-by default, they \emph{do not} cross the staves. Therefore,
-\metacmd{staves [S|A|T|B]} is the same as \metacmd{score [SATB]},
-while \metacmd{staves [SATB]} is the same as \metacmd{score
-[S|A|T|B]}.
 
 When two voices are printed on the same staff, the stem direction
 indicates the first voice (up) or the second (down).
@@ -2871,7 +2852,7 @@ X: 1
 T: Studio Op. 10 - N. 3
 C: F. Chopin
 M: C
-%%staves {RH1 (LH1 LH2)}
+%%score {RH1 | (LH1 LH2)}
 V: RH1 clef=treble name="Piano"
 V: LH1 clef=bass
 V: LH2 clef=bass
@@ -2898,7 +2879,7 @@ C: W. A. Mozart
 M: 4/4
 L: 1/4
 Q: "Adagio"
-%%staves [(S A) (T B)] | {(MD1 MD2) (MS1 MS2)}
+%%score [(S A) | (T B)] | {(MD1 MD2) | (MS1 MS2)}
 V: S clef=treble name="Soprano" sname="S"
 V: A clef=treble name="Alto" sname="A"
 V: T clef=bass name="Tenore" sname="T"
@@ -2964,7 +2945,7 @@ T: Missa Brevis
 C: Andrea Gabrieli (1510? - 1586)
 M: C|
 L: 1/4
-%%staves [1 2 3 4]
+%%score [1 2 3 4]
 V: 1 clef=treble
 V: 2 clef=treble
 V: 3 clef=treble-8
@@ -2997,7 +2978,7 @@ w: son Ky- ri - e e- lei ----son.
 
 % -----
 
-\subsection{Voice Splitting: \icmd{\&}}
+\subsection{Voice Splitting (Overlay): \icmd{\&}}
 
 In some pieces of music, a voice splits in two in some measures only.
 To avoid introducing an additional and almost identical voice, you can
@@ -3015,14 +2996,17 @@ C>CE>E|G>GG2 & G2E2|C>CE>E|G>GG2 & x2E2|
 \score{double}
 
 % \devel
-To end a voice overlay, \cmd{\&)} may be used.
+To end a voice overlay, use \cmd{\&)}. You can also add multiple
+overlay voices extending for several measures. A multiple measure
+overlay begins with \cmd{(\&)}, voices are added with \car{\&},
+and sequence ends with \cmd{\&}.
 
 The above piece can be equivalently written as:
 
 \begin{abcsource}
 X: 1
 L: 1/4
-%%staves (1 2)
+%%score (1 2)
 K: C
 [V:1] C>CE>E|G>GG2|C>CE>E|G>Gc2|
 [V:2] x4    |G2E2 |x4    |x2E2 |
@@ -3041,16 +3025,16 @@ instrument is playing.
 
 The \metacmd{staves} field can be changed as needed, specifying only
 the voices that are actually playing. Here is as example ``Riu riu
-chiu'', a well-known 16th century villancico. The result is shown in
-Figure~\ref{fig:riuriuchiu}.
+chiu'', a well-known 16th century \emph{villancico}. The result is
+shown in Figure~\ref{fig:riuriuchiu}.
 
 The \metacmd{vskip 0} command is used to make a small vertical break
 between parts. \metacmd{vskip} always inserts a break, even if one
 specifies 0. % TO DO: EXPLAIN BETTER
 
 Please note that strange \cmd{\bl{}241} in the title. It is the octal
-code of the \car{!`} character in the ISO 8859-1 (Latin1) character
-set. We will cover this topic in Appendix~\ref{sec:isolatin}.
+code of the \car{!`} character: we will cover this topic in
+Appendix~\ref{sec:isolatin}.
 
 % WARNING - \bl added
 
@@ -3064,7 +3048,7 @@ C: Villancico (Spain, XVIth century)
 M: C|
 L: 1/2
 Q: 1/2 = 240
-%%staves 3
+%%score 3
 V: 3 clef=treble-8 name="Tenor\bl{}nBass"
 K: Am
 % men only
@@ -3076,7 +3060,7 @@ w: Di\'os guar-d\'o el lo-bo de nue-stra cor-de-ra,
 w: Di\'os guar-d\'o el lo-bo de nue-stra cor-de-ra.
 % CHANGE OF SYSTEM: everyone
 %%vskip 0
-%%staves [1 2 3 4]
+%%score [1 | 2 | 3 | 4]
 V: 1 clef=treble   name="S" sname="S"
 V: 2 clef=treble   name="A" sname="A"
 V: 3 clef=treble-8 name="T" sname="T"
@@ -3105,7 +3089,7 @@ w: Di\'os guar-d\'o el lo-bo, el lo-bo de nue-stra cor-de-ra.
 [V: 4] A,A,G,A,|F,2E,F,|D,2A,,D,2D,A,,A,,  |D,2D,2  |
 % CHANGE OF SYSTEM: men only
 %%vskip 0
-%%staves 3
+%%score 3
 [V: 3] AAGA|F2EG2GEF|D4|AAGA|
 w: El lo-bo ra-bio-so la qui-so mor-der, Mas Di\'os po-de-
 [V: 3] F2FEGGEF|D4|AAGA|F2FEDEFG|
@@ -3129,7 +3113,7 @@ don't contain notes:
 X: 1
 M: 4/4
 L: 1/4
-%%staves [S A T]
+%%staves [S | A | T]
 V: S name="Soprano" sname="S"
 V: A name="Alto"    sname="A"
 V: T name="Tenor"   sname="T"
@@ -3224,11 +3208,11 @@ used commands:
 %%vocalfont      Times-Roman 14  % for lyrics
 %%gchordfont     Times-Bold 14   % for chords
 % MISC
-%%measurebox     true  % measure numbers in a box
-%%measurenb      0     % measure numbers at first measure
-%%exprabove      true  % expressions above the staff
-%%barsperstaff   5     % number of measures per staff
-%%scale          0.7   % magnification
+%%measurebox     true    % measure numbers in a box
+%%measurenb      0       % measure numbers at first measure
+%%ornament       above   % expressions above the staff
+%%barsperstaff   5       % number of measures per staff
+%%scale          0.7     % magnification
 %
 X: 1
 T: Ave Verum
@@ -3237,7 +3221,7 @@ C: W. A. Mozart (1756-1791)
 M: 4/4
 L: 1/4
 Q: "Adagio"
-%%staves [(1 2) (3 4)] | {(5 6) (7 8)}
+%%staves [(1 2) (3 4)] | {(5 6) | (7 8)}
 V: 1 clef=treble name="Soprano" sname="S"
 V: 2 clef=treble name="Alto" sname="A"
 V: 3 clef=bass name="Tenore" sname="T"
@@ -3303,6 +3287,8 @@ body. For example, \cmd{I: vocalfont Times-Roman 12} is equivalent to
 Let's use both methods to change the \field{vocalfont} parameter in a
 tune:
 
+ERROR!
+
 \begin{abcsource}
 X: 1
 T: Silent Night
@@ -3315,7 +3301,7 @@ G>A G E3|G>A G E3|d2 d B2 B|c2 c G3|
 %%vocalfont Times-Roman 12
 w: A- stro del ciel, Par- gol di- vin, \
 w: mi- te~A- gnel- lo re- den- tor!
-[I: vocalfont Times-Italic 12]
+%%vocalfont Times-Italic 12
 w: Voi- ci No- \"el, \^o dou- ce nuit! \
 w: L'\'e- toile~est l\`a qui nous con- duit.
 %%vocalfont Times-Roman 12
@@ -3363,13 +3349,13 @@ note on the previous staff. Top and bottom staves are numbered 1 and
 X:1
 M:C
 L:1/4
-U: X = !xstem!
+U: m = !xstem!
 K:none
-%%staves 1 2
+%%score 1 2
 V:1
 cc//c//c//c//c2 | [CEGc]2[CEGc]2|
 V:2 bass
-XC,C,//XC,//C,//XC,//XC,2|X[C,,C,]2[C,,C,]2|
+mC,C,//mC,//C,//mC,//mC,2|m[C,,C,]2[C,,C,]2|
 V:1
 z4|c/G/[I: staff 2]E,/[I: staff 2]C,/ z2|]
 V:2
@@ -3539,6 +3525,32 @@ W: It's useful to emphasise $0some parts.
 %       if words are included, go down wordsspace and write them;
 %       if history/notes are included, go down textspace and write them.
 %    Hereby lineskip and parskip given by "lineskipfac" and "parskipfac".
+
+% -----
+
+\subsection{Voice Scale}
+\label{sec:voicescale}
+
+Sometimes, one wants to print a voice smaller than others. This can be
+accomplished using the \cmd{I: voicescale} command, as in the
+following example:
+
+\begin{abcsource}
+X: 1
+C: 
+M: 4/4
+L: 1/4
+%%score (S T)
+K: C
+%
+% let's make voice S smaller
+[V: S] [I: voicescale 0.6] g2 g2|g2 g2|
+[V: T] CDEF|GABc|
+[V: S] f2 f2|e2 z2|
+[V: T] cBAG|FEDC|
+\end{abcsource}
+
+\score{voices}
 
 % -----
 
@@ -3964,7 +3976,8 @@ source code and look at the \ps{} code it produces.
 
 % -----
 
-\subsection{New \ps{} Routines}
+\subsection{New \ps{} and SVG Routines}
+\label{sec:customps}
 
 The \metacmd{postscript} command, followed by code in the \ps{}
 language, adds new routines or redefines existing ones. For example,
@@ -3983,6 +3996,9 @@ The \ps{} routines in \abcm{} are defined in the \abcm{} source file
 
 When writing several lines of \ps{} code, using the sequence
 \metacmd{beginps}{\ldots} \metacmd{endps} is recommended.
+
+In addition to \ps{}, commands in SVG can also be specified using
+\metacmd{beginsvg}{\ldots} \metacmd{endsvg}.
 
 % -----
 
@@ -4003,31 +4019,31 @@ provided by Christopher Lane.} should be saved in a format file called
 % (adapted for more abcm2ps versions by Hudson Lacerda)
 
 % -- latin guitar chords
-beginps
+beginps nosvg
 /gcshow { % string gcshow
-	-5 0 RM
-	dup 0 get
-	dup dup 65 ge exch 71 le and {
-	65 sub [(La) (Si) (Do) (Re) (Mi) (Fa) (Sol)] exch get show
-	} { currentfont /Encoding get exch get glyphshow
-	} ifelse
-	dup length 1 sub 1 exch getinterval
-	%
-	dup mark exch (m) search {
-	  (di) search { cleartomark } {
-	    length exch pop exch (aj) anchorsearch { cleartomark } {
-	      pop /tempstr 4 2 roll cleartomark
-	      def tempstr exch (-) putinterval tempstr
-	    } ifelse
-	  } ifelse
-	} {
-	cleartomark } ifelse
+  -5 0 RM
+  dup 0 get
+  dup dup 65 ge exch 71 le and {
+  65 sub [(La) (Si) (Do) (Re) (Mi) (Fa) (Sol)] exch get show
+  } { currentfont /Encoding get exch get glyphshow
+  } ifelse
+  dup length 1 sub 1 exch getinterval
+  %
+  dup mark exch (m) search {
+    (di) search { cleartomark } {
+      length exch pop exch (aj) anchorsearch { cleartomark } {
+        pop /tempstr 4 2 roll cleartomark
+        def tempstr exch (-) putinterval tempstr
+      } ifelse
+    } ifelse
+  } {
+  cleartomark } ifelse
 
-	currentdict /gchshow known {
-	  /gchshow load cshow   %% abcm2ps older than abcm2ps-5.1.0
-	} {
-	  show                  %% abcm2ps-5.1.0 or newer
-	} ifelse
+  currentdict /gchshow known {
+    /gchshow load cshow   %% abcm2ps older than abcm2ps-5.1.0
+  } {
+    show                  %% abcm2ps-5.1.0 or newer
+  } ifelse
 }!
 endps
 
@@ -4167,11 +4183,11 @@ An excellent site boasting a wide collection of free and high-quality
 \url{http://www.moorstation.org/typoasis/typoasis1.htm}. Under the
 ``Designers'' section, select Dieter Steff\-man\-n's page.
 
-Let us see how to add a new font called Fette Haenel Fraktur,
-downloaded as \file{FetteHaenel.\-zip}. Obviously, the procedure will
-be very similar with other fonts.
+Let us see how to add a new font called Holla Script, downloaded as
+\file{Holla.\-zip}. Obviously, the procedure will be very similar with
+other fonts.
 
-Unzip the archive and copy \file{FHaenelf.pfb} to the directory
+Unzip the archive and copy \file{HollaScript.pfb} to the directory
 containing the Ghostscript fonts. (Other acceptable file types are
 those ending in \file{.gsf} and \file{.pfa}.) Supposing that you
 installed Ghostscript and its fonts in default locations, this
@@ -4179,7 +4195,7 @@ directory is \path{C:\Program Files\gs\gs8.71\lib} on Windows systems.
 (If needed, change the version number). On Ubuntu GNU/Linux and
 possibly other Unix variants, the directory is 
 \path{/usr/share/fonts/type1/gsfonts/}. If you're unsure, open a
-terminal window and type the following command 
+terminal window and type the following command:
 
 \begin{verbatim}
 $ gs -h
@@ -4190,19 +4206,19 @@ to get a list of directories where Ghostscript searches for fonts.
 Now edit Ghostscript's font list. On Windows, this file is
 \path{C:\Program Files\gs\gs8.71\lib\Fontmap} (create it if it doesn't
 exist), on Ubuntu it is
-\path{/var/lib/defoma/gs.d/dirs/fonts/Fontmap}. Move to the bottom of
+\path{/var/lib/ghostscript/fonts/Fontmap}. Move to the bottom of
 the file and add this line:
 
 \begin{verbatim}
-/Fette-Haenel-Fraktur (FHaenelf.pfb) ;
+/HollaScript (/usr/share/fonts/type1/gsfonts/HollaScript.pfb) ;
 \end{verbatim}
 
-which defines a new font called \file{Fette-Haenel-Fraktur}. If you
-wish, you can also define an \emph{alias}, i.e.\ an alternate name for
-the same font:
+which defines a new font called \file{HollaScript}. If you wish, you
+can also define an \emph{alias}, i.e.\ an alternate name for the same
+font:
 
 \begin{verbatim}
-/Fraktur /Fette-Haenel-Fraktur ;
+/Jazz /HollaScript ;
 \end{verbatim}
 
 We are now ready to use the new font in \ABC{} files. First of all,
@@ -4210,18 +4226,19 @@ declare it using the \metacmd{font} command followed by the font name.
 Look at this:
 
 \begin{abcsource}
-%%font Fette-Haenel-Fraktur
-%%titlefont Fette-Haenel-Fraktur 24
-%%textfont Fette-Haenel-Fraktur 18
-%%composerfont Fraktur 16 % alias
-%%vocalfont Fraktur 12
+%%font HollaScript
+%%titlefont HollaScript 24
+%%textfont HollaScript 18
+%%composerfont Jazz 16 % alias
+%%vocalfont Jazz 16
+%%gchordfont Jazz 18
 X: 1
-T: Test: Fette-Haenel-Fraktur font (Fraktur)
+T: Test: HollaScript font (Jazz)
 L: 1/4
 K: C
 %
-CDEF|GABc|cBAG|FEDC|
-w: Do Re Mi Fa... ||||
+"C"CDEF|"G"GA"G7"Bc|"C"cBAG|"G"FEDC|"C"C4|]
+w: Do Re Mi Fa... |||||
 %%text ABCDEFGHIJKLMNOPQRSTUVWXYZ
 %%text abcdefghijklmnopqrstuvwxyz 1234567890
 \end{abcsource}
@@ -4282,6 +4299,21 @@ K: none
 
 % -----
 
+\section{Tablatures}
+\label{sec:tablatures}
+
+A \emph{tablature} is a simplified notation format that indicates
+instrument fingerings instead of notes. It's meant to be easier than
+standard notation, and it's usually employed by folk musicians and in
+introductory music courses for children.
+
+\abcm{} supports native ``tablatures'' (fingering charts, actually)
+for the tin whistle, and provides support for user-defined tablatures.
+The latter are quite complex to implement, and will be covered in
+future release of this manual.
+
+% -----
+
 \subsection{Tin Whistle Fingerings}
 
 True to the folk music origins of \ABC, \abcm{} can print tin
@@ -4297,8 +4329,9 @@ other traditional music.
 \end{bytheway}
 
 The format file \file{flute.fmt} contains fingerings definitions for
-tin whistles in several keys and \emph{galoubet}, a French three-hole
-fipple flute.
+tin whistles in several keys; for the \emph{galoubet}, a French
+three-hole fipple flute, and other three-hole instruments (English
+pipe (and tabor) and Basque txistu).
 
 Specify the following parameters on the \abcm{} command line:
 
@@ -4619,7 +4652,7 @@ The second method makes the source more readable.
 \subsection{Voices and Instruments}
 
 Let us consider ``Ave Verum'', which we examined in
-Section~\ref{sec:staves}. Converting it with \abcmid, we obtain a MIDI
+Section~\ref{sec:score}. Converting it with \abcmid, we obtain a MIDI
 file in which the music output is played by the MIDI instrument 1:
 acoustic piano. In many cases, we don't need anything else: to study
 the part before a concert, the MIDI is just fine. But \abcmid{} can do
@@ -4637,7 +4670,7 @@ C: W. A. Mozart
 M: 4/4
 L: 1/4
 Q: "Adagio"
-%%staves [(S A) (T B)] {(MD1 MD2) (MS1 MS2)}
+%%staves [(S A) (T B)] {(MD1 MD2) | (MS1 MS2)}
 V: S clef=treble name="Soprano" sname="S"
 V: A clef=treble name="Alto" sname="A"
 V: T clef=bass name="Tenor" sname="T"
@@ -4819,7 +4852,7 @@ X: 1
 T: La Folia
 M: 3/4
 L: 1/4
-Q: 80
+Q: 1/4=80
 K: Dm
 %%MIDI gchord c2c2zc
 %%MIDI chordprog 24 % guitar
@@ -4943,7 +4976,6 @@ To remove temporarily the emphasis programmed with \metacmd{MIDI
 beat}, use the command \metacmd{MI\-DI no\-beataccents}. To resume it,
 use \metacmd{MIDI beataccents}.
 
-
 % -----
 
 \subsection{Arpeggios}
@@ -4970,11 +5002,17 @@ The following example plays the C major chord as an arpeggio of
 Furthermore, you can use \cmd{fcz} and \cmd{ghij} sequences together,
 like \cmd{fcbghijGHIJz}.
 
+Another way to play chords as arpeggios is the \metacmd{MIDI
+chordattack} command. When followed by a number \parm{n} greater than
+0, it delays each note by \parm{n} MIDI time units (a quarter note is
+480 MIDI units). Using \metacmd{MIDI randomchordattack} \parm{n}
+varies the delay of each note randomly between 0 and \parm{n}.
+
+
 % TO DO: Chord inversions. Note for the first inversion of the C major
 % chord (indicated by "C/E"), E would be the lowest
 % note so g would reference the note E.
 
-% TO BE EXPANDED: chordattack
 
 % -----
 
@@ -5167,12 +5205,12 @@ Note that the \metacmd{MIDI channel 10} command must be written
 \emph{after} the \field{V:} field that starts a new voice.
 
 Unfortunately, if we typeset this piece we will not get what we would
-expect:
+expect: Low Tom and Open Hi-Hat will be rendered as very low notes. In
+fact, \abcm{} has limited support for percussions. Future releases may
+provide full support for percussions instruments.
 
-\score{perc}
+% \score{perc}
 
-In fact, \abcm{} has limited support for percussions. Future releases
-will provide full support for percussions instruments.
 
 % -----
 
@@ -5666,7 +5704,7 @@ Q: 1/2 = 240
 #ifdef MIDI
 P: ABCB
 #endif
-%%staves 3
+%%score 3
 V: 3 clef=treble-8 name="Tenor\bl{}nBass"
 K: Am
 % ONLY THE MEN
@@ -5697,7 +5735,7 @@ w: Di\'os guar-d\'o el lo-bo de nue-stra cor-de-ra,
 w: Di\'os guar-d\'o el lo-bo de nue-stra cor-de-ra.
 % WOMEN AND MEN
 #ifndef MIDI
-%%staves [1 2 3 4]
+%%score [1 | 2 | 3 | 4]
 V: 1 clef=treble   name="S" sname="S"
 V: 2 clef=treble   name="A" sname="A"
 V: 3 clef=treble-8 name="T" sname="T"
@@ -5734,7 +5772,7 @@ P: C
 [V: 2] z4  |z8      |z4|z4  |
 [V: 4] aaga|f2eg2gef|d4|aaga|
 #else
-%%staves 3
+%%score 3
 #endif
 [V: 3] AAGA|F2EG2GEF|D4|AAGA|
 w: El lo-bo ra-bio-so la qui-so mor-der, mas Di\'os po-de-
@@ -5758,6 +5796,14 @@ w: car: ni~aun o-ri-gi-nal e-sta Vir-gen no tu-vie-ra.
 }
 
 % -----
+
+% \section{Using the \cmd{abcm2ps} Command}
+% \label{sec:abcm2ps}
+
+% To some extent, even \abcm{} can be used as a preprocessor.
+
+% TO BE WRITTEN.
+
 
 % \noteseparator
 
@@ -6033,41 +6079,13 @@ Needless to say, \abcprt{} is integrated in \jedabc{}.
 
 % -----
 
-\section{Limitations of \abcm}
-
-Although it is a very powerful program, \abcm{} currently has a few
-limitations to be aware of:
-
-\begin{itemize}
-  
-  \item no manual control over symbol positioning;
-  
-  \item some formatting parameters cannot change within the same tune;
-  
-  \item doesn't support special notations like percussions or Gregorian
-  Chant;
-  
-  \item {\ldots}
-  
-\end{itemize}
-
-This list was longer some versions ago{\ldots} Most likely, the
-missing features will be implemented in future releases.
-
-% -----
-
-% \noteseparator
-
-% -----
-
 \section{Final Comments}
 
-I started with \ABC{} several years ago, and it's always been my
-tool of choice whenever I needed to print or listen to a piece of
-music. This manual started out as a list of notes I wrote for myself,
-and it slowly grew to its present form. Since the \ABC{} software
-is free, I decided it was only fair to release this manual for free as
-well.
+I started with \ABC{} several years ago, and it's always been my tool
+of choice whenever I needed to make a score. This manual started out
+as a list of notes I wrote for myself, and it slowly grew to its
+present form. Since the \ABC{} software is free, I decided it was only
+fair to release this manual for free as well.
 
 A big ``thank you!'' to the author of \abcm, Jean-Fran\c cois Moine,
 for writing such a beautiful and useful program; to Michael Methfessel
@@ -6158,9 +6176,9 @@ Hudson Lacerda's \ABC{} page, including advanced customisation and
 
 \url{http://hudsonlacerda.webs.com/}
 
-The Folkinfo web-based \ABC{} converter:
+The Mandolintab web-based \ABC{} converter:
 
-\url{http://www.folkinfo.org/songs/abcconvert.php}
+\url{http://mandolintab.net/abcconverter.php}
 
 Abctab2ps is an almost complete implementation of \ABCPLUS{} that
 supports tablatures for lute:
@@ -6295,7 +6313,7 @@ languages use different characters, but this can lead to
 incompatibility problems when, say, an Italian musician wants to send
 his or her American friend an \ABC{} source.
 
-Fortunately, there exist a character set called ISO 8859-1 (Latin1)
+Fortunately, there exist a character set called ISO--8859-1 (Latin1)
 that includes accented characters used by many languages: all of
 central Europe, and all English-speaking countries. These characters
 have an ASCII code between 160 and 255, and can be typed as sequences
@@ -6307,12 +6325,6 @@ even if you do have these characters on your keyboard, because this
 makes the source more portable.
 
 \score{isolatin}
-
-% Eastern European languages such as Czech, Hungarian, Polish, Romanian,
-% Croatian, Slovak, Slovenian, and Serbian use the ISO-8859-2 (Latin2)
-% character set:
-
-% \score{isolatin2}
 
 % -----
 
@@ -6335,6 +6347,7 @@ Command parameters will be specified as follows:
   \emph{len\-gth} & unit length indicated in \texttt{cm},
      \texttt{in} or \texttt{pt}  \\
   \emph{text} & generic text \\
+  \emph{char} & character \\
   \emph{logical} & logical value, \texttt{yes} or \texttt{no}, or 1 or 0 \\
   \emph{int} & integer number \\
   \emph{float} & number with decimals \\
@@ -6353,13 +6366,13 @@ These commands set the page geometry.
 \begin{description}
 
   \item[\metacmd{botmargin} \parm{len\-gth}:] sets the page bottom margin
-  to \parm{len\-gth}.
+  to \parm{length}.
 
   \item[\metacmd{footer} \parm{text}:] sets the text to be printed as
-  footer on each page. % TO BE EXPANDED
+  footer on each page; see Section~\ref{sec:headerfooter} for details.
 
   \item[\metacmd{header} \parm{text}:] sets the text to be printed as
-  header on each page. % TO BE EXPANDED
+  header on each page; see Section~\ref{sec:headerfooter} for details.
 
   \item[\metacmd{indent} \parm{len\-gth}:] sets the indentation for
   the first line or system to \parm{len\-gth}.
@@ -6442,11 +6455,12 @@ examine later on.
 \end{verbatim}
 
   \item [\metacmd{textoption} \parm{int}:] sets the default text
-  option to be used between \metacmd{be\-gin\-text} and \metacmd{end\-text},
-  or in \metacmd{EPS} files. The parameter can be a digit or a corresponding
-  string: 0 or \cmd{obeylines}), 1 (\cmd{justify}), 2 (\cmd{fill}), 3
-  (\cmd{center}), 4 (\cmd{skip}), 5 (\cmd{right}). If the option is 4
-  (\cmd{skip}), no text or EPS is output.
+  option to be used between \metacmd{be\-gin\-text} and
+  \metacmd{end\-text}, or in \metacmd{EPS} files. The parameter can be
+  a digit or a corresponding string: 0 or \cmd{obeylines}), 1
+  (\cmd{justify}), 2 (\cmd{fill}), 3 (\cmd{center}), 4 (\cmd{skip}), 5
+  (\cmd{right}). If the option is 4 (\cmd{skip}), no text or EPS is
+  output.
 
 
 \end{description}
@@ -6518,7 +6532,7 @@ indications for adding new fonts are given in Section~\ref{sec:addfonts}.
   \item[\metacmd{titleformat} \parm{string}:] defines the format of the tune
   title. This format overrides \metacmd{ti\-tle\-left},
   \metacmd{infoline}, and \metacmd{composerspace}. See
-  Section~\ref{sec:titles} for examples. % TO BE EXPANDED.
+  Section~\ref{sec:titles} for examples.
 
   \item[\metacmd{titleleft} \parm{logical}:] if true, writes the title
   left-aligned instead of centered.
@@ -6541,8 +6555,13 @@ These commands specify spacing between score elements.
 
 \begin{description}
 
-  \item[\metacmd{barsperstaff} \parm{int}:] tries to typeset the score
-  with \parm{int} bars on each line.
+  \item[\metacmd{barsperstaff} \parm{int}:] attempts to typeset the
+  score with \parm{int} bars on each line.
+
+  \item[\metacmd{breaklimit} \parm{float}:] used together with
+  \metacmd{maxshrink}, it lets the user control where line breaks may
+  occur. The parameter can range between 0.5 (line break occurs when
+  the line is 50\% full) and 1.0.
 
   \item[\metacmd{breakoneoln} \parm{logical}:] if true, treats an end of
   line as if it were a space (i.e.\ breaks note beams).
@@ -6555,6 +6574,13 @@ These commands specify spacing between score elements.
 
   \item[\metacmd{infospace} \parm{len\-gth}:] sets the vertical space
   before the infoline to \parm{len\-gth}.
+
+  \item[\metacmd{linebreak} \parm{string}:] defines the line break
+  separators. The string may be empty or contain the values
+  \field{\textless{}EOL\textgreater{}}, \field{\$}, \field{!}, and
+  \field{\textless{}none\textgreater{}}. The latter option (or an
+  empty string) computes line breaks automatically, as the deprecated
+  command \metacmd{continueall}.
 
   \item[\metacmd{lineskipfac} \parm{float}:] sets the factor for spacing
   between lines of text to \parm{float}.
@@ -6629,6 +6655,9 @@ These commands specify spacing between score elements.
   \item[\metacmd{vocalspace} \parm{len\-gth}:] sets the vertical space before
   the lyrics under staves to \parm{len\-gth}.
 
+  \item[\metacmd{voicescale} \parm{len\-gth}:] sets the scale of a
+  voice, or of all voices if present in the header.
+  
   \item [\metacmd{vskip} \parm{h}:] adds \parm{h} vertical space. \parm{h}
   may be a negative value.
   
@@ -6650,6 +6679,9 @@ Miscellaneous commands are grouped in this section.
   metod of dealing with notes in bass and other clefs. Please see
   Section~\ref{sec:bassclef}.
 
+  \item[\metacmd{abcm2ps} \parm{char}]: changes the character that
+  defines a pseudo-comment.
+
   \item[\metacmd{alignbars} \parm{int}:] aligns the bars of the next 
   \parm{int} lines of music. It only works on single-voice tunes.
 
@@ -6660,72 +6692,129 @@ Miscellaneous commands are grouped in this section.
   \item[\metacmd{autoclef} \parm{logical}:] if true, prints clefs and
   possibly clef changes when no clef is defined in \field{K:} or \field{V:}.
 
-  \item[\metacmd{barnumbers} \parm{int}:] same as \metacmd{measurenb}, 
-  see below.
+  % REMOVED
+  % \item[\metacmd{barnumbers} \parm{int}:] same as \metacmd{measurenb}, 
+  % see below.
   
-  \item[\metacmd{beginps}--\metacmd{endps}:] start/end of a \ps{} sequence.
+  \item[\metacmd{beginps}--\metacmd{endps}:] starts/ends a sequence of 
+  \ps{} commands; please see Section~\ref{sec:customps}.
+  
+  \item[\metacmd{beginsvg}--\metacmd{endsvg}:] starts/ends a sequence of 
+  SVG commands; please see Sec\-tion \ref{sec:customps}.
+  
+  % \item[\metacmd{bgcolor}:] TO BE WRITTEN.
   
   \item[\metacmd{bstemdown} \parm{logical}:] if true, the stem of
   the note on the middle of the staff goes downwards. Otherwise, it goes
   upwards or downwards according to the previous note.
   
-  \item[\metacmd{comball} \parm{logical}:] if true and 
-  \metacmd{combinevoices} is set, combines voices in all cases.
+  \item[\metacmd{cancelkey} \parm{logical}:] if true, accidentals are
+  cancelled using natural signs when the key signature changes.
+  
+  \item[\metacmd{clef} \parm{clef} \optparm{line} \optparm{octave}:]
+  inserts a clef change, in a manner similar to \field{K:}.
+  \parm{clef} may be \cmd{treble} (or \cmd{G2}), \cmd{alto}
+  (\cmd{C3}), \cmd{tenor} (\cmd{Cf}), \cmd{bass} (\cmd{F4}),
+  \cmd{perc} (\cmd{P2}), \cmd{G}, \cmd{C}, \cmd{G}, \cmd{C}, \cmd{F},
+  \cmd{P}, or \cmd{none}. The latter prints no clef on the staff. The
+  name of a user-provided \ps{} glyph may also be used. \optparm{line}
+  specifies the staff line on which the clef sits. \optparm{octave}
+  can be \cmd{+8} or \cmd{-8}, to print `8' above or below the clef;
+  \cmd{\textasciicircum{}8} or \cmd{\_8}, to print `8' above or below
+  the clef and perform octave transposition.
+  
+  % REMOVED
+  % \item[\metacmd{comball} \parm{logical}:] if true and 
+  % \metacmd{combinevoices} is set, combines voices in all cases.
   
   \item[\metacmd{combinevoices} \parm{logical}:] if true, notes
   of same duration that belong to voices of the same staff are combined
   producing chords. It does not apply when note pitches are in unison,
   inverted or differ by a second.
   
-  \item[\metacmd{continueall} \parm{logical}:] ignores the line breaks in
-  tune if true. It's the equivalent of the \cmd{-c} command line flag.
-  
   \item[\metacmd{contbarnb} \parm{logical}:] if true, the bar number
   of the second repeat(s) is reset to the number of the first repeat. If
   false, bars are sequentially numbered.
   
+  \item[\metacmd{continueall} \parm{logical}:] ignores the line breaks in
+  tune if true. It's the equivalent of the \cmd{-c} command line flag.
+  This command is deprecated; use \metacmd{linebreak none} and
+  \metacmd{linewarn 0} instead.
+  
+  \item[\metacmd{custos} \parm{logical}:] if true, a custos is added
+  at the end of each music line. A custos is a symbol that indicates
+  the pitch for the first note of the next line. This command works
+  with single voice tunes only.
+  
   \item[\metacmd{dateformat} \parm{string}:] defines the format of
-  date and time. Default is \cmd{\%b \%e, \%Y \%H:\%M}. The fields specify,
-  respectively: abbreviated month name (Jan--Dec), day of month (1--31),
-  year, hour (0--23), minute (0--59).
+  date and time. Default is \cmd{\%b \%e, \%Y \%H:\%M}. The fields
+  specify, respectively: abbreviated month name (Jan--Dec), day of
+  month (1--31), year, hour (0--23), minute (0--59).
 
-  \item[\metacmd{deco} \parm{string1} \parm{int1} \parm{string2} \parm{int2}
-  \parm{int3} \parm{int4} \parm{string3}:] adds a new decoration. Details
-  are explained in Section~\ref{sec:decopers}.
+  \item[\metacmd{deco} \parm{string1} \parm{int1} \parm{string2} 
+  \parm{int2} \parm{int3} \parm{int4} \parm{string3}:] adds a new
+  decoration. Details are explained in Section~\ref{sec:decopers}.
+
+  \item[\metacmd{decoration} \parm{char}:] defines the decoration
+  separator, which can be \car{!} (default) or \car{+}.
+
+  \item[\metacmd{dblrepbar} \parm{string}:] defines how double repeat
+  bars are drawn; e.g. \cmd{:][:} (default), or \cmd{::}, or
+  \cmd{:|:}.
   
   \item[\metacmd{dynalign} \parm{logical}:] if true, horizontally 
-  aligns the dynamic marks.
+  aligns the dynamics marks.
+
+  \item[\metacmd{dynamic} \parm{int}:] sets the position of
+  dynamics (e.g. crescendo, etc.). The parameter may be `0' (or
+  ``auto'') for automatic position; `1' or ``above'', `2' or
+  ``below'', `3' or ``hidden'' to hide dynamics marks.
+  % TO DO: scope.
 
   \item[\metacmd{EPS} \parm{string3}:] includes an external EPS
   file in the score.
 
-  \item[\metacmd{encoding} \parm{int}:] (for expert users) sets the
-  language encoding to ISO-Latin\parm{int}, which may range from 0 to 6.
-  The value 0 is the same as 1, but the \ps{} encoding table is not output.
+  % REMOVED
+  % \item[\metacmd{encoding} \parm{int}:] (for expert users) sets the
+  % language encoding to ISO-Latin\parm{int}, which may range from 0 to 6.
+  % The value 0 is the same as 1, but the \ps{} encoding table is not output.
 
-  \item[\metacmd{exprabove} \parm{logical}:] draws the expression
-  decorations above the staff. If neither \cmd{expr\-above} nor
-  \cmd{exprbelow} are true, the expression decorations are drawn above the
-  staff if there are lyrics on the staff, below otherwise. \cmd{exprabove}
-  takes precedence over \cmd{expr\-below}.
+  % REMOVED
+  % \item[\metacmd{exprabove} \parm{logical}:] draws the expression
+  % decorations above the staff. If neither \cmd{expr\-above} nor
+  % \cmd{exprbelow} are true, the expression decorations are drawn above the
+  % staff if there are lyrics on the staff, below otherwise. \cmd{exprabove}
+  % takes precedence over \cmd{expr\-below}.
 
-  \item[\metacmd{exprbelow} \parm{logical}:] draws the expression
-  decorations below the staff.
+  % REMOVED
+  % \item[\metacmd{exprbelow} \parm{logical}:] draws the expression
+  % decorations below the staff.
 
   \item[\metacmd{flatbeams} \parm{logical}:] if true, forces flat beams in
   bagpipe tunes (\field{K:HP}).
 
-  \item[\metacmd{freegchord} \parm{logical}:] if true, prevents the
-  characters \car{\#}, \car{b} and \car{=} from being displayed as sharp,
-  flat and natural sign in guitar chords. When this flag is set, displaying
-  accidental may be forced escaping the characters (e.g.\
-  \car{\textbackslash{}\#}.)
+  % REMOVED
+  % \item[\metacmd{freegchord} \parm{logical}:] if true, prevents the
+  % characters \car{\#}, \car{b} and \car{=} from being displayed as sharp,
+  % flat and natural sign in guitar chords. When this flag is set, displaying
+  % accidental may be forced escaping the characters (e.g.\
+  % \car{\textbackslash{}\#}.)
   
   \item[\metacmd{format} \parm{string}:] reads the format file specified
   as parameter.
 
   \item[\metacmd{gchordbox} \parm{logical}:] draws a box around accompaniment
   chords.
+
+  \item[\metacmd{glyph} \parm{string1} \parm{string1}:] sets the name
+  of a Unicode glyph. The first parameter is a hexadecimal value, the
+  second is the name of the associated glyph in the font files.
+  
+  \item[\metacmd{gstemdir} \parm{int}:] sets the position of grace
+  notes stems. The parameter may be `0' (or ``auto'') for automatic
+  position; `1' or ``above'', `2' or ``below'', `3' or ``hidden'' to
+  hide dynamics marks.
+  % TO DO: scope.
   
   \item[\metacmd{graceslurs} \parm{logical}:] draws slurs on grace notes.
   
@@ -6738,54 +6827,92 @@ Miscellaneous commands are grouped in this section.
   \item[\metacmd{infoname} \parm{string} \parm{string}:] defines the
   fields to be printed when \metacmd{writehistory} is true.
 
+  \item[\metacmd{keywarn} \parm{logical}:] if true, a cautionary key
+  signature is printed when a key signature change occurs at the
+  beginning of a music line.
+  
+  \item[\metacmd{linewarn} \parm{logical}:] if true, outputs a warning
+  message if there are too many or too few elements in a music line.
+
   \item[\metacmd{measurenb} \parm{int}:] draws the measure number
   every \parm{int} bars.
 
-  \item[\metacmd{measurebox} \parm{logical}:] draws a box around measure
-  numbers.
+  \item[\metacmd{measurebox} \parm{logical}:] if true, draws a box
+  around measure numbers.
 
   \item[\metacmd{measurefirst} \parm{int}:] starts numbering the
-  measures from \parm{int}.
+  measures from \parm{int}. This command is obsolete and should be
+  replaced by \metacmd{setbarnb}.
 
-  \item[\metacmd{musiconly} \parm{logical}:] if true, doesn't output the
-  lyrics.
+  \item[\metacmd{micronewps} \parm{logical}:] if true, uses the new
+  PostScript function to draw microtonal accidentals.
+
+  \item[\metacmd{musiconly} \parm{logical}:] if true, lyrics are
+  not output.
 
   \item[\metacmd{oneperpage} \parm{logical}:] outputs one tune per page.
 
+  \item[\metacmd{ornament} \parm{int}:] sets the position of ornaments
+  (e.g. trill, etc.). The parameter may be `0' (or ``auto'') for
+  automatic position; `1' or ``above'', `2' or ``below'', `3' or
+  ``hidden'' to hide ornaments.
+  % TO DO: scope.
+  
+  \item[\metacmd{pango} \parm{logical}:] if \abcm{} was compiled with
+  Pango support, this command enables or disables \ps{} output with
+  Pango. % TO BE EXPANDED
+
   \item[\metacmd{partsbox} \parm{logical}:] draws a box around part names.
 
+  \item[\metacmd{pdfmark} \parm{int}:] if the parameter is 1,
+  inserts marks in the \ps{} output for titles. \ps{} to PDF
+  translators can use the marks to create a PDF tune index. If the
+  parameter is greater than 1, marks are inserted for titles and
+  subtitles.
+  
   \item[\metacmd{postscript} \parm{string}:] a series of these commands
   lets the user add a new \ps{} routine, or change an existing one.
 
-  \item[\metacmd{printparts} \parm{logical}:] prints the part indications
-  (\field{P:}).
+  % REMOVED
+  % \item[\metacmd{printparts} \parm{logical}:] prints the part indications
+  % (\field{P:}).
 
-  \item[\metacmd{printtempo} \parm{logical}:] prints the tempo indications
-  (\field{Q:}).
+  % REMOVED
+  % \item[\metacmd{printtempo} \parm{logical}:] prints the tempo indications
+  % (\field{Q:}). SEE WRITEFIELDS
   
-  \item[\metacmd{pslevel} \parm{int}:] specifies the \ps{} level (1, 2,
-  or 3).
+  % REMOVED
+  % \item[\metacmd{pslevel} \parm{int}:] specifies the \ps{} level (1, 2,
+  % or 3).
+  
+  \item[\metacmd{ps} \parm{string}:] same as \metacmd{postscript}.
   
   \item[\metacmd{repbra} \parm{logical}:] if false, prevents
   displaying repeat brackets for the current voice.
   
-  \item[\metacmd{score} \parm{string}:] like \metacmd{staves}, but
-  with a different behaviour regarding bars. See
-  Section~\ref{sec:staves} for details.
+  \item[\metacmd{repeat} \parm{int1} \parm{int2}:] repeats a sequence
+  of notes or bars. % ; please see Section~\ref{sec:repeats} for details.
+  % TO DO: wait for the bugfix
   
-  \item[\metacmd{setbarnb} \parm{int}:] sets the number of the next measure.
+  \item[\metacmd{score} \parm{string}:] defines how staves are to be
+  printed. Please see Section~\ref{sec:score} for details.
+  
+  \item[\metacmd{setbarnb} \parm{int}:] sets the number of the next
+  measure, excluding the first. To set the number of the first
+  measure, the command must be written in the tune header.
   
   \item[\metacmd{setdefl} \parm{logical}:] if true, outputs some
   indications about the note/chord and/or decorations for
   customization purposes. These indications are stored in the
   PostScript variable ``defl''.
-  
-  \item[\metacmd{shifthnote} \parm{logical}:] in multivoice
-  tunes, when voices go to unison with a white and a black note (say, a half
-  and a quarter note), only the black note head is printed. When this flag
-  is set, a note shift is done and both are printed.
 
-  \item[\metacmd{shiftunisson} \parm{logical}:] if true, shifts note heads
+  % REMOVED
+  % \item[\metacmd{shifthnote} \parm{logical}:] in multivoice
+  % tunes, when voices go to unison with a white and a black note (say, a half
+  % and a quarter note), only the black note head is printed. When this flag
+  % is set, a note shift is done and both are printed.
+
+  \item[\metacmd{shiftunison} \parm{logical}:] if true, shifts note heads
   that belong to different voices that are in unison. It applies to dotted
   notes and notes shorter than minim.
 
@@ -6801,16 +6928,32 @@ Miscellaneous commands are grouped in this section.
   \item[\metacmd{staff} \parm{int}:] prints the next symbols of
   the current voice on the \parm{int}-th staff.
   
-  \item[\metacmd{staffnonote} \parm{logical}:] if false, staves with no
-  notes are not printed.
+  \item[\metacmd{stafflines} \parm{int}:] sets the number of staff lines
+  of the current voice; default is 5.
+  
+  \item[\metacmd{staffnonote} \parm{int}:] avoids printing a staff
+  according to the parameter. If it's 0, the staff is not printed if it
+  contains only invisible rests and notes; if it's 1, the staff is not
+  printed if it contains only rests and invisible notes; if it's 2,
+  the staff is printed.
+  
+  \item[\metacmd{staffscale} \parm{float}:] sets the scale of the staff
+  of the current voice.
   
   \item[\metacmd{staves} \parm{string}:] defines how staves are to be
-  printed. See Section~\ref{sec:staves} for details.
+  printed. This command is deprecated; please use \cmd{score} instead.
+  Please see Section~\ref{sec:score} for details. 
+  
+  \item[\metacmd{stemdir} \parm{int}:] sets the note stems directions.
+  The parameter may be `0' (or ``auto'') for automatic position; `1'
+  or ``up'', `2' or ``down''.
+  % TO DO: scope.
   
   \item[\metacmd{stemheight} \parm{float}:] sets the stem height to
   \parm{float}.
 
-  \item[\metacmd{tablature} :] TO BE WRITTEN
+  \item[\metacmd{tablature}:] defines a tablature. Please see
+  Section~{sec:tablatures}.
 
   \item[\metacmd{timewarn} \parm{logical}:] if true, if a time signature
   occurs at the beginning of a music line, a cautionary time signature is
@@ -6820,18 +6963,44 @@ Miscellaneous commands are grouped in this section.
   of a title to the head if it starts with a capital letter and it's
   preceded by a space and a comma.
 
+  \item[\metacmd{transpose} \parm{int} \optparm{char}:] transposes the
+  music by \parm{int} semitones. The optional parameter may be
+  \car{\#} or \car{b}, meaning that the new key signature will have
+  sharps or flats.
+  % TO DO: add a section on transposition.
+
   \item[\metacmd{tuplets} \parm{int1} \parm{int2} \parm{int3}:]
   defines how tuplets are to be drawn. See Section~\ref{sec:tuplets} for
   details.
 
+  \item[\metacmd{user} \parm{string}:] this command is the equivalent
+  of the \field{U:} field, and can be used to redefine default
+  decorations in format files.
+
+  \item[\metacmd{vocal} \parm{int}:] sets the position of lyrics. The
+  parameter may be `0' (or ``auto'') for automatic position; `1' or
+  ``above'', `2' or ``below'', `3' or ``hidden'' to hide lyrics.
+  
   \item[\metacmd{vocalabove} \parm{logical}:] draws the vocals above the
-  staff.
+  staff. This command is obsolete and should be replaced by
+  \metacmd{vocal}.
 
-  \item[\metacmd{withxrefs} \parm{logical}:] prints the \field{X:} number
-  in the title.
+  \item[\metacmd{volume} \parm{int}:] sets the position of volume
+  decorations (\cmd{!f!}, etc.). The parameter may be `0' (or
+  ``auto'') for automatic position; `1' or ``above'', `2' or
+  ``below'', `3' or ``hidden'' to hide the decorations.
+  % TO DO: scope.
 
-  \item[\metacmd{writehistory} \parm{logical}:] outputs notes, history,
-  etc.
+  % REMOVED
+  % \item[\metacmd{withxrefs} \parm{logical}:] prints the \field{X:} number
+  % in the title.
+
+  \item[\metacmd{writefields} \parm{string} \parm{logical}:] if true,
+  displays the information fields defined in \parm{string}.
+
+  % REMOVED
+  % \item[\metacmd{writehistory} \parm{logical}:] outputs notes, history,
+  % etc.
 
 \end{description}
 
@@ -6949,7 +7118,7 @@ archive.
   properly. % COPIED FROM ABCMIDI DOC
 
   \item [\metacmd{MIDI gchord} \parm{str}:] sets up how guitar chords
-  are generated. Please see Section~\ref{sec:midichords}.
+  are generated; please see Section~\ref{sec:midichords}.
 
   \item [\metacmd{MIDI gchordoff}:] turns guitar chords off.
 
@@ -7038,7 +7207,7 @@ archive.
 
 % ----- Font PostScript
 
-% \noteseparator
+\newpage
 
 % -----
 
@@ -7050,11 +7219,12 @@ exception of ZapfDingbats which is not supported by \abcm.
 
 \medskip
 
+% this line raises hell! fonts.pdf must be rebuilt.
 \includegraphics[width=0.95\linewidth]{fonts.pdf}
 
 % -----
 
-% \noteseparator
+\newpage
 
 % -----
 
@@ -7205,7 +7375,7 @@ corresponding note in the MIDI channel 10.
   \miwn{81}{a~~~}{Open Triangle} & \\
 \end{tabular}}}
 
-% \noteseparator
+% -----
 
 \end{document}
 

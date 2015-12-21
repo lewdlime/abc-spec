@@ -18,7 +18,7 @@ w: Di\'os guar-d\'o el lo-bo de nue-stra cor-de-ra,
 w: Di\'os guar-d\'o el lo-bo de nue-stra cor-de-ra.
 % CHANGE OF SYSTEM: everyone
 %%vskip 0
-%%staves [1 2 3 4]
+%%score [1 | 2 | 3 | 4]
 V: 1 clef=treble   name="S" sname="S"
 V: 2 clef=treble   name="A" sname="A"
 V: 3 clef=treble-8 name="T" sname="T"
@@ -47,7 +47,7 @@ w: Di\'os guar-d\'o el lo-bo, el lo-bo de nue-stra cor-de-ra.
 [V: 4] A,A,G,A,|F,2E,F,|D,2A,,D,2D,A,,A,,  |D,2D,2  |
 % CHANGE OF SYSTEM: men only
 %%vskip 0
-%%staves 3
+%%score 3
 [V: 3] AAGA|F2EG2GEF|D4|AAGA|
 w: El lo-bo ra-bio-so la qui-so mor-der, Mas Di\'os po-de-
 [V: 3] F2FEGGEF|D4|AAGA|F2FEDEFG|

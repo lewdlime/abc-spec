@@ -22,11 +22,11 @@
 %%vocalfont      Times-Roman 14  % for lyrics
 %%gchordfont     Times-Bold 14   % for chords
 % MISC
-%%measurebox     true  % measure numbers in a box
-%%measurenb      0     % measure numbers at first measure
-%%exprabove      true  % expressions above the staff
-%%barsperstaff   5     % number of measures per staff
-%%scale          0.7   % magnification
+%%measurebox     true    % measure numbers in a box
+%%measurenb      0       % measure numbers at first measure
+%%ornament       above   % expressions above the staff
+%%barsperstaff   5       % number of measures per staff
+%%scale          0.7     % magnification
 %
 X: 1
 T: Ave Verum
@@ -35,7 +35,7 @@ C: W. A. Mozart (1756-1791)
 M: 4/4
 L: 1/4
 Q: "Adagio"
-%%staves [(1 2) (3 4)] | {(5 6) (7 8)}
+%%score [(1 2) (3 4)] {(5 6) | (7 8)}
 V: 1 clef=treble name="Soprano" sname="S"
 V: 2 clef=treble name="Alto" sname="A"
 V: 3 clef=bass name="Tenore" sname="T"
